@@ -6,16 +6,25 @@ namespace PressGang\Quartermaster\Concerns;
 use PressGang\Quartermaster\Support\ClauseQuery;
 
 /**
- * Taxonomy query clause helpers.
+ * Fluent builders for `WP_Query` `tax_query` clauses.
+ *
+ * Clauses are appended using WordPress-native array structure. A single clause is stored as
+ * `tax_query = [ clause ]`; once multiple clauses exist, a root `relation` key is included.
+ *
+ * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
  */
 trait HasTaxQuery
 {
     /**
+     * Append a taxonomy clause to `tax_query`.
+     *
+     * Empty terms are filtered out. When no terms remain, the builder is unchanged.
+     *
      * @param string $taxonomy
-     * @param array<int, int|string> $terms
-     * @param string $field
-     * @param string $operator
-     * @return $this
+     * @param array<int, int|string> $terms Term values matched by `$field`.
+     * @param string $field Tax field key such as `slug`, `term_id`, or `name`.
+     * @param string $operator Tax operator such as `IN`, `NOT IN`, or `AND`.
+     * @return self
      */
     public function whereTax(
         string $taxonomy,
@@ -51,6 +60,10 @@ trait HasTaxQuery
     }
 
     /**
+     * Append one taxonomy clause and normalize relation handling.
+     *
+     * The returned array stays compatible with WordPress `tax_query` expectations.
+     *
      * @param array{taxonomy: string, field: string, terms: array<int, int|string>, operator: string} $clause
      * @return array<int|string, mixed>
      */

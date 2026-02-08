@@ -6,7 +6,10 @@ namespace PressGang\Quartermaster\Concerns;
 use PressGang\Quartermaster\Support\Warnings;
 
 /**
- * Explainability and method application tracking.
+ * Debug/explainability helpers for fluent call chains.
+ *
+ * This trait records method calls and builds a structured `explain()` payload containing
+ * final args, call history, and advisory warnings. It does not mutate query behavior.
  */
 trait HasDebugging
 {
@@ -16,6 +19,8 @@ trait HasDebugging
     protected array $applied = [];
 
     /**
+     * Record one fluent call in the explain log.
+     *
      * @param string $name
      * @param mixed ...$params
      * @return void
@@ -29,6 +34,10 @@ trait HasDebugging
     }
 
     /**
+     * Return inspectable builder state for debugging.
+     *
+     * `warnings` are advisory only and do not change runtime query args.
+     *
      * @return array{args: array<string, mixed>, applied: array<int, array{name: string, params: array<int, mixed>}>, warnings: array<int, string>}
      */
     public function explain(): array

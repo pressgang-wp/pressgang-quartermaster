@@ -6,11 +6,18 @@ namespace PressGang\Quartermaster\Adapters;
 use RuntimeException;
 
 /**
- * WP_Query terminal adapter.
+ * Terminal adapter that instantiates `WP_Query` from explicit args.
+ *
+ * This adapter does not mutate the args array; it only validates runtime availability of
+ * the `WP_Query` class and then returns `new \WP_Query($args)`.
+ *
+ * See: https://developer.wordpress.org/reference/classes/wp_query/
  */
 final class WpAdapter
 {
     /**
+     * Create a WordPress query from the provided args.
+     *
      * @param array<string, mixed> $args
      * @return \WP_Query
      */

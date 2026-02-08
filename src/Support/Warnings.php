@@ -4,11 +4,23 @@
 namespace PressGang\Quartermaster\Support;
 
 /**
- * Compute warning messages for suspicious arg combinations.
+ * Builds advisory diagnostics for potentially conflicting `WP_Query` args.
+ *
+ * Warnings are informational only: they do not mutate args and they do not change runtime
+ * query behavior.
  */
 final class Warnings
 {
     /**
+     * Return warning messages for known risky arg combinations.
+     *
+     * Current warnings:
+     * - `posts_per_page = -1` with `paged` set (pagination is typically ignored by WordPress)
+     * - `orderby = meta_value` without `meta_key` (ordering becomes ambiguous)
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
      * @param array<string, mixed> $args
      * @return array<int, string>
      */

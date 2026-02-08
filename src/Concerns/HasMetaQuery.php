@@ -6,16 +6,25 @@ namespace PressGang\Quartermaster\Concerns;
 use PressGang\Quartermaster\Support\ClauseQuery;
 
 /**
- * Meta query clause helpers.
+ * Fluent builders for `WP_Query` `meta_query` clauses.
+ *
+ * Clauses are appended using WordPress-native array structure. A single clause is stored as
+ * `meta_query = [ clause ]`; once multiple clauses exist, a root `relation` key is included.
+ *
+ * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
  */
 trait HasMetaQuery
 {
     /**
+     * Append an `AND` meta clause to `meta_query`.
+     *
+     * The clause contains `key`, `value`, `compare`, and optional `type`.
+     *
      * @param string $key
      * @param mixed $value
-     * @param string $compare
-     * @param string|null $type
-     * @return $this
+     * @param string $compare WordPress meta compare operator, for example `=`, `>=`, `IN`.
+     * @param string|null $type Optional WordPress meta type, for example `NUMERIC` or `DATE`.
+     * @return self
      */
     public function whereMeta(string $key, mixed $value, string $compare = '=', ?string $type = null): self
     {
@@ -29,11 +38,16 @@ trait HasMetaQuery
     }
 
     /**
+     * Append a meta clause and force root relation to `OR`.
+     *
+     * This v0 method uses simple behavior: when multiple clauses exist, root `relation`
+     * is set to `OR`.
+     *
      * @param string $key
      * @param mixed $value
-     * @param string $compare
-     * @param string|null $type
-     * @return $this
+     * @param string $compare WordPress meta compare operator.
+     * @param string|null $type Optional WordPress meta type.
+     * @return self
      */
     public function orWhereMeta(string $key, mixed $value, string $compare = '=', ?string $type = null): self
     {
@@ -47,6 +61,8 @@ trait HasMetaQuery
     }
 
     /**
+     * Build one meta clause compatible with `WP_Query` `meta_query`.
+     *
      * @param string $key
      * @param mixed $value
      * @param string $compare
@@ -69,6 +85,10 @@ trait HasMetaQuery
     }
 
     /**
+     * Append one meta clause and normalize relation handling.
+     *
+     * The returned array stays compatible with WordPress `meta_query` expectations.
+     *
      * @param array{key: string, value: mixed, compare: string, type?: string} $clause
      * @param 'AND'|'OR' $defaultRelation
      * @param 'AND'|'OR'|null $forcedRelation

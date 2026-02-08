@@ -6,13 +6,22 @@ namespace PressGang\Quartermaster\Adapters;
 use RuntimeException;
 
 /**
- * Optional Timber terminal adapter.
+ * Optional Timber terminal adapter for `Timber\PostQuery`.
+ *
+ * This adapter does not mutate args; it only guards for Timber availability and returns
+ * a `Timber\PostQuery` object built from the provided args.
+ *
+ * See: https://timber.github.io/docs/v2/reference/timber-postquery/
  */
 final class TimberAdapter
 {
     /**
+     * Create a Timber post query from the provided args.
+     *
+     * Runtime requirement: `\Timber\PostQuery` must exist.
+     *
      * @param array<string, mixed> $args
-     * @return object
+     * @return object Timber post query object.
      */
     public function postQuery(array $args): object
     {

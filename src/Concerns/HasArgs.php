@@ -4,7 +4,10 @@
 namespace PressGang\Quartermaster\Concerns;
 
 /**
- * Core args storage and mutation helpers.
+ * Shared storage helpers for the raw `WP_Query` argument array.
+ *
+ * This trait is intentionally simple: it only stores and mutates the explicit argument payload
+ * used by fluent methods. It does not introduce defaults or infer missing keys.
  */
 trait HasArgs
 {
@@ -14,6 +17,10 @@ trait HasArgs
     protected array $args = [];
 
     /**
+     * Return the current raw `WP_Query` arguments.
+     *
+     * No normalization is applied here; callers receive exactly what has been set.
+     *
      * @return array<string, mixed>
      */
     public function toArgs(): array
@@ -22,9 +29,11 @@ trait HasArgs
     }
 
     /**
+     * Set one explicit `WP_Query` argument key.
+     *
      * @param string $key
      * @param mixed $value
-     * @return $this
+     * @return self
      */
     protected function set(string $key, mixed $value): self
     {
@@ -34,8 +43,12 @@ trait HasArgs
     }
 
     /**
+     * Merge explicit arguments into the current payload.
+     *
+     * Later values overwrite earlier values for matching keys.
+     *
      * @param array<string, mixed> $args
-     * @return $this
+     * @return self
      */
     protected function merge(array $args): self
     {
@@ -45,6 +58,8 @@ trait HasArgs
     }
 
     /**
+     * Read one argument key with fallback default.
+     *
      * @param string $key
      * @param mixed $default
      * @return mixed
