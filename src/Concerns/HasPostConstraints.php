@@ -12,6 +12,8 @@ trait HasPostConstraints
      *
      * This is opt-in and only mutates the `post_type` key.
      *
+     * Sets: post_type
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters
      *
      * @param string|array<int, string> $postType Post type slug or slugs.
@@ -29,6 +31,8 @@ trait HasPostConstraints
      * Set the `post_status` constraint for `WP_Query`.
      *
      * This is opt-in and only mutates the `post_status` key.
+     *
+     * Sets: post_status
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#status-parameters
      *
@@ -48,6 +52,8 @@ trait HasPostConstraints
      *
      * This is opt-in and only mutates the `p` key.
      *
+     * Sets: p
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
      *
      * @param int $id Post ID.
@@ -65,6 +71,8 @@ trait HasPostConstraints
      * Set post inclusion list (`post__in`) for `WP_Query`.
      *
      * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * Sets: post__in
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
      *
@@ -92,6 +100,8 @@ trait HasPostConstraints
      *
      * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
      *
+     * Sets: post__not_in
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
      *
      * @param array<int, mixed> $ids Candidate post IDs.
@@ -118,6 +128,8 @@ trait HasPostConstraints
      *
      * This is opt-in and only mutates the `post_parent` key.
      *
+     * Sets: post_parent
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
      *
      * @param int $parentId Parent post ID.
@@ -135,6 +147,8 @@ trait HasPostConstraints
      * Set parent inclusion list (`post_parent__in`) for `WP_Query`.
      *
      * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * Sets: post_parent__in
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
      *

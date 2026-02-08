@@ -12,6 +12,8 @@ trait HasAuthorConstraints
      *
      * This is opt-in and only mutates the `author` key.
      *
+     * Sets: author
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#author-parameters
      *
      * @param int $authorId Author user ID.
@@ -29,6 +31,8 @@ trait HasAuthorConstraints
      * Set author inclusion list (`author__in`) for `WP_Query`.
      *
      * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * Sets: author__in
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#author-parameters
      *
@@ -55,6 +59,8 @@ trait HasAuthorConstraints
      * Set author exclusion list (`author__not_in`) for `WP_Query`.
      *
      * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * Sets: author__not_in
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#author-parameters
      *

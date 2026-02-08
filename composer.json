@@ -18,5 +18,8 @@
     "psr-4": {
       "PressGang\\Quartermaster\\Tests\\": "tests/"
     }
+  },
+  "scripts": {
+    "api-index": "php bin/generate-api-index.php"
   }
 }

@@ -44,6 +44,8 @@ trait HasOrdering
      *
      * This is opt-in and only mutates the `orderby` and `order` keys.
      *
+     * Sets: orderby, order
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
      *
      * @param string $orderby Value for `orderby`.
@@ -69,6 +71,8 @@ trait HasOrdering
      *
      * This delegates to `orderBy($orderby, 'ASC')`.
      *
+     * Sets: orderby, order
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
      *
      * @param string $orderby Value for `orderby`.
@@ -83,6 +87,8 @@ trait HasOrdering
      * Set ordering args (`orderby`, `order`) with `DESC` direction.
      *
      * This delegates to `orderBy($orderby, 'DESC')`.
+     *
+     * Sets: orderby, order
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
      *
@@ -100,6 +106,8 @@ trait HasOrdering
      * Sets `meta_key`, sets `orderby` to `meta_value` (v0 behavior), sets `order`,
      * and stores `meta_type` for explicitness/debugging. Meta ordering in WordPress
      * requires a `meta_key`, which this method sets explicitly.
+     *
+     * Sets: meta_key, orderby, order, meta_type
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
@@ -130,6 +138,8 @@ trait HasOrdering
      *
      * This delegates to `orderByMeta($metaKey, 'ASC', $metaType)`.
      *
+     * Sets: meta_key, orderby, order, meta_type
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
      *
@@ -146,6 +156,8 @@ trait HasOrdering
      * Configure meta-value ordering with `DESC` direction.
      *
      * This delegates to `orderByMeta($metaKey, 'DESC', $metaType)`.
+     *
+     * Sets: meta_key, orderby, order, meta_type
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
@@ -164,6 +176,8 @@ trait HasOrdering
      *
      * Sets `meta_key`, sets `orderby` to `meta_value_num`, and sets `order`.
      * This is opt-in and does not change behavior unless called.
+     *
+     * Sets: meta_key, orderby, order
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
@@ -192,6 +206,8 @@ trait HasOrdering
      *
      * This delegates to `orderByMetaNumeric($metaKey, 'ASC')`.
      *
+     * Sets: meta_key, orderby, order
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
      *
@@ -207,6 +223,8 @@ trait HasOrdering
      * Configure numeric meta ordering with `DESC` direction.
      *
      * This delegates to `orderByMetaNumeric($metaKey, 'DESC')`.
+     *
+     * Sets: meta_key, orderby, order
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters

@@ -54,6 +54,8 @@ final class Quartermaster
      *
      * This constructor does not add defaults; it only stores the provided array.
      *
+     * Sets: (none)
+     *
      * @param array<string, mixed> $args
      */
     public function __construct(array $args = [])
@@ -65,6 +67,10 @@ final class Quartermaster
      * Start a fluent builder and optionally seed `post_type`.
      *
      * This is opt-in only: with no input, the builder starts with an empty args array.
+     *
+     * Sets: post_type
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters
      *
      * @param string|array<int, string>|null $postType Post type slug or slugs.
      * @return self
@@ -86,6 +92,8 @@ final class Quartermaster
      * The callback receives the current args and must return a full args array replacement.
      * This method is an escape hatch for custom behavior while preserving fluent chaining.
      *
+     * Sets: (dynamic)
+     *
      * @param callable(array<string, mixed>): array<string, mixed> $fn
      * @return self
      */
@@ -102,6 +110,8 @@ final class Quartermaster
      * Bind query vars into fluent calls using either a map or fluent binder callback.
      *
      * This is strictly opt-in: query vars are only read when this method is called.
+     *
+     * Sets: (dynamic)
      *
      * See: https://developer.wordpress.org/reference/functions/get_query_var/
      *
@@ -122,6 +132,8 @@ final class Quartermaster
      *
      * This method does not mutate args and does not add implicit defaults.
      *
+     * Sets: (none)
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/
      *
      * @return \WP_Query Query instance created with `new \WP_Query($this->toArgs())`.
@@ -136,6 +148,8 @@ final class Quartermaster
      *
      * Timber is optional and guarded at runtime. This method does not mutate args and does
      * not add implicit defaults.
+     *
+     * Sets: (none)
      *
      * See: https://timber.github.io/docs/v2/reference/timber-postquery/
      *

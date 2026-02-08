@@ -20,6 +20,10 @@ trait HasTaxQuery
      *
      * Empty terms are filtered out. When no terms remain, the builder is unchanged.
      *
+     * Sets: tax_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
+     *
      * @param string $taxonomy
      * @param array<int, int|string> $terms Term values matched by `$field`.
      * @param string $field Tax field key such as `slug`, `term_id`, or `name`.

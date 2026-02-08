@@ -19,6 +19,8 @@ trait HasDateQuery
      *
      * This is opt-in and does not parse or validate the provided clause shape.
      *
+     * Sets: date_query
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#date-parameters
      *
      * @param array<string, mixed> $clause Raw date clause in WP-native shape.
@@ -39,6 +41,8 @@ trait HasDateQuery
      *
      * This is opt-in and sets only `date_query`.
      *
+     * Sets: date_query
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#date-parameters
      *
      * @param string|array<string, int|string> $after Date expression accepted by `WP_Query`.
@@ -57,6 +61,8 @@ trait HasDateQuery
      * Append a date clause using the WordPress `before` key.
      *
      * This is opt-in and sets only `date_query`.
+     *
+     * Sets: date_query
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#date-parameters
      *

@@ -15,6 +15,8 @@ trait HasPagination
      * This is opt-in. If `$paged` is null, the method reads `get_query_var('paged', 1)` at call
      * time via `WpRuntime` and clamps the resolved value to at least `1`.
      *
+     * Sets: posts_per_page, paged
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
      * See: https://developer.wordpress.org/reference/functions/get_query_var/
      *
@@ -45,6 +47,8 @@ trait HasPagination
      * This maps directly to `posts_per_page = -1` with `nopaging = true`. If `paged`
      * was previously set, it is removed because pagination is disabled in this mode.
      *
+     * Sets: posts_per_page, nopaging, paged
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
      *
      * @return self
@@ -63,6 +67,8 @@ trait HasPagination
      * Set `no_found_rows = true` to skip SQL row counting.
      *
      * This is opt-in and can improve performance when total pagination counts are not needed.
+     *
+     * Sets: no_found_rows
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
      *

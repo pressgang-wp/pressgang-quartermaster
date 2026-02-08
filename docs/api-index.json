@@ -1,0 +1,546 @@
+{
+    "package": "pressgang/quartermaster",
+    "version": "0.1.0",
+    "generated_at": "2026-02-08T16:15:09Z",
+    "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
+    "principles": [
+        "Args-first; outputs plain WP_Query arrays",
+        "No defaults unless explicitly requested",
+        "Opt-in query-var binding only",
+        "Explicit over magic"
+    ],
+    "methods": [
+        {
+            "name": "prepare",
+            "signature": "prepare(array|string|null $postType = NULL): self",
+            "group": "Bootstrap",
+            "sets_args": [
+                "post_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters"
+            ],
+            "notes": "Start a fluent builder and optionally seed `post_type`."
+        },
+        {
+            "name": "postType",
+            "signature": "postType(array|string $postType): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "post_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters"
+            ],
+            "notes": "Set the `post_type` constraint for `WP_Query`."
+        },
+        {
+            "name": "status",
+            "signature": "status(string $status): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "post_status"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#status-parameters"
+            ],
+            "notes": "Set the `post_status` constraint for `WP_Query`."
+        },
+        {
+            "name": "whereId",
+            "signature": "whereId(int $id): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "p"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters"
+            ],
+            "notes": "Set a single post ID constraint (`p`) for `WP_Query`."
+        },
+        {
+            "name": "whereInIds",
+            "signature": "whereInIds(array $ids): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "post__in"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters"
+            ],
+            "notes": "Set post inclusion list (`post__in`) for `WP_Query`."
+        },
+        {
+            "name": "excludeIds",
+            "signature": "excludeIds(array $ids): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "post__not_in"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters"
+            ],
+            "notes": "Set post exclusion list (`post__not_in`) for `WP_Query`."
+        },
+        {
+            "name": "whereParent",
+            "signature": "whereParent(int $parentId): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "post_parent"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters"
+            ],
+            "notes": "Set parent ID constraint (`post_parent`) for `WP_Query`."
+        },
+        {
+            "name": "whereParentIn",
+            "signature": "whereParentIn(array $parentIds): self",
+            "group": "Core post constraints",
+            "sets_args": [
+                "post_parent__in"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters"
+            ],
+            "notes": "Set parent inclusion list (`post_parent__in`) for `WP_Query`."
+        },
+        {
+            "name": "whereAuthor",
+            "signature": "whereAuthor(int $authorId): self",
+            "group": "Author constraints",
+            "sets_args": [
+                "author"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#author-parameters"
+            ],
+            "notes": "Set a single author constraint (`author`) for `WP_Query`."
+        },
+        {
+            "name": "whereAuthorIn",
+            "signature": "whereAuthorIn(array $authorIds): self",
+            "group": "Author constraints",
+            "sets_args": [
+                "author__in"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#author-parameters"
+            ],
+            "notes": "Set author inclusion list (`author__in`) for `WP_Query`."
+        },
+        {
+            "name": "whereAuthorNotIn",
+            "signature": "whereAuthorNotIn(array $authorIds): self",
+            "group": "Author constraints",
+            "sets_args": [
+                "author__not_in"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#author-parameters"
+            ],
+            "notes": "Set author exclusion list (`author__not_in`) for `WP_Query`."
+        },
+        {
+            "name": "paged",
+            "signature": "paged(int|null $postsPerPage = NULL, int|null $paged = NULL): self",
+            "group": "Pagination / search",
+            "sets_args": [
+                "posts_per_page",
+                "paged"
+            ],
+            "reads_globals": true,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters",
+                "https://developer.wordpress.org/reference/functions/get_query_var/"
+            ],
+            "notes": "Set pagination args (`posts_per_page`, `paged`) for `WP_Query`."
+        },
+        {
+            "name": "all",
+            "signature": "all(): self",
+            "group": "Pagination / search",
+            "sets_args": [
+                "posts_per_page",
+                "nopaging",
+                "paged"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters"
+            ],
+            "notes": "Configure `WP_Query` to fetch all matching posts."
+        },
+        {
+            "name": "search",
+            "signature": "search(string|null $search): self",
+            "group": "Pagination / search",
+            "sets_args": [
+                "s"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#search-parameters",
+                "https://developer.wordpress.org/reference/functions/sanitize_text_field/"
+            ],
+            "notes": "Set the search term (`s`) for `WP_Query`."
+        },
+        {
+            "name": "bindQueryVars",
+            "signature": "bindQueryVars(callable|array $bindings, PressGang\\Quartermaster\\Contracts\\QueryVarSource|null $source = NULL): self",
+            "group": "Query-var binding",
+            "sets_args": [],
+            "reads_globals": true,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/functions/get_query_var/"
+            ],
+            "notes": "Bind query vars into fluent calls using either a map or fluent binder callback."
+        },
+        {
+            "name": "orderBy",
+            "signature": "orderBy(string $orderby, string $order = 'DESC'): self",
+            "group": "Ordering",
+            "sets_args": [
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Set ordering args (`orderby`, `order`) for `WP_Query`."
+        },
+        {
+            "name": "orderByAsc",
+            "signature": "orderByAsc(string $orderby): self",
+            "group": "Ordering",
+            "sets_args": [
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Set ordering args (`orderby`, `order`) with `ASC` direction."
+        },
+        {
+            "name": "orderByDesc",
+            "signature": "orderByDesc(string $orderby): self",
+            "group": "Ordering",
+            "sets_args": [
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Set ordering args (`orderby`, `order`) with `DESC` direction."
+        },
+        {
+            "name": "orderByMeta",
+            "signature": "orderByMeta(string $metaKey, string $order = 'ASC', string $metaType = 'CHAR'): self",
+            "group": "Ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order",
+                "meta_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Configure meta-value ordering using `WP_Query` meta args."
+        },
+        {
+            "name": "orderByMetaAsc",
+            "signature": "orderByMetaAsc(string $metaKey, string $metaType = 'CHAR'): self",
+            "group": "Ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order",
+                "meta_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Configure meta-value ordering with `ASC` direction."
+        },
+        {
+            "name": "orderByMetaDesc",
+            "signature": "orderByMetaDesc(string $metaKey, string $metaType = 'CHAR'): self",
+            "group": "Ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order",
+                "meta_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Configure meta-value ordering with `DESC` direction."
+        },
+        {
+            "name": "orderByMetaNumeric",
+            "signature": "orderByMetaNumeric(string $metaKey, string $order = 'ASC'): self",
+            "group": "Ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Configure numeric meta ordering using `WP_Query` meta args."
+        },
+        {
+            "name": "orderByMetaNumericAsc",
+            "signature": "orderByMetaNumericAsc(string $metaKey): self",
+            "group": "Ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Configure numeric meta ordering with `ASC` direction."
+        },
+        {
+            "name": "orderByMetaNumericDesc",
+            "signature": "orderByMetaNumericDesc(string $metaKey): self",
+            "group": "Ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Configure numeric meta ordering with `DESC` direction."
+        },
+        {
+            "name": "whereMeta",
+            "signature": "whereMeta(string $key, mixed $value, string $compare = '=', string|null $type = NULL): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Append an `AND` meta clause to `meta_query`."
+        },
+        {
+            "name": "orWhereMeta",
+            "signature": "orWhereMeta(string $key, mixed $value, string $compare = '=', string|null $type = NULL): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Append a meta clause and force root relation to `OR`."
+        },
+        {
+            "name": "whereMetaDate",
+            "signature": "whereMetaDate(string $key, string $operator, string|int|null $value = NULL, string $format = 'Ymd'): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters",
+                "https://developer.wordpress.org/reference/functions/wp_date/"
+            ],
+            "notes": "Append a date-based meta clause (`type = DATE`) to `meta_query`."
+        },
+        {
+            "name": "whereTax",
+            "signature": "whereTax(string $taxonomy, array $terms, string $field = 'slug', string $operator = 'IN'): self",
+            "group": "Tax query",
+            "sets_args": [
+                "tax_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters"
+            ],
+            "notes": "Append a taxonomy clause to `tax_query`."
+        },
+        {
+            "name": "whereDate",
+            "signature": "whereDate(array $clause): self",
+            "group": "Date query",
+            "sets_args": [
+                "date_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#date-parameters"
+            ],
+            "notes": "Append one raw WordPress-native date clause to `date_query`."
+        },
+        {
+            "name": "whereDateAfter",
+            "signature": "whereDateAfter(array|string $after, bool $inclusive = true): self",
+            "group": "Date query",
+            "sets_args": [
+                "date_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#date-parameters"
+            ],
+            "notes": "Append a date clause using the WordPress `after` key."
+        },
+        {
+            "name": "whereDateBefore",
+            "signature": "whereDateBefore(array|string $before, bool $inclusive = true): self",
+            "group": "Date query",
+            "sets_args": [
+                "date_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#date-parameters"
+            ],
+            "notes": "Append a date clause using the WordPress `before` key."
+        },
+        {
+            "name": "idsOnly",
+            "signature": "idsOnly(): self",
+            "group": "Query-shaping flags",
+            "sets_args": [
+                "fields"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#return-fields-parameter"
+            ],
+            "notes": "Set `fields = 'ids'` for lower-memory ID-only result sets."
+        },
+        {
+            "name": "noFoundRows",
+            "signature": "noFoundRows(): self",
+            "group": "Query-shaping flags",
+            "sets_args": [
+                "no_found_rows"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters"
+            ],
+            "notes": "Set `no_found_rows = true` to skip SQL row counting."
+        },
+        {
+            "name": "withMetaCache",
+            "signature": "withMetaCache(bool $enabled = true): self",
+            "group": "Query-shaping flags",
+            "sets_args": [
+                "update_post_meta_cache"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#caching-parameters"
+            ],
+            "notes": "Toggle `update_post_meta_cache` for result posts."
+        },
+        {
+            "name": "withTermCache",
+            "signature": "withTermCache(bool $enabled = true): self",
+            "group": "Query-shaping flags",
+            "sets_args": [
+                "update_post_term_cache"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#caching-parameters"
+            ],
+            "notes": "Toggle `update_post_term_cache` for result posts."
+        },
+        {
+            "name": "tapArgs",
+            "signature": "tapArgs(callable $fn): self",
+            "group": "Escape hatch",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Apply an explicit argument transform callback."
+        },
+        {
+            "name": "toArgs",
+            "signature": "toArgs(): array",
+            "group": "Introspection",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Return the current raw `WP_Query` arguments."
+        },
+        {
+            "name": "explain",
+            "signature": "explain(): array",
+            "group": "Introspection",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Return inspectable builder state for debugging."
+        },
+        {
+            "name": "wpQuery",
+            "signature": "wpQuery(): WP_Query",
+            "group": "Terminals",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/"
+            ],
+            "notes": "Build and return a `WP_Query` instance from the current args."
+        },
+        {
+            "name": "timber",
+            "signature": "timber(): object",
+            "group": "Terminals",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://timber.github.io/docs/v2/reference/timber-postquery/"
+            ],
+            "notes": "Build and return a Timber `PostQuery` object from the current args."
+        }
+    ]
+}

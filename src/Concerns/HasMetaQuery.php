@@ -21,6 +21,8 @@ trait HasMetaQuery
      * This is opt-in. If `$value` is null, the method resolves "today" using `wp_date($format)`
      * (WordPress timezone aware) when available.
      *
+     * Sets: meta_query
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      * See: https://developer.wordpress.org/reference/functions/wp_date/
      *
@@ -52,6 +54,10 @@ trait HasMetaQuery
      *
      * The clause contains `key`, `value`, `compare`, and optional `type`.
      *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
      * @param string $key
      * @param mixed $value
      * @param string $compare WordPress meta compare operator, for example `=`, `>=`, `IN`.
@@ -74,6 +80,10 @@ trait HasMetaQuery
      *
      * This v0 method uses simple behavior: when multiple clauses exist, root `relation`
      * is set to `OR`.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
      *
      * @param string $key
      * @param mixed $value

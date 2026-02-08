@@ -21,6 +21,8 @@ trait HasArgs
      *
      * No normalization is applied here; callers receive exactly what has been set.
      *
+     * Sets: (none)
+     *
      * @return array<string, mixed>
      */
     public function toArgs(): array

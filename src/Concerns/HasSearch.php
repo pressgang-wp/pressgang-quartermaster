@@ -15,6 +15,8 @@ trait HasSearch
      * This is opt-in. The value is sanitized with `sanitize_text_field()` when WordPress
      * is loaded; otherwise it is trimmed. Empty results are ignored and do not set `s`.
      *
+     * Sets: s
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#search-parameters
      * See: https://developer.wordpress.org/reference/functions/sanitize_text_field/
      *

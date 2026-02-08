@@ -12,6 +12,8 @@ trait HasQueryFlags
      *
      * This is opt-in and only mutates the `fields` key.
      *
+     * Sets: fields
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#return-fields-parameter
      *
      * @return self
@@ -28,6 +30,8 @@ trait HasQueryFlags
      * Toggle `update_post_meta_cache` for result posts.
      *
      * This is opt-in and only mutates the `update_post_meta_cache` key.
+     *
+     * Sets: update_post_meta_cache
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#caching-parameters
      *
@@ -46,6 +50,8 @@ trait HasQueryFlags
      * Toggle `update_post_term_cache` for result posts.
      *
      * This is opt-in and only mutates the `update_post_term_cache` key.
+     *
+     * Sets: update_post_term_cache
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#caching-parameters
      *

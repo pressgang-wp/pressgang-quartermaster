@@ -78,6 +78,8 @@ trait HasDebugging
      *
      * `warnings` are advisory only and do not change runtime query args.
      *
+     * Sets: (none)
+     *
      * @return array{
      *     args: array<string, mixed>,
      *     applied: array<int, array{name: string, params: array<int, mixed>}>,
