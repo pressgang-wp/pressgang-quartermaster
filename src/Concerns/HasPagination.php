@@ -18,18 +18,15 @@ trait HasPagination
      * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
      * See: https://developer.wordpress.org/reference/functions/get_query_var/
      *
-     * @param int $postsPerPage Value for `posts_per_page`.
+     * @param int|null $postsPerPage Value for `posts_per_page`; null defaults to the `posts_per_page` option.
      * @param int|null $paged Explicit page number; null defers to `get_query_var('paged', 1)`.
      * @return self
      */
-    public function paged(int $postsPerPage = 10, ?int $paged = null): self
+    public function paged(?int $postsPerPage = null, ?int $paged = null): self
     {
-        $resolvedPaged = $paged;
+        $postsPerPage ??= WpRuntime::optionInt('posts_per_page', 10);
 
-        if ($resolvedPaged === null) {
-            $resolvedPaged = WpRuntime::queryVarInt('paged', 1);
-        }
-
+        $resolvedPaged = $paged ?? WpRuntime::queryVarInt('paged', 1);
         $resolvedPaged = max(1, $resolvedPaged);
 
         $this->merge([
