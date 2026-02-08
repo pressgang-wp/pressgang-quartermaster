@@ -75,8 +75,9 @@ trait HasMetaQuery
     protected function appendMetaClause(array $clause, string $defaultRelation, ?string $forcedRelation = null): array
     {
         $query = $this->get('meta_query', []);
-        $clauses = [];
-        $relation = null;
+        $existingClauseCount = 0;
+        $hasExistingRelation = false;
+        $existingRelation = 'AND';
 
         if (!is_array($query)) {
             $query = [];
@@ -84,26 +85,30 @@ trait HasMetaQuery
 
         foreach ($query as $key => $value) {
             if ($key === 'relation') {
-                $relation = strtoupper((string) $value) === 'OR' ? 'OR' : 'AND';
+                $hasExistingRelation = true;
+                $existingRelation = strtoupper((string) $value) === 'OR' ? 'OR' : 'AND';
                 continue;
             }
 
             if (is_array($value)) {
-                $clauses[] = $value;
+                $existingClauseCount++;
             }
         }
 
-        $clauses[] = $clause;
+        $query[] = $clause;
+        $totalClauseCount = $existingClauseCount + 1;
 
-        if (count($clauses) === 1) {
-            return $clauses;
+        if ($totalClauseCount === 1) {
+            unset($query['relation']);
+
+            return $query;
         }
 
-        $rootRelation = $forcedRelation ?? $relation ?? $defaultRelation;
+        $rootRelation = $forcedRelation
+            ?? ($hasExistingRelation ? $existingRelation : $defaultRelation);
 
-        return array_merge(
-            ['relation' => $rootRelation],
-            $clauses
-        );
+        $query['relation'] = $rootRelation;
+
+        return $query;
     }
 }
