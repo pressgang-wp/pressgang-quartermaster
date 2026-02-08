@@ -66,23 +66,29 @@ final class Quartermaster implements ScopeHost
 
     /**
      * @param int $postsPerPage
+     * @param int|null $paged
      * @return $this
      */
-    public function paged(int $postsPerPage = 10): self
+    public function paged(int $postsPerPage = 10, ?int $paged = null): self
     {
-        $paged = 1;
+        $resolvedPaged = $paged;
 
-        if (function_exists('get_query_var')) {
-            $rawPaged = get_query_var('paged', 1);
-            $paged = is_numeric($rawPaged) ? max(1, (int) $rawPaged) : 1;
+        if ($resolvedPaged === null) {
+            $resolvedPaged = 1;
+
+            if (function_exists('get_query_var')) {
+                $resolvedPaged = (int) get_query_var('paged', 1);
+            }
         }
+
+        $resolvedPaged = max(1, $resolvedPaged);
 
         $this->merge([
             'posts_per_page' => $postsPerPage,
-            'paged' => $paged,
+            'paged' => $resolvedPaged,
         ]);
 
-        $this->record('paged', $postsPerPage, $paged);
+        $this->record('paged', $postsPerPage, $paged, $resolvedPaged);
 
         return $this;
     }

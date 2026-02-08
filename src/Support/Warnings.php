@@ -20,6 +20,10 @@ final class Warnings
             $warnings[] = 'Using posts_per_page=-1 with paged is usually conflicting and paged will be ignored.';
         }
 
+        if (($args['orderby'] ?? null) === 'meta_value' && empty($args['meta_key'])) {
+            $warnings[] = 'Using orderby=meta_value without meta_key will produce unreliable ordering.';
+        }
+
         return $warnings;
     }
 }
