@@ -55,7 +55,9 @@ trait HasTaxQuery
     protected function appendTaxClause(array $clause): array
     {
         $query = $this->get('tax_query', []);
-        $clauses = [];
+        $existingClauseCount = 0;
+        $hasExistingRelation = false;
+        $existingRelation = 'AND';
 
         if (!is_array($query)) {
             $query = [];
@@ -63,23 +65,27 @@ trait HasTaxQuery
 
         foreach ($query as $key => $value) {
             if ($key === 'relation') {
+                $hasExistingRelation = true;
+                $existingRelation = strtoupper((string) $value) === 'OR' ? 'OR' : 'AND';
                 continue;
             }
 
             if (is_array($value)) {
-                $clauses[] = $value;
+                $existingClauseCount++;
             }
         }
 
-        $clauses[] = $clause;
+        $query[] = $clause;
+        $totalClauseCount = $existingClauseCount + 1;
 
-        if (count($clauses) === 1) {
-            return $clauses;
+        if ($totalClauseCount === 1) {
+            unset($query['relation']);
+
+            return $query;
         }
 
-        return array_merge(
-            ['relation' => 'AND'],
-            $clauses
-        );
+        $query['relation'] = $hasExistingRelation ? $existingRelation : 'AND';
+
+        return $query;
     }
 }
