@@ -545,6 +545,31 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame(1, $args['paged']);
     }
 
+    public function testAllSetsFetchAllPaginationArgs(): void
+    {
+        $args = Quartermaster::prepare('post')->all()->toArgs();
+
+        self::assertSame('post', $args['post_type']);
+        self::assertSame(-1, $args['posts_per_page']);
+        self::assertTrue($args['nopaging']);
+    }
+
+    public function testAllUnsetsPagedWhenPagedWasPreviouslyConfigured(): void
+    {
+        $args = Quartermaster::prepare('post')->paged(10, 2)->all()->toArgs();
+
+        self::assertSame(-1, $args['posts_per_page']);
+        self::assertTrue($args['nopaging']);
+        self::assertArrayNotHasKey('paged', $args);
+    }
+
+    public function testAllIsRecordedInExplainAppliedCalls(): void
+    {
+        $explain = Quartermaster::prepare('post')->all()->explain();
+
+        self::assertContains('all', array_column($explain['applied'], 'name'));
+    }
+
     public function testExplainIncludesWarnings(): void
     {
         $explain = Quartermaster::prepare()->orderBy('meta_value')->explain();

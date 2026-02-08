@@ -25,7 +25,7 @@ Requirements: PHP 8.3+.
 | Bootstrap | `prepare()` |
 | Core post constraints | `postType()`, `status()`, `whereId()`, `whereInIds()`, `excludeIds()`, `whereParent()`, `whereParentIn()` |
 | Author constraints | `whereAuthor()`, `whereAuthorIn()`, `whereAuthorNotIn()` |
-| Pagination / search | `paged()`, `search()` |
+| Pagination / search | `paged()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
 | Query-var binding | `bindQueryVars()` |
 | Ordering | `orderBy()`, `orderByMeta()`, `orderByMetaNumeric()` |
 | Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaDate()` |

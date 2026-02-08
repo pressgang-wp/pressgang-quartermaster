@@ -40,6 +40,26 @@ trait HasPagination
     }
 
     /**
+     * Configure `WP_Query` to fetch all matching posts.
+     *
+     * This maps directly to `posts_per_page = -1` with `nopaging = true`. If `paged`
+     * was previously set, it is removed because pagination is disabled in this mode.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
+     *
+     * @return self
+     */
+    public function all(): self
+    {
+        $this->set('posts_per_page', -1);
+        $this->set('nopaging', true);
+        unset($this->args['paged']);
+        $this->record('all');
+
+        return $this;
+    }
+
+    /**
      * Set `no_found_rows = true` to skip SQL row counting.
      *
      * This is opt-in and can improve performance when total pagination counts are not needed.
