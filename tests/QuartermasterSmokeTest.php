@@ -29,15 +29,30 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('tax_query', $args);
     }
 
-    public function testPrepareSeedArgsArePreservedExactly(): void
+    public function testPrepareSeedsPostTypeWhenProvided(): void
     {
-        $seed = [
-            'post_type' => 'event',
-            'orderby' => 'date',
-            'order' => 'DESC',
-        ];
+        self::assertSame(['post_type' => 'event'], Quartermaster::prepare('event')->toArgs());
+    }
 
-        self::assertSame($seed, Quartermaster::prepare($seed)->toArgs());
+    public function testPrepareSupportsArrayPostTypes(): void
+    {
+        self::assertSame(['post_type' => ['post', 'page']], Quartermaster::prepare(['post', 'page'])->toArgs());
+    }
+
+    public function testPreparePostTypeSeedMatchesExplicitPostTypeCall(): void
+    {
+        self::assertSame(
+            Quartermaster::prepare('event')->toArgs(),
+            Quartermaster::prepare()->postType('event')->toArgs(),
+        );
+    }
+
+    public function testPreparePostTypeSeedCanBeOverriddenExplicitly(): void
+    {
+        self::assertSame(
+            ['post_type' => 'post'],
+            Quartermaster::prepare('event')->postType('post')->toArgs(),
+        );
     }
 
     public function testPostTypeIsFluent(): void
@@ -197,7 +212,7 @@ final class QuartermasterSmokeTest extends TestCase
             ],
         ];
 
-        $args = Quartermaster::prepare($seed)->whereMeta('start', '2026-01-01')->toArgs();
+        $args = (new Quartermaster($seed))->whereMeta('start', '2026-01-01')->toArgs();
 
         self::assertArrayHasKey('price_clause', $args['meta_query']);
     }
@@ -370,7 +385,7 @@ final class QuartermasterSmokeTest extends TestCase
             ],
         ];
 
-        $args = Quartermaster::prepare($seed)->whereTax('region', ['us'])->toArgs();
+        $args = (new Quartermaster($seed))->whereTax('region', ['us'])->toArgs();
 
         self::assertArrayHasKey('topic_clause', $args['tax_query']);
     }

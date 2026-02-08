@@ -92,6 +92,16 @@ No fog, no illusions, no siren songs. 🧜‍♀️
 
 ## 🚀 Quick Start
 
+`prepare('event')` is a convenience seed only. It only sets `post_type` and does not infer any other query args.
+
+```php
+Quartermaster::prepare('event');
+
+// is equivalent to
+
+Quartermaster::prepare()->postType('event');
+```
+
 ```php
 use PressGang\Quartermaster\Quartermaster;
 

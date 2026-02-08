@@ -14,10 +14,10 @@ trait HasPostConstraints
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters
      *
-     * @param string $postType Post type slug, for example `post` or `event`.
+     * @param string|array<int, string> $postType Post type slug or slugs.
      * @return self
      */
-    public function postType(string $postType): self
+    public function postType(string|array $postType): self
     {
         $this->set('post_type', $postType);
         $this->record('postType', $postType);

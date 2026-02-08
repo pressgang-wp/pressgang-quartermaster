@@ -21,7 +21,8 @@ use PressGang\Quartermaster\Concerns\HasTaxQuery;
  * Args-first fluent builder for WordPress `WP_Query` arguments.
  *
  * `prepare()` is zero side effects: no default `WP_Query` keys are added unless a fluent
- * method is explicitly called, or seed args are explicitly provided to `prepare($args)`.
+ * method is explicitly called. An optional post-type seed may be provided as a convenience
+ * alias for `prepare()->postType(...)`.
  * Terminal methods expose args directly (`toArgs()`), instantiate `WP_Query` (`wpQuery()`),
  * or return a guarded Timber query object (`timber()`).
  *
@@ -58,16 +59,22 @@ final class Quartermaster
     }
 
     /**
-     * Start a fluent builder from optional seed args.
+     * Start a fluent builder and optionally seed `post_type`.
      *
      * This is opt-in only: with no input, the builder starts with an empty args array.
      *
-     * @param array<string, mixed> $args
-     * @return self New builder instance containing only the provided seed args.
+     * @param string|array<int, string>|null $postType Post type slug or slugs.
+     * @return self
      */
-    public static function prepare(array $args = []): self
+    public static function prepare(string|array|null $postType = null): self
     {
-        return new self($args);
+        $builder = new self();
+
+        if ($postType !== null) {
+            $builder->postType($postType);
+        }
+
+        return $builder;
     }
 
     /**
