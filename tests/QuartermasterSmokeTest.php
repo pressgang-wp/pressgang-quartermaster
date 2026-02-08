@@ -109,6 +109,45 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('start', $args['meta_query'][0]['key']);
     }
 
+    public function testWhereMetaDateIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->whereMetaDate('start', '>=');
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testWhereMetaDateBuildsDateClauseWithExplicitValue(): void
+    {
+        $args = Quartermaster::prepare()->whereMetaDate('start', '>=', '20260208')->toArgs();
+
+        self::assertArrayHasKey('meta_query', $args);
+        self::assertSame('start', $args['meta_query'][0]['key']);
+        self::assertSame('20260208', $args['meta_query'][0]['value']);
+        self::assertSame('>=', $args['meta_query'][0]['compare']);
+        self::assertSame('DATE', $args['meta_query'][0]['type']);
+    }
+
+    public function testWhereMetaDateDoesNotSetOrderingArgsByItself(): void
+    {
+        $args = Quartermaster::prepare()->whereMetaDate('start', '>=', '20260208')->toArgs();
+
+        self::assertArrayNotHasKey('meta_key', $args);
+        self::assertArrayNotHasKey('orderby', $args);
+        self::assertArrayNotHasKey('order', $args);
+    }
+
+    public function testWhereMetaDateThenOrderByMetaSetsExplicitOrdering(): void
+    {
+        $args = Quartermaster::prepare()
+            ->whereMetaDate('start', '>=', '20260208')
+            ->orderByMeta('start', 'ASC')
+            ->toArgs();
+
+        self::assertSame('start', $args['meta_key']);
+        self::assertSame('meta_value', $args['orderby']);
+        self::assertSame('ASC', $args['order']);
+    }
+
     public function testWhereDateCreatesDateQueryArray(): void
     {
         $args = Quartermaster::prepare()->whereDate(['year' => 2026])->toArgs();

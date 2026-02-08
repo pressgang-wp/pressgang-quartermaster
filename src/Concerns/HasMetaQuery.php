@@ -16,6 +16,38 @@ use PressGang\Quartermaster\Support\ClauseQuery;
 trait HasMetaQuery
 {
     /**
+     * Append a date-based meta clause (`type = DATE`) to `meta_query`.
+     *
+     * This is opt-in. If `$value` is null, the method resolves "today" using `wp_date($format)`
+     * (WordPress timezone aware) when available.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     * See: https://developer.wordpress.org/reference/functions/wp_date/
+     *
+     * @param string $key Meta key used in the clause.
+     * @param string $operator WordPress compare operator, for example `>=` or `<`.
+     * @param string|int|null $value Clause value; null resolves to today's date string.
+     * @param string $format Date format passed to `wp_date()`, defaults to `Ymd`.
+     * @return self
+     */
+    public function whereMetaDate(
+        string $key,
+        string $operator,
+        string|int|null $value = null,
+        string $format = 'Ymd'
+    ): self {
+        $resolvedValue = $value;
+
+        if ($resolvedValue === null) {
+            $resolvedValue = function_exists('wp_date') ? wp_date($format) : date($format);
+        }
+
+        $this->record('whereMetaDate', $key, $operator, $resolvedValue, $format);
+
+        return $this->whereMeta($key, $resolvedValue, $operator, 'DATE');
+    }
+
+    /**
      * Append an `AND` meta clause to `meta_query`.
      *
      * The clause contains `key`, `value`, `compare`, and optional `type`.
