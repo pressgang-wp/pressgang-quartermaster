@@ -6,6 +6,7 @@ namespace PressGang\Quartermaster;
 use PressGang\Quartermaster\Adapters\TimberAdapter;
 use PressGang\Quartermaster\Adapters\WpAdapter;
 use PressGang\Quartermaster\Concerns\HasArgs;
+use PressGang\Quartermaster\Concerns\HasDateQuery;
 use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Concerns\HasMetaQuery;
 use PressGang\Quartermaster\Concerns\HasTaxQuery;
@@ -27,6 +28,7 @@ use PressGang\Quartermaster\Support\WpRuntime;
 final class Quartermaster
 {
     use HasArgs;
+    use HasDateQuery;
     use HasDebugging;
     use HasMetaQuery;
     use HasTaxQuery;
@@ -177,6 +179,32 @@ final class Quartermaster
     }
 
     /**
+     * Configure numeric meta ordering using `WP_Query` meta args.
+     *
+     * Sets `meta_key`, sets `orderby` to `meta_value_num`, and sets `order`.
+     * This is opt-in and does not change behavior unless called.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
+     *
+     * @param string $metaKey Meta key stored as `meta_key`.
+     * @param string $order Sort direction stored as `order` (uppercased).
+     * @return self
+     */
+    public function orderByMetaNumeric(string $metaKey, string $order = 'ASC'): self
+    {
+        $this->merge([
+            'meta_key' => $metaKey,
+            'orderby' => 'meta_value_num',
+            'order' => strtoupper($order),
+        ]);
+
+        $this->record('orderByMetaNumeric', $metaKey, $order);
+
+        return $this;
+    }
+
+    /**
      * Set the search term (`s`) for `WP_Query`.
      *
      * This is opt-in. The value is sanitized with `sanitize_text_field()` when WordPress
@@ -206,6 +234,260 @@ final class Quartermaster
 
         $this->set('s', $value);
         $this->record('search', $value);
+
+        return $this;
+    }
+
+    /**
+     * Set a single post ID constraint (`p`) for `WP_Query`.
+     *
+     * This is opt-in and only mutates the `p` key.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
+     *
+     * @param int $id Post ID.
+     * @return self
+     */
+    public function whereId(int $id): self
+    {
+        $this->set('p', $id);
+        $this->record('whereId', $id);
+
+        return $this;
+    }
+
+    /**
+     * Set post inclusion list (`post__in`) for `WP_Query`.
+     *
+     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
+     *
+     * @param array<int, mixed> $ids Candidate post IDs.
+     * @return self
+     */
+    public function whereInIds(array $ids): self
+    {
+        $normalizedIds = $this->normalizeIntList($ids);
+
+        if ($normalizedIds === []) {
+            $this->record('whereInIds', $normalizedIds);
+
+            return $this;
+        }
+
+        $this->set('post__in', $normalizedIds);
+        $this->record('whereInIds', $normalizedIds);
+
+        return $this;
+    }
+
+    /**
+     * Set post exclusion list (`post__not_in`) for `WP_Query`.
+     *
+     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
+     *
+     * @param array<int, mixed> $ids Candidate post IDs.
+     * @return self
+     */
+    public function excludeIds(array $ids): self
+    {
+        $normalizedIds = $this->normalizeIntList($ids);
+
+        if ($normalizedIds === []) {
+            $this->record('excludeIds', $normalizedIds);
+
+            return $this;
+        }
+
+        $this->set('post__not_in', $normalizedIds);
+        $this->record('excludeIds', $normalizedIds);
+
+        return $this;
+    }
+
+    /**
+     * Set parent ID constraint (`post_parent`) for `WP_Query`.
+     *
+     * This is opt-in and only mutates the `post_parent` key.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
+     *
+     * @param int $parentId Parent post ID.
+     * @return self
+     */
+    public function whereParent(int $parentId): self
+    {
+        $this->set('post_parent', $parentId);
+        $this->record('whereParent', $parentId);
+
+        return $this;
+    }
+
+    /**
+     * Set parent inclusion list (`post_parent__in`) for `WP_Query`.
+     *
+     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
+     *
+     * @param array<int, mixed> $parentIds Candidate parent IDs.
+     * @return self
+     */
+    public function whereParentIn(array $parentIds): self
+    {
+        $normalizedIds = $this->normalizeIntList($parentIds);
+
+        if ($normalizedIds === []) {
+            $this->record('whereParentIn', $normalizedIds);
+
+            return $this;
+        }
+
+        $this->set('post_parent__in', $normalizedIds);
+        $this->record('whereParentIn', $normalizedIds);
+
+        return $this;
+    }
+
+    /**
+     * Set a single author constraint (`author`) for `WP_Query`.
+     *
+     * This is opt-in and only mutates the `author` key.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#author-parameters
+     *
+     * @param int $authorId Author user ID.
+     * @return self
+     */
+    public function whereAuthor(int $authorId): self
+    {
+        $this->set('author', $authorId);
+        $this->record('whereAuthor', $authorId);
+
+        return $this;
+    }
+
+    /**
+     * Set author inclusion list (`author__in`) for `WP_Query`.
+     *
+     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#author-parameters
+     *
+     * @param array<int, mixed> $authorIds Candidate author IDs.
+     * @return self
+     */
+    public function whereAuthorIn(array $authorIds): self
+    {
+        $normalizedIds = $this->normalizeIntList($authorIds);
+
+        if ($normalizedIds === []) {
+            $this->record('whereAuthorIn', $normalizedIds);
+
+            return $this;
+        }
+
+        $this->set('author__in', $normalizedIds);
+        $this->record('whereAuthorIn', $normalizedIds);
+
+        return $this;
+    }
+
+    /**
+     * Set author exclusion list (`author__not_in`) for `WP_Query`.
+     *
+     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#author-parameters
+     *
+     * @param array<int, mixed> $authorIds Candidate author IDs.
+     * @return self
+     */
+    public function whereAuthorNotIn(array $authorIds): self
+    {
+        $normalizedIds = $this->normalizeIntList($authorIds);
+
+        if ($normalizedIds === []) {
+            $this->record('whereAuthorNotIn', $normalizedIds);
+
+            return $this;
+        }
+
+        $this->set('author__not_in', $normalizedIds);
+        $this->record('whereAuthorNotIn', $normalizedIds);
+
+        return $this;
+    }
+
+    /**
+     * Set `fields = 'ids'` for lower-memory ID-only result sets.
+     *
+     * This is opt-in and only mutates the `fields` key.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#return-fields-parameter
+     *
+     * @return self
+     */
+    public function idsOnly(): self
+    {
+        $this->set('fields', 'ids');
+        $this->record('idsOnly');
+
+        return $this;
+    }
+
+    /**
+     * Set `no_found_rows = true` to skip SQL row counting.
+     *
+     * This is opt-in and can improve performance when total pagination counts are not needed.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
+     *
+     * @return self
+     */
+    public function noFoundRows(): self
+    {
+        $this->set('no_found_rows', true);
+        $this->record('noFoundRows');
+
+        return $this;
+    }
+
+    /**
+     * Toggle `update_post_meta_cache` for result posts.
+     *
+     * This is opt-in and only mutates the `update_post_meta_cache` key.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#caching-parameters
+     *
+     * @param bool $enabled True to enable meta cache priming, false to disable.
+     * @return self
+     */
+    public function withMetaCache(bool $enabled = true): self
+    {
+        $this->set('update_post_meta_cache', $enabled);
+        $this->record('withMetaCache', $enabled);
+
+        return $this;
+    }
+
+    /**
+     * Toggle `update_post_term_cache` for result posts.
+     *
+     * This is opt-in and only mutates the `update_post_term_cache` key.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#caching-parameters
+     *
+     * @param bool $enabled True to enable term cache priming, false to disable.
+     * @return self
+     */
+    public function withTermCache(bool $enabled = true): self
+    {
+        $this->set('update_post_term_cache', $enabled);
+        $this->record('withTermCache', $enabled);
 
         return $this;
     }
@@ -255,6 +537,29 @@ final class Quartermaster
     public function timber(): object
     {
         return (new TimberAdapter())->postQuery($this->toArgs());
+    }
+
+    /**
+     * Normalize a mixed list into integer IDs.
+     *
+     * Accepts integers and integer-like scalar values; invalid values are removed.
+     *
+     * @param array<int, mixed> $values
+     * @return array<int, int>
+     */
+    protected function normalizeIntList(array $values): array
+    {
+        $normalized = [];
+
+        foreach ($values as $value) {
+            if (filter_var($value, FILTER_VALIDATE_INT) === false) {
+                continue;
+            }
+
+            $normalized[] = (int) $value;
+        }
+
+        return array_values($normalized);
     }
 
     // TODO: Add macro system / Eloquent-style scope host.

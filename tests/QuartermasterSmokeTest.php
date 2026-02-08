@@ -109,6 +109,42 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('start', $args['meta_query'][0]['key']);
     }
 
+    public function testWhereDateCreatesDateQueryArray(): void
+    {
+        $args = Quartermaster::prepare()->whereDate(['year' => 2026])->toArgs();
+
+        self::assertArrayHasKey('date_query', $args);
+        self::assertIsArray($args['date_query']);
+        self::assertArrayHasKey(0, $args['date_query']);
+        self::assertSame(2026, $args['date_query'][0]['year']);
+    }
+
+    public function testWhereDateAfterCreatesDateQueryClause(): void
+    {
+        $args = Quartermaster::prepare()->whereDateAfter('2026-01-01')->toArgs();
+
+        self::assertSame('2026-01-01', $args['date_query'][0]['after']);
+        self::assertTrue($args['date_query'][0]['inclusive']);
+    }
+
+    public function testWhereDateBeforeCreatesDateQueryClause(): void
+    {
+        $args = Quartermaster::prepare()->whereDateBefore('2026-12-31', false)->toArgs();
+
+        self::assertSame('2026-12-31', $args['date_query'][0]['before']);
+        self::assertFalse($args['date_query'][0]['inclusive']);
+    }
+
+    public function testWhereDateNormalizesRelationForMultipleClauses(): void
+    {
+        $args = Quartermaster::prepare()
+            ->whereDate(['year' => 2026])
+            ->whereDate(['month' => 2])
+            ->toArgs();
+
+        self::assertSame('AND', $args['date_query']['relation']);
+    }
+
     public function testWhereMetaPreservesSeededNamedClauseKeys(): void
     {
         $seed = [
@@ -145,6 +181,141 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertIsArray($args['tax_query']);
         self::assertArrayHasKey(0, $args['tax_query']);
         self::assertSame('topic', $args['tax_query'][0]['taxonomy']);
+    }
+
+    public function testWhereIdSetsPostIdArg(): void
+    {
+        $args = Quartermaster::prepare()->whereId(42)->toArgs();
+
+        self::assertSame(42, $args['p']);
+    }
+
+    public function testWhereInIdsSetsPostInArg(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds([1, 2])->toArgs();
+
+        self::assertSame([1, 2], $args['post__in']);
+    }
+
+    public function testWhereInIdsIgnoresInvalidValues(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds([1, 'a', null, 2])->toArgs();
+
+        self::assertSame([1, 2], $args['post__in']);
+    }
+
+    public function testWhereInIdsDoesNotMutateForEmptyInput(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds([])->toArgs();
+
+        self::assertArrayNotHasKey('post__in', $args);
+    }
+
+    public function testExcludeIdsSetsPostNotInArg(): void
+    {
+        $args = Quartermaster::prepare()->excludeIds([3, 4])->toArgs();
+
+        self::assertSame([3, 4], $args['post__not_in']);
+    }
+
+    public function testExcludeIdsDoesNotMutateForInvalidInput(): void
+    {
+        $args = Quartermaster::prepare()->excludeIds(['x', null])->toArgs();
+
+        self::assertArrayNotHasKey('post__not_in', $args);
+    }
+
+    public function testWhereParentSetsPostParentArg(): void
+    {
+        $args = Quartermaster::prepare()->whereParent(9)->toArgs();
+
+        self::assertSame(9, $args['post_parent']);
+    }
+
+    public function testWhereParentInSetsPostParentInArg(): void
+    {
+        $args = Quartermaster::prepare()->whereParentIn([5, 6])->toArgs();
+
+        self::assertSame([5, 6], $args['post_parent__in']);
+    }
+
+    public function testWhereParentInDoesNotMutateForEmptyInput(): void
+    {
+        $args = Quartermaster::prepare()->whereParentIn([])->toArgs();
+
+        self::assertArrayNotHasKey('post_parent__in', $args);
+    }
+
+    public function testWhereAuthorSetsAuthorArg(): void
+    {
+        $args = Quartermaster::prepare()->whereAuthor(11)->toArgs();
+
+        self::assertSame(11, $args['author']);
+    }
+
+    public function testWhereAuthorInSetsAuthorInArg(): void
+    {
+        $args = Quartermaster::prepare()->whereAuthorIn([7, 8])->toArgs();
+
+        self::assertSame([7, 8], $args['author__in']);
+    }
+
+    public function testWhereAuthorNotInSetsAuthorNotInArg(): void
+    {
+        $args = Quartermaster::prepare()->whereAuthorNotIn([3, 5])->toArgs();
+
+        self::assertSame([3, 5], $args['author__not_in']);
+    }
+
+    public function testWhereAuthorInDoesNotMutateForEmptyInput(): void
+    {
+        $args = Quartermaster::prepare()->whereAuthorIn([])->toArgs();
+
+        self::assertArrayNotHasKey('author__in', $args);
+    }
+
+    public function testWhereAuthorNotInDoesNotMutateForInvalidInput(): void
+    {
+        $args = Quartermaster::prepare()->whereAuthorNotIn(['x', null])->toArgs();
+
+        self::assertArrayNotHasKey('author__not_in', $args);
+    }
+
+    public function testIdsOnlySetsFieldsIds(): void
+    {
+        $args = Quartermaster::prepare()->idsOnly()->toArgs();
+
+        self::assertSame('ids', $args['fields']);
+    }
+
+    public function testNoFoundRowsSetsFlag(): void
+    {
+        $args = Quartermaster::prepare()->noFoundRows()->toArgs();
+
+        self::assertTrue($args['no_found_rows']);
+    }
+
+    public function testWithMetaCacheSetsFlag(): void
+    {
+        $args = Quartermaster::prepare()->withMetaCache(false)->toArgs();
+
+        self::assertFalse($args['update_post_meta_cache']);
+    }
+
+    public function testWithTermCacheSetsFlag(): void
+    {
+        $args = Quartermaster::prepare()->withTermCache(false)->toArgs();
+
+        self::assertFalse($args['update_post_term_cache']);
+    }
+
+    public function testOrderByMetaNumericSetsMetaValueNumOrderby(): void
+    {
+        $args = Quartermaster::prepare()->orderByMetaNumeric('price')->toArgs();
+
+        self::assertSame('price', $args['meta_key']);
+        self::assertSame('meta_value_num', $args['orderby']);
+        self::assertSame('ASC', $args['order']);
     }
 
     public function testWhereTaxPreservesSeededNamedClauseKeys(): void
