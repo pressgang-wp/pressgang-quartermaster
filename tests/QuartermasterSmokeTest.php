@@ -4,6 +4,9 @@
 namespace PressGang\Quartermaster\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PressGang\Quartermaster\Bindings\ArrayQueryVarSource;
+use PressGang\Quartermaster\Bindings\Bind;
+use PressGang\Quartermaster\Bindings\Binder;
 use PressGang\Quartermaster\Quartermaster;
 
 final class QuartermasterSmokeTest extends TestCase
@@ -27,6 +30,120 @@ final class QuartermasterSmokeTest extends TestCase
 
         self::assertArrayNotHasKey('meta_query', $args);
         self::assertArrayNotHasKey('tax_query', $args);
+    }
+
+    public function testBindQueryVarsMapModeAppliesExpectedClauses(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'shape' => ['loop'],
+            'min_distance' => '10',
+            'search' => 'abc',
+        ]);
+
+        $args = Quartermaster::prepare('route')->bindQueryVars([
+            'shape' => Bind::tax('route_shape'),
+            'min_distance' => Bind::metaNum('distance_miles', '>='),
+            'search' => Bind::search(),
+        ], $source)->toArgs();
+
+        self::assertSame('route_shape', $args['tax_query'][0]['taxonomy']);
+        self::assertSame(['loop'], $args['tax_query'][0]['terms']);
+        self::assertSame('distance_miles', $args['meta_query'][0]['key']);
+        self::assertSame(10.0, $args['meta_query'][0]['value']);
+        self::assertSame('NUMERIC', $args['meta_query'][0]['type']);
+        self::assertSame('abc', $args['s']);
+    }
+
+    public function testBindQueryVarsBinderModeMatchesMapModeExactly(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'shape' => ['loop'],
+            'min_distance' => '10',
+            'search' => 'abc',
+        ]);
+
+        $mapArgs = Quartermaster::prepare('route')->bindQueryVars([
+            'shape' => Bind::tax('route_shape'),
+            'min_distance' => Bind::metaNum('distance_miles', '>='),
+            'search' => Bind::search(),
+        ], $source)->toArgs();
+
+        $binderArgs = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+            $b->tax('shape', 'route_shape');
+            $b->metaNum('min_distance')->to('distance_miles', '>=');
+            $b->search('search');
+        }, $source)->toArgs();
+
+        self::assertSame($mapArgs, $binderArgs);
+    }
+
+    public function testBindQueryVarsBinderModeMatchesMapModeExplainOutput(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'shape' => ['loop'],
+            'min_distance' => '10',
+            'search' => 'abc',
+        ]);
+
+        $mapExplain = Quartermaster::prepare('route')->bindQueryVars([
+            'shape' => Bind::tax('route_shape'),
+            'min_distance' => Bind::metaNum('distance_miles', '>='),
+            'search' => Bind::search(),
+        ], $source)->explain();
+
+        $binderExplain = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+            $b->tax('shape', 'route_shape');
+            $b->metaNum('min_distance')->to('distance_miles', '>=');
+            $b->search('search');
+        }, $source)->explain();
+
+        self::assertSame($mapExplain, $binderExplain);
+    }
+
+    public function testBindQueryVarsBinderTaxDefaultsToQueryVarTaxonomy(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'district' => ['north'],
+        ]);
+
+        $args = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+            $b->tax('district');
+        }, $source)->toArgs();
+
+        self::assertSame('district', $args['tax_query'][0]['taxonomy']);
+        self::assertSame('slug', $args['tax_query'][0]['field']);
+        self::assertSame(['north'], $args['tax_query'][0]['terms']);
+        self::assertSame('IN', $args['tax_query'][0]['operator']);
+    }
+
+    public function testBindQueryVarsBinderTaxExplicitTaxonomyMappingWorks(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'shape' => ['loop'],
+        ]);
+
+        $args = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+            $b->tax('shape', 'route_shape');
+        }, $source)->toArgs();
+
+        self::assertSame('route_shape', $args['tax_query'][0]['taxonomy']);
+    }
+
+    public function testBindQueryVarsBinderDefaultTaxMatchesMapTaxBinding(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'district' => ['north'],
+        ]);
+
+        $binderArgs = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+            $b->tax('district');
+        }, $source)->toArgs();
+
+        $mapArgs = Quartermaster::prepare('route')->bindQueryVars([
+            'district' => Bind::tax('district'),
+        ], $source)->toArgs();
+
+        self::assertSame($mapArgs, $binderArgs);
     }
 
     public function testPrepareSeedsPostTypeWhenProvided(): void
@@ -53,6 +170,36 @@ final class QuartermasterSmokeTest extends TestCase
             ['post_type' => 'post'],
             Quartermaster::prepare('event')->postType('post')->toArgs(),
         );
+    }
+
+    public function testBindQueryVarsSkipLogicDoesNotAddClausesForEmptyValues(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'shape' => [],
+            'min_distance' => '',
+            'search' => null,
+        ]);
+
+        $args = Quartermaster::prepare('route')->bindQueryVars([
+            'shape' => Bind::tax('route_shape'),
+            'min_distance' => Bind::metaNum('distance_miles', '>='),
+            'search' => Bind::search(),
+        ], $source)->toArgs();
+
+        self::assertSame(['post_type' => 'route'], $args);
+    }
+
+    public function testBindQueryVarsBinderTaxSkipsForEmptyTerms(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'district' => [''],
+        ]);
+
+        $args = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+            $b->tax('district');
+        }, $source)->toArgs();
+
+        self::assertSame(['post_type' => 'route'], $args);
     }
 
     public function testPostTypeIsFluent(): void
@@ -404,6 +551,26 @@ final class QuartermasterSmokeTest extends TestCase
 
         self::assertArrayHasKey('warnings', $explain);
         self::assertNotEmpty($explain['warnings']);
+    }
+
+    public function testExplainIncludesBindingSummariesWhenBindingsRun(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'shape' => ['loop'],
+            'search' => '',
+        ]);
+
+        $explain = Quartermaster::prepare('route')->bindQueryVars([
+            'shape' => Bind::tax('route_shape'),
+            'search' => Bind::search(),
+        ], $source)->explain();
+
+        self::assertArrayHasKey('bindings', $explain);
+        self::assertSame('shape', $explain['bindings'][0]['key']);
+        self::assertTrue($explain['bindings'][0]['applied']);
+        self::assertSame('array(len=1)', $explain['bindings'][0]['value']);
+        self::assertSame('search', $explain['bindings'][1]['key']);
+        self::assertFalse($explain['bindings'][1]['applied']);
     }
 
     public function testWpQueryCanBeSkippedWithoutWordPress(): void

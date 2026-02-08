@@ -26,6 +26,7 @@ Requirements: PHP 8.3+.
 | Core post constraints | `postType()`, `status()`, `whereId()`, `whereInIds()`, `excludeIds()`, `whereParent()`, `whereParentIn()` |
 | Author constraints | `whereAuthor()`, `whereAuthorIn()`, `whereAuthorNotIn()` |
 | Pagination / search | `paged()`, `search()` |
+| Query-var binding | `bindQueryVars()` |
 | Ordering | `orderBy()`, `orderByMeta()`, `orderByMetaNumeric()` |
 | Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaDate()` |
 | Tax query | `whereTax()` |
@@ -133,6 +134,47 @@ $posts = Quartermaster::prepare()
     ->status('publish')
     ->wpQuery();
 ```
+
+## 🔗 Binding Query Vars (Two Styles)
+
+Nothing reads query vars unless you explicitly call `bindQueryVars()`.
+
+Map style with `Bind::*`:
+
+```php
+use PressGang\Quartermaster\Bindings\Bind;
+use PressGang\Quartermaster\Quartermaster;
+
+$q = Quartermaster::prepare('route')->bindQueryVars([
+    'paged' => Bind::paged(),
+    'shape' => Bind::tax('route_shape'),
+    'difficulty' => Bind::tax('route_difficulty'),
+    'min_distance' => Bind::metaNum('distance_miles', '>='),
+    'max_distance' => Bind::metaNum('distance_miles', '<='),
+    'search' => Bind::search(),
+]);
+```
+
+Fluent binder style with `Binder`:
+
+```php
+use PressGang\Quartermaster\Bindings\Binder;
+use PressGang\Quartermaster\Quartermaster;
+
+$q = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+    $b->paged();
+    $b->tax('district'); // district -> district
+    $b->tax('shape', 'route_shape'); // shape -> route_shape
+    $b->tax('difficulty', 'route_difficulty');
+    $b->metaNum('min_distance')->to('distance_miles', '>=');
+    $b->metaNum('max_distance')->to('distance_miles', '<=');
+    $b->search('search');
+});
+```
+
+If no taxonomy is provided, Binder assumes the taxonomy name matches the query var key.
+
+Both styles are explicit and compile to the same binding map. No smuggling, no hidden defaults.
 
 ---
 

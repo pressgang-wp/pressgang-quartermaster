@@ -33,6 +33,28 @@ final class WpRuntime
     }
 
     /**
+     * Read an integer option using `get_option()`.
+     *
+     * Falls back to `$default` when WordPress is unavailable or when the value is non-numeric.
+     *
+     * See: https://developer.wordpress.org/reference/functions/get_option/
+     *
+     * @param string $key
+     * @param int $default
+     * @return int
+     */
+    public static function optionInt(string $key, int $default = 0): int
+    {
+        if (!function_exists('get_option')) {
+            return $default;
+        }
+
+        $value = get_option($key, $default);
+
+        return is_numeric($value) ? (int) $value : $default;
+    }
+
+    /**
      * Sanitize text using WordPress `sanitize_text_field()` when available.
      *
      * Falls back to `trim()` when WordPress is unavailable.
