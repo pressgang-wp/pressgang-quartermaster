@@ -26,7 +26,7 @@ trait HasArgs
      * @param mixed $value
      * @return $this
      */
-    protected function set(string $key, mixed $value): HasArgs
+    protected function set(string $key, mixed $value): self
     {
         $this->args[$key] = $value;
 
@@ -37,7 +37,7 @@ trait HasArgs
      * @param array<string, mixed> $args
      * @return $this
      */
-    protected function merge(array $args): HasArgs
+    protected function merge(array $args): self
     {
         $this->args = array_merge($this->args, $args);
 

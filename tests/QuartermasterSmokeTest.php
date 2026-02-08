@@ -23,6 +23,26 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('s', $args);
     }
 
+    public function testWhereMetaIsFluentAndSetsMetaQuery(): void
+    {
+        $builder = Quartermaster::prepare()->whereMeta('start', '2026-01-01', '>=', 'DATE');
+        $args = $builder->toArgs();
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+        self::assertArrayHasKey('meta_query', $args);
+        self::assertSame('AND', $args['meta_query']['relation']);
+    }
+
+    public function testOrWhereMetaIsFluentAndSetsMetaQueryRelation(): void
+    {
+        $builder = Quartermaster::prepare()->orWhereMeta('start', '2026-01-01', '>=', 'DATE');
+        $args = $builder->toArgs();
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+        self::assertArrayHasKey('meta_query', $args);
+        self::assertSame('OR', $args['meta_query']['relation']);
+    }
+
     public function testWpQueryCanBeSkippedWithoutWordPress(): void
     {
         if (!class_exists('WP_Query')) {

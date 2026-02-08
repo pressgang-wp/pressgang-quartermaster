@@ -15,7 +15,7 @@ trait HasMetaQuery
      * @param string $type
      * @return $this
      */
-    public function whereMeta(string $key, mixed $value, string $compare = '=', string $type = 'CHAR'): HasMetaQuery
+    public function whereMeta(string $key, mixed $value, string $compare = '=', string $type = 'CHAR'): self
     {
         $query = $this->normalizeMetaQuery('AND');
         $query[] = [
@@ -38,7 +38,7 @@ trait HasMetaQuery
      * @param string $type
      * @return $this
      */
-    public function orWhereMeta(string $key, mixed $value, string $compare = '=', string $type = 'CHAR'): HasMetaQuery
+    public function orWhereMeta(string $key, mixed $value, string $compare = '=', string $type = 'CHAR'): self
     {
         $query = $this->normalizeMetaQuery('OR');
         $query[] = [
