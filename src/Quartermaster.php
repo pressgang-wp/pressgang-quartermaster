@@ -7,20 +7,17 @@ use PressGang\Quartermaster\Adapters\TimberAdapter;
 use PressGang\Quartermaster\Adapters\WpAdapter;
 use PressGang\Quartermaster\Concerns\HasArgs;
 use PressGang\Quartermaster\Concerns\HasDebugging;
-use PressGang\Quartermaster\Concerns\HasLegacyScopes;
 use PressGang\Quartermaster\Concerns\HasMetaQuery;
 use PressGang\Quartermaster\Concerns\HasTaxQuery;
-use PressGang\Quartermaster\Contracts\ScopeHost;
 use PressGang\Quartermaster\Support\WpRuntime;
 
 /**
  * Fluent WP_Query args builder.
  */
-final class Quartermaster implements ScopeHost
+final class Quartermaster
 {
     use HasArgs;
     use HasDebugging;
-    use HasLegacyScopes;
     use HasMetaQuery;
     use HasTaxQuery;
 
