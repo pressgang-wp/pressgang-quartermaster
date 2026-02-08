@@ -27,7 +27,7 @@ Requirements: PHP 8.3+.
 | Author constraints | `whereAuthor()`, `whereAuthorIn()`, `whereAuthorNotIn()` |
 | Pagination / search | `paged()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
 | Query-var binding | `bindQueryVars()` |
-| Ordering | `orderBy()`, `orderByMeta()`, `orderByMetaNumeric()` |
+| Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
 | Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaDate()` |
 | Tax query | `whereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
@@ -215,6 +215,8 @@ If Timber is unavailable, Quartermaster throws a **clear runtime exception** rat
 ---
 
 ## 🔍 Debugging & Introspection
+
+Ordering direction is explicit: Quartermaster accepts only `ASC`/`DESC`; invalid values are normalized to method defaults and surfaced in `explain()` warnings.
 
 Inspect generated args:
 

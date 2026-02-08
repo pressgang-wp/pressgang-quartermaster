@@ -18,6 +18,10 @@ trait HasDebugging
      */
     protected array $applied = [];
     /**
+     * @var array<int, string>
+     */
+    protected array $runtimeWarnings = [];
+    /**
      * @var array<int, array{key: string, applied: bool, reason: string, value: string}>
      */
     protected array $bindings = [];
@@ -57,6 +61,19 @@ trait HasDebugging
     }
 
     /**
+     * Add one advisory runtime warning for explainability.
+     *
+     * Warnings are informational only and never mutate runtime args.
+     *
+     * @param string $message
+     * @return void
+     */
+    protected function warn(string $message): void
+    {
+        $this->runtimeWarnings[] = $message;
+    }
+
+    /**
      * Return inspectable builder state for debugging.
      *
      * `warnings` are advisory only and do not change runtime query args.
@@ -74,7 +91,7 @@ trait HasDebugging
         $explain = [
             'args' => $args,
             'applied' => $this->applied,
-            'warnings' => Warnings::fromArgs($args),
+            'warnings' => array_values(array_unique(array_merge(Warnings::fromArgs($args), $this->runtimeWarnings))),
         ];
 
         if ($this->bindings !== []) {

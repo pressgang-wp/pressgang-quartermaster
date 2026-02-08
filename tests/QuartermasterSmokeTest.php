@@ -519,6 +519,61 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('ASC', $args['order']);
     }
 
+    public function testOrderByDescHelperSetsDescendingOrder(): void
+    {
+        $args = Quartermaster::prepare('post')->orderByDesc('date')->toArgs();
+
+        self::assertSame('date', $args['orderby']);
+        self::assertSame('DESC', $args['order']);
+    }
+
+    public function testOrderByAscHelperSetsAscendingOrder(): void
+    {
+        $args = Quartermaster::prepare('post')->orderByAsc('title')->toArgs();
+
+        self::assertSame('title', $args['orderby']);
+        self::assertSame('ASC', $args['order']);
+    }
+
+    public function testOrderByMetaDescHelperSetsExpectedMetaArgs(): void
+    {
+        $args = Quartermaster::prepare('event')->orderByMetaDesc('start', 'DATE')->toArgs();
+
+        self::assertSame('start', $args['meta_key']);
+        self::assertSame('meta_value', $args['orderby']);
+        self::assertSame('DESC', $args['order']);
+        self::assertSame('DATE', $args['meta_type']);
+    }
+
+    public function testOrderByMetaNumericDescHelperSetsExpectedNumericMetaArgs(): void
+    {
+        $args = Quartermaster::prepare('product')->orderByMetaNumericDesc('price')->toArgs();
+
+        self::assertSame('price', $args['meta_key']);
+        self::assertSame('meta_value_num', $args['orderby']);
+        self::assertSame('DESC', $args['order']);
+    }
+
+    public function testOrderByInvalidDirectionFallsBackAndWarns(): void
+    {
+        $q = Quartermaster::prepare('post')->orderBy('date', 'banana');
+        $args = $q->toArgs();
+        $explain = $q->explain();
+
+        self::assertSame('DESC', $args['order']);
+        self::assertContains("Invalid order direction 'banana' in orderBy(); defaulted to 'DESC'.", $explain['warnings']);
+    }
+
+    public function testOrderByMetaInvalidDirectionFallsBackAndWarns(): void
+    {
+        $q = Quartermaster::prepare('event')->orderByMeta('start', 'sideways', 'DATE');
+        $args = $q->toArgs();
+        $explain = $q->explain();
+
+        self::assertSame('ASC', $args['order']);
+        self::assertContains("Invalid order direction 'sideways' in orderByMeta(); defaulted to 'ASC'.", $explain['warnings']);
+    }
+
     public function testWhereTaxPreservesSeededNamedClauseKeys(): void
     {
         $seed = [
