@@ -11,6 +11,7 @@ use PressGang\Quartermaster\Concerns\HasLegacyScopes;
 use PressGang\Quartermaster\Concerns\HasMetaQuery;
 use PressGang\Quartermaster\Concerns\HasTaxQuery;
 use PressGang\Quartermaster\Contracts\ScopeHost;
+use PressGang\Quartermaster\Support\WpRuntime;
 
 /**
  * Fluent WP_Query args builder.
@@ -74,11 +75,7 @@ final class Quartermaster implements ScopeHost
         $resolvedPaged = $paged;
 
         if ($resolvedPaged === null) {
-            $resolvedPaged = 1;
-
-            if (function_exists('get_query_var')) {
-                $resolvedPaged = (int) get_query_var('paged', 1);
-            }
+            $resolvedPaged = WpRuntime::queryVarInt('paged', 1);
         }
 
         $resolvedPaged = max(1, $resolvedPaged);
@@ -142,9 +139,7 @@ final class Quartermaster implements ScopeHost
             return $this;
         }
 
-        $value = function_exists('sanitize_text_field')
-            ? sanitize_text_field($search)
-            : trim($search);
+        $value = WpRuntime::sanitizeText($search);
 
         if ($value === '') {
             $this->record('search', '');

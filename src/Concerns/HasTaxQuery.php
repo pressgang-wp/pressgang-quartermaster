@@ -3,6 +3,8 @@
 
 namespace PressGang\Quartermaster\Concerns;
 
+use PressGang\Quartermaster\Support\ClauseQuery;
+
 /**
  * Taxonomy query clause helpers.
  */
@@ -55,37 +57,11 @@ trait HasTaxQuery
     protected function appendTaxClause(array $clause): array
     {
         $query = $this->get('tax_query', []);
-        $existingClauseCount = 0;
-        $hasExistingRelation = false;
-        $existingRelation = 'AND';
 
         if (!is_array($query)) {
             $query = [];
         }
 
-        foreach ($query as $key => $value) {
-            if ($key === 'relation') {
-                $hasExistingRelation = true;
-                $existingRelation = strtoupper((string) $value) === 'OR' ? 'OR' : 'AND';
-                continue;
-            }
-
-            if (is_array($value)) {
-                $existingClauseCount++;
-            }
-        }
-
-        $query[] = $clause;
-        $totalClauseCount = $existingClauseCount + 1;
-
-        if ($totalClauseCount === 1) {
-            unset($query['relation']);
-
-            return $query;
-        }
-
-        $query['relation'] = $hasExistingRelation ? $existingRelation : 'AND';
-
-        return $query;
+        return ClauseQuery::appendClause($query, $clause, 'AND');
     }
 }

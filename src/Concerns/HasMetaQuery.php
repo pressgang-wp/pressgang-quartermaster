@@ -3,6 +3,8 @@
 
 namespace PressGang\Quartermaster\Concerns;
 
+use PressGang\Quartermaster\Support\ClauseQuery;
+
 /**
  * Meta query clause helpers.
  */
@@ -75,40 +77,11 @@ trait HasMetaQuery
     protected function appendMetaClause(array $clause, string $defaultRelation, ?string $forcedRelation = null): array
     {
         $query = $this->get('meta_query', []);
-        $existingClauseCount = 0;
-        $hasExistingRelation = false;
-        $existingRelation = 'AND';
 
         if (!is_array($query)) {
             $query = [];
         }
 
-        foreach ($query as $key => $value) {
-            if ($key === 'relation') {
-                $hasExistingRelation = true;
-                $existingRelation = strtoupper((string) $value) === 'OR' ? 'OR' : 'AND';
-                continue;
-            }
-
-            if (is_array($value)) {
-                $existingClauseCount++;
-            }
-        }
-
-        $query[] = $clause;
-        $totalClauseCount = $existingClauseCount + 1;
-
-        if ($totalClauseCount === 1) {
-            unset($query['relation']);
-
-            return $query;
-        }
-
-        $rootRelation = $forcedRelation
-            ?? ($hasExistingRelation ? $existingRelation : $defaultRelation);
-
-        $query['relation'] = $rootRelation;
-
-        return $query;
+        return ClauseQuery::appendClause($query, $clause, $defaultRelation, $forcedRelation);
     }
 }
