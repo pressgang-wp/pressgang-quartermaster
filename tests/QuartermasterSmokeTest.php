@@ -8,6 +8,27 @@ use PressGang\Quartermaster\Quartermaster;
 
 final class QuartermasterSmokeTest extends TestCase
 {
+    public function testPrepareDefaultsAreEmpty(): void
+    {
+        self::assertSame([], Quartermaster::prepare()->toArgs());
+    }
+
+    public function testPrepareHasNoImplicitPagination(): void
+    {
+        $args = Quartermaster::prepare()->toArgs();
+
+        self::assertArrayNotHasKey('posts_per_page', $args);
+        self::assertArrayNotHasKey('paged', $args);
+    }
+
+    public function testPrepareHasNoImplicitMetaOrTaxQuery(): void
+    {
+        $args = Quartermaster::prepare()->toArgs();
+
+        self::assertArrayNotHasKey('meta_query', $args);
+        self::assertArrayNotHasKey('tax_query', $args);
+    }
+
     public function testPostTypeIsFluent(): void
     {
         $builder = Quartermaster::prepare()->postType('post');
@@ -57,6 +78,14 @@ final class QuartermasterSmokeTest extends TestCase
         $args = Quartermaster::prepare()->search('   ')->toArgs();
 
         self::assertArrayNotHasKey('s', $args);
+    }
+
+    public function testSearchSetsSearchArgWhenProvided(): void
+    {
+        $args = Quartermaster::prepare()->search('abc')->toArgs();
+
+        self::assertArrayHasKey('s', $args);
+        self::assertSame('abc', $args['s']);
     }
 
     public function testWhereMetaCreatesMetaQueryArray(): void
