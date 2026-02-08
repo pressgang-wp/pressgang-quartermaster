@@ -29,6 +29,17 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('tax_query', $args);
     }
 
+    public function testPrepareSeedArgsArePreservedExactly(): void
+    {
+        $seed = [
+            'post_type' => 'event',
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ];
+
+        self::assertSame($seed, Quartermaster::prepare($seed)->toArgs());
+    }
+
     public function testPostTypeIsFluent(): void
     {
         $builder = Quartermaster::prepare()->postType('post');
@@ -98,6 +109,24 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('start', $args['meta_query'][0]['key']);
     }
 
+    public function testWhereMetaPreservesSeededNamedClauseKeys(): void
+    {
+        $seed = [
+            'meta_query' => [
+                'price_clause' => [
+                    'key' => 'price',
+                    'value' => 100,
+                    'compare' => '>=',
+                    'type' => 'NUMERIC',
+                ],
+            ],
+        ];
+
+        $args = Quartermaster::prepare($seed)->whereMeta('start', '2026-01-01')->toArgs();
+
+        self::assertArrayHasKey('price_clause', $args['meta_query']);
+    }
+
     public function testOrWhereMetaSetsRootRelationToOrWhenMultipleClauses(): void
     {
         $args = Quartermaster::prepare()
@@ -116,6 +145,24 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertIsArray($args['tax_query']);
         self::assertArrayHasKey(0, $args['tax_query']);
         self::assertSame('topic', $args['tax_query'][0]['taxonomy']);
+    }
+
+    public function testWhereTaxPreservesSeededNamedClauseKeys(): void
+    {
+        $seed = [
+            'tax_query' => [
+                'topic_clause' => [
+                    'taxonomy' => 'topic',
+                    'field' => 'slug',
+                    'terms' => ['news'],
+                    'operator' => 'IN',
+                ],
+            ],
+        ];
+
+        $args = Quartermaster::prepare($seed)->whereTax('region', ['us'])->toArgs();
+
+        self::assertArrayHasKey('topic_clause', $args['tax_query']);
     }
 
     public function testPagedCanBeProvidedWithoutWordPressRuntime(): void
