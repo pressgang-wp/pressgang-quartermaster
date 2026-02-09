@@ -63,6 +63,25 @@ $args = Quartermaster::prepare('event')
     ->toArgs();
 ```
 
+Terms queries:
+
+```php
+$terms = Quartermaster::terms('category')
+    ->objectIds($postId)
+    ->hideEmpty(false)
+    ->fields('ids')
+    ->get();
+
+$children = Quartermaster::terms('category')
+    ->childOf(5)
+    ->childless()
+    ->slug(['rock', 'jazz'])
+    ->excludeTree(12)
+    ->orderBy('count', 'DESC')
+    ->limit(10)
+    ->get();
+```
+
 Terminals:
 
 ```php

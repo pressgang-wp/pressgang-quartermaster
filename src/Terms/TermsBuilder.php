@@ -82,6 +82,24 @@ final class TermsBuilder
     }
 
     /**
+     * Set `object_ids` to retrieve terms associated with specific objects.
+     *
+     * Sets: object_ids
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param int|array<int, int> $objectIds
+     * @return self
+     */
+    public function objectIds(int|array $objectIds): self
+    {
+        $this->set('object_ids', $objectIds);
+        $this->record('objectIds', $objectIds);
+
+        return $this;
+    }
+
+    /**
      * Set `hide_empty`.
      *
      * Sets: hide_empty
@@ -95,6 +113,63 @@ final class TermsBuilder
     {
         $this->set('hide_empty', $hide);
         $this->record('hideEmpty', $hide);
+
+        return $this;
+    }
+
+    /**
+     * Set `slug` filter.
+     *
+     * Sets: slug
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string|array<int, string> $slug
+     * @return self
+     */
+    public function slug(string|array $slug): self
+    {
+        $this->set('slug', $slug);
+        $this->record('slug', $slug);
+
+        return $this;
+    }
+
+    /**
+     * Set `name` filter.
+     *
+     * Sets: name
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string|array<int, string> $name
+     * @return self
+     */
+    public function name(string|array $name): self
+    {
+        $this->set('name', $name);
+        $this->record('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * Set `fields` to control the return format.
+     *
+     * Accepted values: all, all_with_object_id, ids, tt_ids, names, slugs, count,
+     * id=>parent, id=>name, id=>slug.
+     *
+     * Sets: fields
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string $fields
+     * @return self
+     */
+    public function fields(string $fields): self
+    {
+        $this->set('fields', $fields);
+        $this->record('fields', $fields);
 
         return $this;
     }
@@ -136,6 +211,24 @@ final class TermsBuilder
     }
 
     /**
+     * Set `exclude_tree` to exclude a term and all its descendants.
+     *
+     * Sets: exclude_tree
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param int|array<int, int> $ids
+     * @return self
+     */
+    public function excludeTree(int|array $ids): self
+    {
+        $this->set('exclude_tree', $ids);
+        $this->record('excludeTree', $ids);
+
+        return $this;
+    }
+
+    /**
      * Set `parent` term ID.
      *
      * Sets: parent
@@ -149,6 +242,42 @@ final class TermsBuilder
     {
         $this->set('parent', $parentId);
         $this->record('parent', $parentId);
+
+        return $this;
+    }
+
+    /**
+     * Set `child_of` to retrieve all descendants of a term.
+     *
+     * Sets: child_of
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param int $termId
+     * @return self
+     */
+    public function childOf(int $termId): self
+    {
+        $this->set('child_of', $termId);
+        $this->record('childOf', $termId);
+
+        return $this;
+    }
+
+    /**
+     * Set `childless` to limit results to terms with no children.
+     *
+     * Sets: childless
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param bool $childless
+     * @return self
+     */
+    public function childless(bool $childless = true): self
+    {
+        $this->set('childless', $childless);
+        $this->record('childless', $childless);
 
         return $this;
     }

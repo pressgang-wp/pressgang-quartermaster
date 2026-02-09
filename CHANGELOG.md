@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- No changes yet.
+- Added `objectIds()`, `slug()`, `name()`, `fields()`, `excludeTree()`, `childOf()`, and `childless()` fluent methods to `TermsBuilder`.
 
 ## [0.1.0] - 2026-02-08
 

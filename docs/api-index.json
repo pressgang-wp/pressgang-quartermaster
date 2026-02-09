@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-02-09T14:09:15Z",
+    "generated_at": "2026-02-09T15:18:36Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -568,6 +568,293 @@
                 "https://timber.github.io/docs/v2/reference/timber-postquery/"
             ],
             "notes": "Build and return a Timber `PostQuery` object from the current args."
+        },
+        {
+            "name": "taxonomy",
+            "signature": "taxonomy(array|string $taxonomy): self",
+            "group": "Terms core",
+            "sets_args": [
+                "taxonomy"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set explicit `taxonomy` constraints."
+        },
+        {
+            "name": "objectIds",
+            "signature": "objectIds(array|int $objectIds): self",
+            "group": "Terms core",
+            "sets_args": [
+                "object_ids"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `object_ids` to retrieve terms associated with specific objects."
+        },
+        {
+            "name": "hideEmpty",
+            "signature": "hideEmpty(bool $hide = true): self",
+            "group": "Terms core",
+            "sets_args": [
+                "hide_empty"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `hide_empty`."
+        },
+        {
+            "name": "slug",
+            "signature": "slug(array|string $slug): self",
+            "group": "Terms core",
+            "sets_args": [
+                "slug"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `slug` filter."
+        },
+        {
+            "name": "name",
+            "signature": "name(array|string $name): self",
+            "group": "Terms core",
+            "sets_args": [
+                "name"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `name` filter."
+        },
+        {
+            "name": "fields",
+            "signature": "fields(string $fields): self",
+            "group": "Terms core",
+            "sets_args": [
+                "fields"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `fields` to control the return format."
+        },
+        {
+            "name": "include",
+            "signature": "include(array $ids): self",
+            "group": "Terms core",
+            "sets_args": [
+                "include"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `include` term IDs."
+        },
+        {
+            "name": "exclude",
+            "signature": "exclude(array $ids): self",
+            "group": "Terms core",
+            "sets_args": [
+                "exclude"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `exclude` term IDs."
+        },
+        {
+            "name": "excludeTree",
+            "signature": "excludeTree(array|int $ids): self",
+            "group": "Terms core",
+            "sets_args": [
+                "exclude_tree"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `exclude_tree` to exclude a term and all its descendants."
+        },
+        {
+            "name": "parent",
+            "signature": "parent(int $parentId): self",
+            "group": "Terms core",
+            "sets_args": [
+                "parent"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `parent` term ID."
+        },
+        {
+            "name": "childOf",
+            "signature": "childOf(int $termId): self",
+            "group": "Terms core",
+            "sets_args": [
+                "child_of"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `child_of` to retrieve all descendants of a term."
+        },
+        {
+            "name": "childless",
+            "signature": "childless(bool $childless = true): self",
+            "group": "Terms core",
+            "sets_args": [
+                "childless"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `childless` to limit results to terms with no children."
+        },
+        {
+            "name": "search",
+            "signature": "search(string $search): self",
+            "group": "Terms core",
+            "sets_args": [
+                "search"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `search` with basic trim sanitization."
+        },
+        {
+            "name": "limit",
+            "signature": "limit(int $number): self",
+            "group": "Terms pagination / ordering",
+            "sets_args": [
+                "number"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `number` for term limits."
+        },
+        {
+            "name": "offset",
+            "signature": "offset(int $offset): self",
+            "group": "Terms pagination / ordering",
+            "sets_args": [
+                "offset"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set `offset`."
+        },
+        {
+            "name": "page",
+            "signature": "page(int $page, int $perPage): self",
+            "group": "Terms pagination / ordering",
+            "sets_args": [
+                "number",
+                "offset"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Convenience pagination helper that computes explicit `offset` from `page` and `perPage`."
+        },
+        {
+            "name": "orderBy",
+            "signature": "orderBy(string $orderby, string $order = 'ASC'): self",
+            "group": "Terms pagination / ordering",
+            "sets_args": [
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Set ordering args."
+        },
+        {
+            "name": "whereMeta",
+            "signature": "whereMeta(string $key, mixed $value, string $compare = '=', string $type = 'CHAR'): self",
+            "group": "Terms meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Append an `AND` termmeta clause to `meta_query`."
+        },
+        {
+            "name": "orWhereMeta",
+            "signature": "orWhereMeta(string $key, mixed $value, string $compare = '=', string $type = 'CHAR'): self",
+            "group": "Terms meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Append a termmeta clause and force root relation to `OR`."
+        },
+        {
+            "name": "tapArgs",
+            "signature": "tapArgs(callable $fn): self",
+            "group": "Terms escape hatch",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Apply an explicit argument transform callback."
+        },
+        {
+            "name": "toArgs",
+            "signature": "toArgs(): array",
+            "group": "Terms introspection",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Return the current raw `WP_Query` arguments."
+        },
+        {
+            "name": "explain",
+            "signature": "explain(): array",
+            "group": "Terms introspection",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Return inspectable builder state for debugging."
+        },
+        {
+            "name": "get",
+            "signature": "get(): WP_Error|array",
+            "group": "Terms terminal",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/functions/get_terms/"
+            ],
+            "notes": "Execute `get_terms()` with current args."
         }
     ]
 }

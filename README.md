@@ -35,7 +35,7 @@ Requirements: PHP 8.3+.
 | Escape hatch | `tapArgs()` |
 | Introspection | `toArgs()`, `explain()` |
 | Terminals | `wpQuery()`, `timber()` |
-| Terms core | `taxonomy()`, `hideEmpty()`, `include()`, `exclude()`, `parent()`, `search()` |
+| Terms core | `taxonomy()`, `objectIds()`, `hideEmpty()`, `slug()`, `name()`, `fields()`, `include()`, `exclude()`, `excludeTree()`, `parent()`, `childOf()`, `childless()`, `search()` |
 | Terms pagination / ordering | `limit()`, `offset()`, `page()`, `orderBy()` |
 | Terms meta query | `whereMeta()`, `orWhereMeta()` |
 | Terms terminal | `get()` |
@@ -150,6 +150,33 @@ $terms = Quartermaster::terms('category')
     ->hideEmpty()
     ->orderBy('name')
     ->limit(20)
+    ->get();
+```
+
+Filter by slug, get just IDs, or scope to a specific post:
+
+```php
+// Terms attached to a specific post
+$tags = Quartermaster::terms('post_tag')
+    ->objectIds($post->ID)
+    ->get();
+
+// Leaf categories only (no children), return IDs
+$leafIds = Quartermaster::terms('category')
+    ->childless()
+    ->fields('ids')
+    ->get();
+
+// Find terms by slug
+$terms = Quartermaster::terms('genre')
+    ->slug(['rock', 'jazz'])
+    ->hideEmpty(false)
+    ->get();
+
+// All descendants of a parent term
+$children = Quartermaster::terms('category')
+    ->childOf(5)
+    ->excludeTree(12)
     ->get();
 ```
 

@@ -1,6 +1,7 @@
 <?php
 
 use PressGang\Quartermaster\Quartermaster;
+use PressGang\Quartermaster\Terms\TermsBuilder;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -147,7 +148,17 @@ $readsGlobals = [
     'bindQueryVars' => true,
 ];
 
+$termsGroupedMethods = [
+    'Terms core' => ['taxonomy', 'objectIds', 'hideEmpty', 'slug', 'name', 'fields', 'include', 'exclude', 'excludeTree', 'parent', 'childOf', 'childless', 'search'],
+    'Terms pagination / ordering' => ['limit', 'offset', 'page', 'orderBy'],
+    'Terms meta query' => ['whereMeta', 'orWhereMeta'],
+    'Terms escape hatch' => ['tapArgs'],
+    'Terms introspection' => ['toArgs', 'explain'],
+    'Terms terminal' => ['get'],
+];
+
 $ref = new ReflectionClass(Quartermaster::class);
+$termsRef = new ReflectionClass(TermsBuilder::class);
 $methods = [];
 
 foreach ($groupedMethods as $group => $methodNames) {
@@ -166,6 +177,33 @@ foreach ($groupedMethods as $group => $methodNames) {
             'group' => $group,
             'sets_args' => $meta['sets_args'],
             'reads_globals' => $readsGlobals[$method->getName()] ?? false,
+            'wp_docs' => $meta['wp_docs'],
+            'notes' => $meta['notes'],
+        ];
+    }
+}
+
+foreach ($termsGroupedMethods as $group => $methodNames) {
+    foreach ($methodNames as $methodName) {
+        if (!$termsRef->hasMethod($methodName)) {
+            continue;
+        }
+
+        $method = $termsRef->getMethod($methodName);
+
+        if (!$method->isPublic()) {
+            continue;
+        }
+
+        $signature = $method->getName() . '(' . implode(', ', array_map('render_parameter', $method->getParameters())) . '): ' . render_type($method->getReturnType());
+        $meta = parse_docblock_metadata($method);
+
+        $methods[] = [
+            'name' => $method->getName(),
+            'signature' => $signature,
+            'group' => $group,
+            'sets_args' => $meta['sets_args'],
+            'reads_globals' => false,
             'wp_docs' => $meta['wp_docs'],
             'notes' => $meta['notes'],
         ];
