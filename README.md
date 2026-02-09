@@ -11,7 +11,7 @@ Think of it as a reliable quartermaster for your query cargo: **you decide what 
 ## 📦 Install
 
 ```bash
-composer require pressgang/quartermaster
+composer require pressgang-wp/quartermaster
 ```
 
 Requirements: PHP 8.3+.
