@@ -1,5 +1,5 @@
 {
-  "name": "pressgang/quartermaster",
+  "name": "pressgang-wp/quartermaster",
   "description": "WordPress-first fluent WP_Query args builder",
   "type": "library",
   "license": "MIT",
