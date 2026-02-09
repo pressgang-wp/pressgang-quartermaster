@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-02-09T16:10:52Z",
+    "generated_at": "2026-02-09T16:34:27Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -548,6 +548,33 @@
             "notes": "Always invoke a closure with the builder instance."
         },
         {
+            "name": "macro",
+            "signature": "macro(string $name, callable $macro): void",
+            "group": "Macros",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Register a named macro. (args mapping not annotated yet)"
+        },
+        {
+            "name": "hasMacro",
+            "signature": "hasMacro(string $name): bool",
+            "group": "Macros",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Check whether a macro is registered. (args mapping not annotated yet)"
+        },
+        {
+            "name": "flushMacros",
+            "signature": "flushMacros(): void",
+            "group": "Macros",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Remove all registered macros (test helper). (args mapping not annotated yet)"
+        },
+        {
             "name": "tapArgs",
             "signature": "tapArgs(callable $fn): self",
             "group": "Escape hatch",
@@ -882,6 +909,33 @@
             "reads_globals": false,
             "wp_docs": [],
             "notes": "Always invoke a closure with the builder instance."
+        },
+        {
+            "name": "macro",
+            "signature": "macro(string $name, callable $macro): void",
+            "group": "Terms macros",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Register a named macro. (args mapping not annotated yet)"
+        },
+        {
+            "name": "hasMacro",
+            "signature": "hasMacro(string $name): bool",
+            "group": "Terms macros",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Check whether a macro is registered. (args mapping not annotated yet)"
+        },
+        {
+            "name": "flushMacros",
+            "signature": "flushMacros(): void",
+            "group": "Terms macros",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Remove all registered macros (test helper). (args mapping not annotated yet)"
         },
         {
             "name": "tapArgs",

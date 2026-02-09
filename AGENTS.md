@@ -124,6 +124,17 @@ $q = Quartermaster::prepare('route')->bindQueryVars(fn (Binder $b) => $b->tax('s
 - Quartermaster does not infer WordPress query-var semantics. Bindings still build explicit `tax_query` / `meta_query` / other args.
 - `search()` sanitises values and `Bind::search()` sanitises values; avoid blind double-sanitisation in surrounding code.
 
+## 🔌 Macros
+Macros are for project-specific fluent sugar. They should call existing builder methods, not mutate args directly. Macro invocations appear in `explain()` as `macro:<name>`.
+
+```php
+Quartermaster::macro('orderByMenuOrder', function (string $dir = 'ASC') {
+    return $this->orderBy('menu_order', $dir);
+});
+```
+
+Both `Quartermaster` and `TermsBuilder` support macros independently. Use `flushMacros()` in test teardown.
+
 ## 🧱 How to Add a New Fluent Method (Checklist)
 - Add the method in the right Concern (or create a new Concern only when justified).
 - Method signature must return `self`.

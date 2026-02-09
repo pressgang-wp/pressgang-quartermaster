@@ -824,6 +824,123 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertContains('tap', $names);
     }
 
+    public function testMacroRegistersAndCallsSuccessfully(): void
+    {
+        Quartermaster::macro('orderByMenuOrder', function (string $dir = 'ASC') {
+            return $this->orderBy('menu_order', $dir);
+        });
+
+        $args = Quartermaster::posts('page')
+            ->orderByMenuOrder()
+            ->toArgs();
+
+        self::assertSame('menu_order', $args['orderby']);
+        self::assertSame('ASC', $args['order']);
+
+        Quartermaster::flushMacros();
+    }
+
+    public function testMacroAcceptsArguments(): void
+    {
+        Quartermaster::macro('orderByMenuOrder', function (string $dir = 'ASC') {
+            return $this->orderBy('menu_order', $dir);
+        });
+
+        $args = Quartermaster::posts('page')
+            ->orderByMenuOrder('DESC')
+            ->toArgs();
+
+        self::assertSame('DESC', $args['order']);
+
+        Quartermaster::flushMacros();
+    }
+
+    public function testMacroIsFluent(): void
+    {
+        Quartermaster::macro('orderByMenuOrder', function (string $dir = 'ASC') {
+            return $this->orderBy('menu_order', $dir);
+        });
+
+        $args = Quartermaster::posts('page')
+            ->orderByMenuOrder()
+            ->status('publish')
+            ->toArgs();
+
+        self::assertSame('menu_order', $args['orderby']);
+        self::assertSame('publish', $args['post_status']);
+
+        Quartermaster::flushMacros();
+    }
+
+    public function testUnknownMethodThrowsBadMethodCallException(): void
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        Quartermaster::posts('event')->nonExistentMethod();
+    }
+
+    public function testFlushMacrosRemovesAllMacros(): void
+    {
+        Quartermaster::macro('testMacro', function () {
+            return $this;
+        });
+
+        self::assertTrue(Quartermaster::hasMacro('testMacro'));
+
+        Quartermaster::flushMacros();
+
+        self::assertFalse(Quartermaster::hasMacro('testMacro'));
+    }
+
+    public function testFlushedMacroThrows(): void
+    {
+        Quartermaster::macro('testMacro', function () {
+            return $this;
+        });
+
+        Quartermaster::flushMacros();
+
+        $this->expectException(\BadMethodCallException::class);
+
+        Quartermaster::posts('event')->testMacro();
+    }
+
+    public function testMacroIsRecordedInExplain(): void
+    {
+        Quartermaster::macro('orderByMenuOrder', function (string $dir = 'ASC') {
+            return $this->orderBy('menu_order', $dir);
+        });
+
+        $explain = Quartermaster::posts('page')
+            ->orderByMenuOrder('DESC')
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('macro:orderByMenuOrder', $names);
+
+        $macroEntry = array_values(array_filter(
+            $explain['applied'],
+            fn ($e) => $e['name'] === 'macro:orderByMenuOrder'
+        ));
+
+        self::assertSame(['DESC'], $macroEntry[0]['params']);
+
+        Quartermaster::flushMacros();
+    }
+
+    public function testMacrosAreIndependentPerBuilder(): void
+    {
+        Quartermaster::macro('postsMacro', function () {
+            return $this;
+        });
+
+        self::assertTrue(Quartermaster::hasMacro('postsMacro'));
+        self::assertFalse(\PressGang\Quartermaster\Terms\TermsBuilder::hasMacro('postsMacro'));
+
+        Quartermaster::flushMacros();
+    }
+
     public function testWpQueryCanBeSkippedWithoutWordPress(): void
     {
         if (!class_exists('WP_Query')) {

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Added macro system (`macro()`, `hasMacro()`, `flushMacros()`) to `Quartermaster` and `TermsBuilder`.
 - Added `when()`, `unless()`, and `tap()` fluent helpers to `Quartermaster` and `TermsBuilder`.
 - Added `objectIds()`, `slug()`, `name()`, `fields()`, `excludeTree()`, `childOf()`, and `childless()` fluent methods to `TermsBuilder`.
 - Added `timber()` terminal to `TermsBuilder` via `Timber::get_terms()` (runtime-guarded).

@@ -12,6 +12,7 @@ use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDateQuery;
 use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Concerns\HasIntegerLists;
+use PressGang\Quartermaster\Concerns\HasMacros;
 use PressGang\Quartermaster\Concerns\HasMetaQuery;
 use PressGang\Quartermaster\Concerns\HasOrdering;
 use PressGang\Quartermaster\Concerns\HasPagination;
@@ -43,6 +44,7 @@ final class Quartermaster
     use HasDateQuery;
     use HasDebugging;
     use HasIntegerLists;
+    use HasMacros;
     use HasMetaQuery;
     use HasOrdering;
     use HasPagination;

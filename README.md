@@ -33,6 +33,7 @@ Requirements: PHP 8.3+.
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |
 | Conditional & hooks | `when()`, `unless()`, `tap()` |
+| Macros | `macro()`, `hasMacro()`, `flushMacros()` |
 | Escape hatch | `tapArgs()` |
 | Introspection | `toArgs()`, `explain()` |
 | Terminals | `get()`, `wpQuery()`, `timber()` |
@@ -260,6 +261,27 @@ This keeps intent explicit:
 - `orderByMeta(...)` controls ordering separately
 
 No hidden assumptions. No barnacles. ⚓
+
+---
+
+## 🔌 Macros (Project-Level Sugar)
+
+Macros let you register project-specific fluent methods without bloating the core API. They are opt-in, not part of core — use them for patterns that repeat across your project.
+
+```php
+Quartermaster::macro('orderByMenuOrder', function (string $dir = 'ASC') {
+    return $this->orderBy('menu_order', $dir);
+});
+
+$posts = Quartermaster::posts('page')
+    ->orderByMenuOrder()
+    ->status('publish')
+    ->get();
+```
+
+Macros should call existing Quartermaster methods — avoid mutating internal args directly. Macro invocations are recorded in `explain()` as `macro:<name>` for debuggability.
+
+Register macros in your theme's `functions.php` or a service provider. Both builders (`Quartermaster` and `TermsBuilder`) support macros independently.
 
 ---
 

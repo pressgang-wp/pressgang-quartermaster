@@ -6,6 +6,7 @@ use PressGang\Quartermaster\Adapters\TimberTermAdapter;
 use PressGang\Quartermaster\Concerns\HasArgs;
 use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDebugging;
+use PressGang\Quartermaster\Concerns\HasMacros;
 use PressGang\Quartermaster\Support\ClauseQuery;
 use PressGang\Quartermaster\Support\Warnings;
 
@@ -25,6 +26,7 @@ final class TermsBuilder
     use HasArgs;
     use HasConditionals;
     use HasDebugging;
+    use HasMacros;
 
     /**
      * Create a new term builder with optional seed args.
