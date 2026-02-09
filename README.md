@@ -36,7 +36,7 @@ Requirements: PHP 8.3+.
 | Macros | `macro()`, `hasMacro()`, `flushMacros()` |
 | Escape hatch | `tapArgs()` |
 | Introspection | `toArgs()`, `explain()` |
-| Terminals | `get()`, `wpQuery()`, `timber()` |
+| Terminals | `get()`, `toArray()`, `wpQuery()`, `timber()` |
 | Terms core | `taxonomy()`, `objectIds()`, `hideEmpty()`, `slug()`, `name()`, `fields()`, `include()`, `exclude()`, `excludeTree()`, `parent()`, `childOf()`, `childless()`, `search()` |
 | Terms pagination / ordering | `limit()`, `offset()`, `page()`, `orderBy()` |
 | Terms meta query | `whereMeta()`, `orWhereMeta()` |

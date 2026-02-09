@@ -35,6 +35,11 @@ namespace Timber {
             {
                 $this->query = $query;
             }
+
+            public function to_array(): array
+            {
+                return $this->query->posts;
+            }
         }
     }
 
@@ -134,6 +139,26 @@ namespace PressGang\Quartermaster\Tests {
             $builder = Quartermaster::posts('event');
 
             self::assertEquals($builder->wpQuery()->posts, $builder->get());
+        }
+
+        public function testToArrayReturnsArray(): void
+        {
+            $result = Quartermaster::posts('event')->toArray();
+
+            self::assertIsArray($result);
+            self::assertNotEmpty($result);
+            self::assertSame('event', $result[0]->post_type);
+        }
+
+        public function testToArrayRecordsTimberEngineInExplain(): void
+        {
+            $builder = Quartermaster::posts('event');
+            $builder->toArray();
+            $explain = $builder->explain();
+
+            $terminal = end($explain['applied']);
+            self::assertSame('toArray', $terminal['name']);
+            self::assertSame(['timber'], $terminal['params']);
         }
 
         public function testTermsBuilderTimberTerminalPassesArgsToTimber(): void

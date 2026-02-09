@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Added `timber()` terminal to `TermsBuilder` via `Timber::get_terms()` (runtime-guarded).
 - Added `get()` terminal to `Quartermaster` posts builder for symmetry with `TermsBuilder`; returns the posts array directly.
 - Renamed internal `HasArgs::get()` to `HasArgs::getArg()` to free `get()` for terminal use.
+- Added `toArray()` terminal to `Quartermaster`; prefers Timber when available, falls back to WP_Query.
 
 ## [0.1.0] - 2026-02-08
 

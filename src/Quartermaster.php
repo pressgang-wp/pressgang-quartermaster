@@ -226,6 +226,34 @@ final class Quartermaster
     }
 
     /**
+     * Execute the query and return a plain PHP array of posts.
+     *
+     * Prefers Timber when available (returns Timber\Post objects via `PostQuery::to_array()`).
+     * Falls back to `WP_Query::$posts` otherwise. The engine used is recorded in `explain()`.
+     *
+     * Sets: (none)
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/
+     * See: https://timber.github.io/docs/v2/reference/timber-postquery/
+     *
+     * @return array<int, mixed> Posts array (Timber\Post objects when Timber is available, WP_Post objects otherwise).
+     */
+    public function toArray(): array
+    {
+        if (class_exists(\Timber\PostQuery::class)) {
+            $result = $this->timber()->to_array();
+            $this->record('toArray', 'timber');
+
+            return $result;
+        }
+
+        $result = $this->get();
+        $this->record('toArray', 'wp');
+
+        return $result;
+    }
+
+    /**
      * Normalize map/callback bindings into an array map.
      *
      * @param array<string, callable>|callable(Binder): void $bindings
