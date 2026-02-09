@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-02-08T16:15:09Z",
+    "generated_at": "2026-02-09T14:09:15Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -10,6 +10,33 @@
         "Explicit over magic"
     ],
     "methods": [
+        {
+            "name": "posts",
+            "signature": "posts(array|string|null $postType = NULL): self",
+            "group": "Bootstrap",
+            "sets_args": [
+                "post_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters"
+            ],
+            "notes": "Preferred posts entrypoint."
+        },
+        {
+            "name": "terms",
+            "signature": "terms(array|string|null $taxonomy = NULL): PressGang\\Quartermaster\\Terms\\TermsBuilder",
+            "group": "Bootstrap",
+            "sets_args": [
+                "taxonomy"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/",
+                "https://developer.wordpress.org/reference/functions/get_terms/"
+            ],
+            "notes": "Preferred terms entrypoint for `WP_Term_Query` / `get_terms()` args."
+        },
         {
             "name": "prepare",
             "signature": "prepare(array|string|null $postType = NULL): self",
@@ -21,7 +48,7 @@
             "wp_docs": [
                 "https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters"
             ],
-            "notes": "Start a fluent builder and optionally seed `post_type`."
+            "notes": "Start a fluent posts builder with optional seed."
         },
         {
             "name": "postType",

@@ -22,7 +22,7 @@ Requirements: PHP 8.3+.
 
 | Area | Methods |
 | --- | --- |
-| Bootstrap | `prepare()` |
+| Bootstrap | `posts()`, `terms()`, `prepare()` (compatibility alias) |
 | Core post constraints | `postType()`, `status()`, `whereId()`, `whereInIds()`, `excludeIds()`, `whereParent()`, `whereParentIn()` |
 | Author constraints | `whereAuthor()`, `whereAuthorIn()`, `whereAuthorNotIn()` |
 | Pagination / search | `paged()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
@@ -35,6 +35,10 @@ Requirements: PHP 8.3+.
 | Escape hatch | `tapArgs()` |
 | Introspection | `toArgs()`, `explain()` |
 | Terminals | `wpQuery()`, `timber()` |
+| Terms core | `taxonomy()`, `hideEmpty()`, `include()`, `exclude()`, `parent()`, `search()` |
+| Terms pagination / ordering | `limit()`, `offset()`, `page()`, `orderBy()` |
+| Terms meta query | `whereMeta()`, `orWhereMeta()` |
+| Terms terminal | `get()` |
 
 ---
 
@@ -62,7 +66,7 @@ Quartermaster shines when queries evolve, branch, or need to be composed without
 Quartermaster is intentionally light-touch:
 
 - 🧱 WordPress-native — every fluent method maps directly to real `WP_Query` keys
-- 🫙 Zero side effects by default — `Quartermaster::prepare()->toArgs()` is empty
+- 🫙 Zero side effects by default — `Quartermaster::posts()->toArgs()` is empty
 - 🎯 Opt-in only — nothing changes unless you call a method
 - 🔌 Loosely coupled — no mutation of WordPress internals, no global state changes
 - 🌲 Timber-agnostic core — Timber support is optional and runtime-guarded
@@ -71,7 +75,7 @@ Quartermaster is intentionally light-touch:
 Steady hands on the wheel, predictable seas ahead. 🚢
 
 ```php
-Quartermaster::prepare()->toArgs(); // []
+Quartermaster::posts()->toArgs(); // []
 ```
 
 ---
@@ -84,7 +88,7 @@ Quartermaster deliberately does **not** aim to:
 - Act as an ORM or ActiveRecord layer
 - Hide WordPress limitations (e.g. tax/meta OR logic)
 - Automatically infer defaults or “best practices”
-- Query users, terms, or comments (yet)
+- Replace WordPress term query APIs
 
 If WordPress requires a specific argument shape, **Quartermaster expects you to be explicit**.  
 No fog, no illusions, no siren songs. 🧜‍♀️
@@ -93,20 +97,22 @@ No fog, no illusions, no siren songs. 🧜‍♀️
 
 ## 🚀 Quick Start
 
-`prepare('event')` is a convenience seed only. It only sets `post_type` and does not infer any other query args.
+`posts('event')` is a convenience seed only. It only sets `post_type` and does not infer any other query args.
 
 ```php
-Quartermaster::prepare('event');
+Quartermaster::posts('event');
 
 // is equivalent to
 
-Quartermaster::prepare()->postType('event');
+Quartermaster::posts()->postType('event');
 ```
+
+`prepare()` remains available as a low-level backwards-compatible alias.
 
 ```php
 use PressGang\Quartermaster\Quartermaster;
 
-$args = Quartermaster::prepare()
+$args = Quartermaster::posts()
     ->postType('event')
     ->status('publish')
     ->paged(10)
@@ -118,7 +124,7 @@ $args = Quartermaster::prepare()
 Run the query with WordPress:
 
 ```php
-$query = Quartermaster::prepare()
+$query = Quartermaster::posts()
     ->postType('event')
     ->status('publish')
     ->toArgs();
@@ -129,10 +135,31 @@ $posts = new WP_Query($query);
 Or use the built-in terminal:
 
 ```php
-$posts = Quartermaster::prepare()
+$posts = Quartermaster::posts()
     ->postType('event')
     ->status('publish')
     ->wpQuery();
+```
+
+## 🌿 Terms Quick Start
+
+```php
+use PressGang\Quartermaster\Quartermaster;
+
+$terms = Quartermaster::terms('category')
+    ->hideEmpty()
+    ->orderBy('name')
+    ->limit(20)
+    ->get();
+```
+
+Inspect generated args:
+
+```php
+$args = Quartermaster::terms('category')
+    ->hideEmpty(false)
+    ->whereMeta('featured', 1)
+    ->toArgs();
 ```
 
 ## 🔗 Binding Query Vars (Two Styles)
@@ -145,7 +172,7 @@ Map style with `Bind::*`:
 use PressGang\Quartermaster\Bindings\Bind;
 use PressGang\Quartermaster\Quartermaster;
 
-$q = Quartermaster::prepare('route')->bindQueryVars([
+$q = Quartermaster::posts('route')->bindQueryVars([
     'paged' => Bind::paged(),
     'shape' => Bind::tax('route_shape'),
     'difficulty' => Bind::tax('route_difficulty'),
@@ -161,7 +188,7 @@ Fluent binder style with `Binder`:
 use PressGang\Quartermaster\Bindings\Binder;
 use PressGang\Quartermaster\Quartermaster;
 
-$q = Quartermaster::prepare('route')->bindQueryVars(function (Binder $b): void {
+$q = Quartermaster::posts('route')->bindQueryVars(function (Binder $b): void {
     $b->paged();
     $b->tax('district'); // district -> district
     $b->tax('shape', 'route_shape'); // shape -> route_shape
@@ -185,7 +212,7 @@ Filtering by a meta date (e.g. upcoming vs past events) is a very common WordPre
 ```php
 $isArchive = isset($_GET['archive']);
 
-$q = Quartermaster::prepare()
+$q = Quartermaster::posts()
     ->postType('event')
     ->status('publish')
     ->whereMetaDate('start', $isArchive ? '<' : '>=')
@@ -204,7 +231,7 @@ No hidden assumptions. No barnacles. ⚓
 ## 🌲 Optional Timber Terminal
 
 ```php
-$posts = Quartermaster::prepare()
+$posts = Quartermaster::posts()
     ->postType('event')
     ->status('publish')
     ->timber();
@@ -221,7 +248,7 @@ Ordering direction is explicit: Quartermaster accepts only `ASC`/`DESC`; invalid
 Inspect generated args:
 
 ```php
-$args = Quartermaster::prepare()
+$args = Quartermaster::posts()
     ->postType('event')
     ->toArgs();
 ```
@@ -229,7 +256,7 @@ $args = Quartermaster::prepare()
 Inspect args plus applied calls and warnings:
 
 ```php
-$explain = Quartermaster::prepare()
+$explain = Quartermaster::posts()
     ->orderBy('meta_value')
     ->explain();
 ```

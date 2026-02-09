@@ -19,13 +19,13 @@ use PressGang\Quartermaster\Concerns\HasQueryFlags;
 use PressGang\Quartermaster\Concerns\HasSearch;
 use PressGang\Quartermaster\Concerns\HasTaxQuery;
 use PressGang\Quartermaster\Contracts\QueryVarSource;
+use PressGang\Quartermaster\Terms\TermsBuilder;
 
 /**
  * Args-first fluent builder for WordPress `WP_Query` arguments.
  *
- * `prepare()` is zero side effects: no default `WP_Query` keys are added unless a fluent
- * method is explicitly called. An optional post-type seed may be provided as a convenience
- * alias for `prepare()->postType(...)`.
+ * `prepare()`/`posts()` are zero side effects: no default `WP_Query` keys are added unless
+ * a fluent method is explicitly called. Optional seeds only set explicitly provided values.
  * Terminal methods expose args directly (`toArgs()`), instantiate `WP_Query` (`wpQuery()`),
  * or return a guarded Timber query object (`timber()`).
  *
@@ -64,19 +64,24 @@ final class Quartermaster
     }
 
     /**
-     * Start a fluent builder and optionally seed `post_type`.
+     * Start a fluent posts builder with optional seed.
      *
      * This is opt-in only: with no input, the builder starts with an empty args array.
+     * String (or list array) input seeds `post_type`; associative-array input seeds raw args.
      *
      * Sets: post_type
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters
      *
-     * @param string|array<int, string>|null $postType Post type slug or slugs.
+     * @param string|array<int|string, mixed>|null $postType Post type slug/slugs or seed args.
      * @return self
      */
     public static function prepare(string|array|null $postType = null): self
     {
+        if (is_array($postType) && !array_is_list($postType)) {
+            return new self($postType);
+        }
+
         $builder = new self();
 
         if ($postType !== null) {
@@ -84,6 +89,42 @@ final class Quartermaster
         }
 
         return $builder;
+    }
+
+    /**
+     * Preferred posts entrypoint.
+     *
+     * Delegates to `prepare()` and preserves the same zero-default behavior.
+     *
+     * Sets: post_type
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#post-type-parameters
+     *
+     * @param string|array<int|string, mixed>|null $postType Post type slug/slugs or seed args.
+     * @return self
+     */
+    public static function posts(string|array|null $postType = null): self
+    {
+        return self::prepare($postType);
+    }
+
+    /**
+     * Preferred terms entrypoint for `WP_Term_Query` / `get_terms()` args.
+     *
+     * With a string input, this seeds `taxonomy`. With an associative array, this seeds
+     * explicit term-query args. With no input, the args payload starts empty.
+     *
+     * Sets: taxonomy
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/
+     * See: https://developer.wordpress.org/reference/functions/get_terms/
+     *
+     * @param string|array<int|string, mixed>|null $taxonomy Taxonomy seed or term-query seed args.
+     * @return TermsBuilder
+     */
+    public static function terms(string|array|null $taxonomy = null): TermsBuilder
+    {
+        return TermsBuilder::prepare($taxonomy);
     }
 
     /**

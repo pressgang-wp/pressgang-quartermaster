@@ -117,7 +117,7 @@ function parse_docblock_metadata(ReflectionMethod $method): array
 }
 
 $groupedMethods = [
-    'Bootstrap' => ['prepare'],
+    'Bootstrap' => ['posts', 'terms', 'prepare'],
     'Core post constraints' => ['postType', 'status', 'whereId', 'whereInIds', 'excludeIds', 'whereParent', 'whereParentIn'],
     'Author constraints' => ['whereAuthor', 'whereAuthorIn', 'whereAuthorNotIn'],
     'Pagination / search' => ['paged', 'all', 'search'],
