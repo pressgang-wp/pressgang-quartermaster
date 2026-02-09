@@ -55,6 +55,19 @@ $args = Quartermaster::prepare('event')
     ->toArgs();
 ```
 
+Conditional queries and hooks:
+
+```php
+$q = Quartermaster::prepare('event')
+    ->when($isArchive, fn ($q) =>
+        $q->whereMetaDate('start', '<')->orderByMeta('start', 'DESC')
+    )
+    ->unless($isArchive, fn ($q) =>
+        $q->whereMetaDate('start', '>=')->orderByMeta('start', 'ASC')
+    )
+    ->tap(fn ($q) => $debug ? $q->noFoundRows() : null);
+```
+
 Tax queries:
 
 ```php

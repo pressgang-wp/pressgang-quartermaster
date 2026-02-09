@@ -8,6 +8,7 @@ use PressGang\Quartermaster\Bindings\Binder;
 use PressGang\Quartermaster\Bindings\WordPressQueryVarSource;
 use PressGang\Quartermaster\Concerns\HasArgs;
 use PressGang\Quartermaster\Concerns\HasAuthorConstraints;
+use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDateQuery;
 use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Concerns\HasIntegerLists;
@@ -38,6 +39,7 @@ final class Quartermaster
 {
     use HasArgs;
     use HasAuthorConstraints;
+    use HasConditionals;
     use HasDateQuery;
     use HasDebugging;
     use HasIntegerLists;

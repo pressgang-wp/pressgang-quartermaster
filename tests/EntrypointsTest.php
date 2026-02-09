@@ -159,6 +159,24 @@ namespace PressGang\Quartermaster\Tests {
             self::assertTrue($args['childless']);
         }
 
+        public function testTermsWhenTrueAppliesClosure(): void
+        {
+            $args = Quartermaster::terms('category')
+                ->when(true, fn (TermsBuilder $q) => $q->hideEmpty(false))
+                ->toArgs();
+
+            self::assertFalse($args['hide_empty']);
+        }
+
+        public function testTermsWhenFalseSkipsClosure(): void
+        {
+            $args = Quartermaster::terms('category')
+                ->when(false, fn (TermsBuilder $q) => $q->hideEmpty(false))
+                ->toArgs();
+
+            self::assertArrayNotHasKey('hide_empty', $args);
+        }
+
         public function testTermsFluentChainCombinesArgs(): void
         {
             $args = Quartermaster::terms('category')

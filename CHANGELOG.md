@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Added `when()`, `unless()`, and `tap()` fluent helpers to `Quartermaster` and `TermsBuilder`.
 - Added `objectIds()`, `slug()`, `name()`, `fields()`, `excludeTree()`, `childOf()`, and `childless()` fluent methods to `TermsBuilder`.
 
 ## [0.1.0] - 2026-02-08

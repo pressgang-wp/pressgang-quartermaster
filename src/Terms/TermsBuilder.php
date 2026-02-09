@@ -3,6 +3,7 @@
 namespace PressGang\Quartermaster\Terms;
 
 use PressGang\Quartermaster\Concerns\HasArgs;
+use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Support\ClauseQuery;
 
@@ -22,6 +23,7 @@ final class TermsBuilder
     use HasArgs {
         get as protected getArg;
     }
+    use HasConditionals;
     use HasDebugging;
 
     /**

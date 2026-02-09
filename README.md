@@ -32,6 +32,7 @@ Requirements: PHP 8.3+.
 | Tax query | `whereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |
+| Conditional & hooks | `when()`, `unless()`, `tap()` |
 | Escape hatch | `tapArgs()` |
 | Introspection | `toArgs()`, `explain()` |
 | Terminals | `wpQuery()`, `timber()` |
@@ -252,6 +253,58 @@ This keeps intent explicit:
 - `orderByMeta(...)` controls ordering separately
 
 No hidden assumptions. No barnacles. ⚓
+
+---
+
+## 🔀 Conditional Queries & Hooks
+
+`when()`, `unless()`, and `tap()` keep fluent chains readable without introducing magic or hidden state. None of them read globals or add defaults.
+
+**`when()`** — runs a closure when the condition is true:
+
+```php
+$q = Quartermaster::posts('event')
+    ->when($isArchive, fn ($q) =>
+        $q->whereMetaDate('start', '<')->orderByMeta('start', 'DESC')
+    )
+    ->when(! $isArchive, fn ($q) =>
+        $q->whereMetaDate('start', '>=')->orderByMeta('start', 'ASC')
+    );
+```
+
+Or with an else clause:
+
+```php
+$q = Quartermaster::posts('event')
+    ->when(
+        $isArchive,
+        fn ($q) => $q->orderBy('date', 'DESC'),
+        fn ($q) => $q->orderBy('date', 'ASC'),
+    );
+```
+
+**`unless()`** — inverse of `when()` (`unless($x)` is `when(!$x)`):
+
+```php
+$q = Quartermaster::posts('event')
+    ->unless($isArchive, fn ($q) =>
+        $q->whereMetaDate('start', '>=')->orderByMeta('start', 'ASC')
+    );
+```
+
+**`tap()`** — always runs a closure, for builder-level logic without breaking the chain:
+
+```php
+$q = Quartermaster::posts('event')
+    ->tap(function ($q) use ($debug) {
+        if ($debug) {
+            $q->noFoundRows();
+        }
+    })
+    ->status('publish');
+```
+
+All three are recorded in `explain()` for debuggability. No magic, no hidden state. ⚓
 
 ---
 

@@ -653,6 +653,177 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertFalse($explain['bindings'][1]['applied']);
     }
 
+    public function testWhenTrueExecutesThenClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->when(true, fn (Quartermaster $q) => $q->status('publish'))
+            ->toArgs();
+
+        self::assertSame('publish', $args['post_status']);
+    }
+
+    public function testWhenFalseDoesNotExecuteThenClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->when(false, fn (Quartermaster $q) => $q->status('publish'))
+            ->toArgs();
+
+        self::assertArrayNotHasKey('post_status', $args);
+    }
+
+    public function testWhenFalseExecutesElseClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->when(false,
+                fn (Quartermaster $q) => $q->orderBy('date', 'DESC'),
+                fn (Quartermaster $q) => $q->orderBy('date', 'ASC'),
+            )
+            ->toArgs();
+
+        self::assertSame('ASC', $args['order']);
+    }
+
+    public function testWhenTrueIgnoresElseClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->when(true,
+                fn (Quartermaster $q) => $q->orderBy('date', 'DESC'),
+                fn (Quartermaster $q) => $q->orderBy('date', 'ASC'),
+            )
+            ->toArgs();
+
+        self::assertSame('DESC', $args['order']);
+    }
+
+    public function testWhenIsChainable(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->when(true, fn (Quartermaster $q) => $q->status('publish'))
+            ->when(true, fn (Quartermaster $q) => $q->paged(10))
+            ->toArgs();
+
+        self::assertSame('publish', $args['post_status']);
+        self::assertSame(10, $args['posts_per_page']);
+    }
+
+    public function testWhenIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::posts('event')
+            ->when(true, fn (Quartermaster $q) => $q->status('publish'))
+            ->when(false, fn (Quartermaster $q) => $q->idsOnly())
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('when', $names);
+
+        $whenEntries = array_filter($explain['applied'], fn ($e) => $e['name'] === 'when');
+        $conditions = array_column(array_values($whenEntries), 'params');
+
+        self::assertSame([true], $conditions[0]);
+        self::assertSame([false], $conditions[1]);
+    }
+
+    public function testUnlessTrueDoesNotExecuteThenClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->unless(true, fn (Quartermaster $q) => $q->status('draft'))
+            ->toArgs();
+
+        self::assertArrayNotHasKey('post_status', $args);
+    }
+
+    public function testUnlessFalseExecutesThenClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->unless(false, fn (Quartermaster $q) => $q->status('publish'))
+            ->toArgs();
+
+        self::assertSame('publish', $args['post_status']);
+    }
+
+    public function testUnlessTrueExecutesElseClosure(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->unless(true,
+                fn (Quartermaster $q) => $q->orderBy('date', 'ASC'),
+                fn (Quartermaster $q) => $q->orderBy('date', 'DESC'),
+            )
+            ->toArgs();
+
+        self::assertSame('DESC', $args['order']);
+    }
+
+    public function testUnlessIsFluentAndReturnsCorrectArgs(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->unless(false, fn (Quartermaster $q) => $q->status('publish'))
+            ->unless(true, fn (Quartermaster $q) => $q->idsOnly())
+            ->paged(10)
+            ->toArgs();
+
+        self::assertSame('publish', $args['post_status']);
+        self::assertArrayNotHasKey('fields', $args);
+        self::assertSame(10, $args['posts_per_page']);
+    }
+
+    public function testUnlessIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::posts('event')
+            ->unless(true, fn (Quartermaster $q) => $q->status('draft'))
+            ->unless(false, fn (Quartermaster $q) => $q->status('publish'))
+            ->explain();
+
+        $unlessEntries = array_values(array_filter(
+            $explain['applied'],
+            fn ($e) => $e['name'] === 'unless'
+        ));
+
+        self::assertCount(2, $unlessEntries);
+        self::assertSame([true], $unlessEntries[0]['params']);
+        self::assertSame([false], $unlessEntries[1]['params']);
+    }
+
+    public function testTapAlwaysExecutesCallback(): void
+    {
+        $called = false;
+
+        Quartermaster::posts('event')
+            ->tap(function (Quartermaster $q) use (&$called) {
+                $called = true;
+            });
+
+        self::assertTrue($called);
+    }
+
+    public function testTapCallbackCanMutateArgs(): void
+    {
+        $args = Quartermaster::posts('event')
+            ->tap(fn (Quartermaster $q) => $q->noFoundRows())
+            ->toArgs();
+
+        self::assertTrue($args['no_found_rows']);
+    }
+
+    public function testTapReturnsSameBuilderInstance(): void
+    {
+        $builder = Quartermaster::posts('event');
+        $returned = $builder->tap(fn (Quartermaster $q) => $q->status('publish'));
+
+        self::assertSame($builder, $returned);
+    }
+
+    public function testTapIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::posts('event')
+            ->tap(fn (Quartermaster $q) => $q->status('publish'))
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('tap', $names);
+    }
+
     public function testWpQueryCanBeSkippedWithoutWordPress(): void
     {
         if (!class_exists('WP_Query')) {

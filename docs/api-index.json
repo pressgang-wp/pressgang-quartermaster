@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-02-09T15:18:36Z",
+    "generated_at": "2026-02-09T15:30:20Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -521,6 +521,33 @@
             "notes": "Toggle `update_post_term_cache` for result posts."
         },
         {
+            "name": "when",
+            "signature": "when(bool $condition, callable $then, callable|null $else = NULL): self",
+            "group": "Conditional & hooks",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Conditionally apply a closure to the builder."
+        },
+        {
+            "name": "unless",
+            "signature": "unless(bool $condition, callable $then, callable|null $else = NULL): self",
+            "group": "Conditional & hooks",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Inverse of `when()`: apply a closure when the condition is false."
+        },
+        {
+            "name": "tap",
+            "signature": "tap(callable $callback): self",
+            "group": "Conditional & hooks",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Always invoke a closure with the builder instance."
+        },
+        {
             "name": "tapArgs",
             "signature": "tapArgs(callable $fn): self",
             "group": "Escape hatch",
@@ -817,6 +844,33 @@
                 "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
             ],
             "notes": "Append a termmeta clause and force root relation to `OR`."
+        },
+        {
+            "name": "when",
+            "signature": "when(bool $condition, callable $then, callable|null $else = NULL): self",
+            "group": "Terms conditional & hooks",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Conditionally apply a closure to the builder."
+        },
+        {
+            "name": "unless",
+            "signature": "unless(bool $condition, callable $then, callable|null $else = NULL): self",
+            "group": "Terms conditional & hooks",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Inverse of `when()`: apply a closure when the condition is false."
+        },
+        {
+            "name": "tap",
+            "signature": "tap(callable $callback): self",
+            "group": "Terms conditional & hooks",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Always invoke a closure with the builder instance."
         },
         {
             "name": "tapArgs",
