@@ -30,7 +30,7 @@ final class TimberAdapter
         }
 
         /** @var object $query */
-        $query = new \Timber\PostQuery($args);
+        $query = new \Timber\PostQuery(new \WP_Query($args));
 
         return $query;
     }
