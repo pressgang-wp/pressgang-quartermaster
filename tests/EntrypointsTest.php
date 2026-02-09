@@ -177,6 +177,26 @@ namespace PressGang\Quartermaster\Tests {
             self::assertArrayNotHasKey('hide_empty', $args);
         }
 
+        public function testTermsExplainWarnsWhenHideEmptyNotSet(): void
+        {
+            $explain = Quartermaster::terms('category')->explain();
+
+            self::assertContains(
+                'hide_empty was not explicitly set; WordPress defaults to true, which excludes terms with no posts.',
+                $explain['warnings']
+            );
+        }
+
+        public function testTermsExplainDoesNotWarnWhenHideEmptyIsSet(): void
+        {
+            $explain = Quartermaster::terms('category')->hideEmpty(false)->explain();
+
+            self::assertNotContains(
+                'hide_empty was not explicitly set; WordPress defaults to true, which excludes terms with no posts.',
+                $explain['warnings']
+            );
+        }
+
         public function testTermsFluentChainCombinesArgs(): void
         {
             $args = Quartermaster::terms('category')

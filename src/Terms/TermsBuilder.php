@@ -7,6 +7,7 @@ use PressGang\Quartermaster\Concerns\HasArgs;
 use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Support\ClauseQuery;
+use PressGang\Quartermaster\Support\Warnings;
 
 /**
  * Args-first fluent builder for `WP_Term_Query` / `get_terms()` arguments.
@@ -500,6 +501,39 @@ final class TermsBuilder
     public function timber(): iterable
     {
         return (new TimberTermAdapter())->getTerms($this->toArgs());
+    }
+
+    /**
+     * Return inspectable builder state for debugging.
+     *
+     * Uses term-specific warnings instead of `WP_Query` warnings.
+     *
+     * Sets: (none)
+     *
+     * @return array{
+     *     args: array<string, mixed>,
+     *     applied: array<int, array{name: string, params: array<int, mixed>}>,
+     *     warnings: array<int, string>,
+     *     bindings?: array<int, array{key: string, applied: bool, reason: string, value: string}>
+     * }
+     */
+    public function explain(): array
+    {
+        $args = $this->toArgs();
+        $explain = [
+            'args' => $args,
+            'applied' => $this->applied,
+            'warnings' => array_values(array_unique(array_merge(
+                Warnings::fromTermArgs($args),
+                $this->runtimeWarnings,
+            ))),
+        ];
+
+        if ($this->bindings !== []) {
+            $explain['bindings'] = $this->bindings;
+        }
+
+        return $explain;
     }
 
     /**
