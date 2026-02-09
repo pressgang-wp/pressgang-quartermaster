@@ -98,8 +98,11 @@ $children = Quartermaster::terms('category')
 Terminals:
 
 ```php
-$query = Quartermaster::prepare('post')->wpQuery();
-$timber = Quartermaster::prepare('post')->timber(); // runtime-guarded if Timber is missing
+$posts = Quartermaster::prepare('post')->get();               // posts array
+$terms = Quartermaster::terms('category')->get();              // terms array
+$query = Quartermaster::prepare('post')->wpQuery();            // full WP_Query object
+$timber = Quartermaster::prepare('post')->timber();            // Timber PostQuery (runtime-guarded)
+$timberTerms = Quartermaster::terms('category')->timber();     // Timber terms (runtime-guarded)
 ```
 
 ## 🧷 Query Var Binding Guidance

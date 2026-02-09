@@ -171,9 +171,29 @@ final class Quartermaster
     }
 
     /**
+     * Execute the query and return the posts array.
+     *
+     * This is the primary terminal: it runs `new WP_Query($args)` and returns the
+     * resulting `posts` array. Use `wpQuery()` instead when you need the full `WP_Query`
+     * object (pagination metadata, found rows, loop state).
+     *
+     * Sets: (none)
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @return array<int, \WP_Post> Posts returned by the query.
+     */
+    public function get(): array
+    {
+        return $this->wpQuery()->posts;
+    }
+
+    /**
      * Build and return a `WP_Query` instance from the current args.
      *
-     * This method does not mutate args and does not add implicit defaults.
+     * Use this when you need the full query object for pagination metadata
+     * (`found_posts`, `max_num_pages`) or loop helpers. For just the posts
+     * array, prefer `get()`.
      *
      * Sets: (none)
      *

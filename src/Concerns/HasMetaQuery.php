@@ -138,7 +138,7 @@ trait HasMetaQuery
      */
     protected function appendMetaClause(array $clause, string $defaultRelation, ?string $forcedRelation = null): array
     {
-        $query = $this->get('meta_query', []);
+        $query = $this->getArg('meta_query', []);
 
         if (!is_array($query)) {
             $query = [];

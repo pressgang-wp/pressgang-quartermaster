@@ -35,7 +35,7 @@ Requirements: PHP 8.3+.
 | Conditional & hooks | `when()`, `unless()`, `tap()` |
 | Escape hatch | `tapArgs()` |
 | Introspection | `toArgs()`, `explain()` |
-| Terminals | `wpQuery()`, `timber()` |
+| Terminals | `get()`, `wpQuery()`, `timber()` |
 | Terms core | `taxonomy()`, `objectIds()`, `hideEmpty()`, `slug()`, `name()`, `fields()`, `include()`, `exclude()`, `excludeTree()`, `parent()`, `childOf()`, `childless()`, `search()` |
 | Terms pagination / ordering | `limit()`, `offset()`, `page()`, `orderBy()` |
 | Terms meta query | `whereMeta()`, `orWhereMeta()` |
@@ -122,24 +122,25 @@ $args = Quartermaster::posts()
     ->toArgs();
 ```
 
-Run the query with WordPress:
-
-```php
-$query = Quartermaster::posts()
-    ->postType('event')
-    ->status('publish')
-    ->toArgs();
-
-$posts = new WP_Query($query);
-```
-
-Or use the built-in terminal:
+Run the query and get posts:
 
 ```php
 $posts = Quartermaster::posts()
     ->postType('event')
     ->status('publish')
+    ->get();
+```
+
+When you need the full `WP_Query` object (pagination metadata, found rows, loop state):
+
+```php
+$query = Quartermaster::posts()
+    ->postType('event')
+    ->status('publish')
     ->wpQuery();
+
+$posts = $query->posts;
+$total = $query->found_posts;
 ```
 
 ## 🌿 Terms Quick Start

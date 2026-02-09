@@ -22,9 +22,7 @@ use PressGang\Quartermaster\Support\Warnings;
  */
 final class TermsBuilder
 {
-    use HasArgs {
-        get as protected getArg;
-    }
+    use HasArgs;
     use HasConditionals;
     use HasDebugging;
 

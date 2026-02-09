@@ -66,7 +66,7 @@ trait HasArgs
      * @param mixed $default
      * @return mixed
      */
-    protected function get(string $key, mixed $default = null): mixed
+    protected function getArg(string $key, mixed $default = null): mixed
     {
         return $this->args[$key] ?? $default;
     }

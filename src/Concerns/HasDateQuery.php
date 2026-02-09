@@ -88,7 +88,7 @@ trait HasDateQuery
      */
     protected function appendDateClause(array $clause): array
     {
-        $query = $this->get('date_query', []);
+        $query = $this->getArg('date_query', []);
 
         if (!is_array($query)) {
             $query = [];

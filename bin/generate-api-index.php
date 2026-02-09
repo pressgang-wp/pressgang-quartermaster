@@ -141,7 +141,7 @@ $groupedMethods = [
     'Conditional & hooks' => ['when', 'unless', 'tap'],
     'Escape hatch' => ['tapArgs'],
     'Introspection' => ['toArgs', 'explain'],
-    'Terminals' => ['wpQuery', 'timber'],
+    'Terminals' => ['get', 'wpQuery', 'timber'],
 ];
 
 $readsGlobals = [

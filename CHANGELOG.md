@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 - Added `when()`, `unless()`, and `tap()` fluent helpers to `Quartermaster` and `TermsBuilder`.
 - Added `objectIds()`, `slug()`, `name()`, `fields()`, `excludeTree()`, `childOf()`, and `childless()` fluent methods to `TermsBuilder`.
 - Added `timber()` terminal to `TermsBuilder` via `Timber::get_terms()` (runtime-guarded).
+- Added `get()` terminal to `Quartermaster` posts builder for symmetry with `TermsBuilder`; returns the posts array directly.
+- Renamed internal `HasArgs::get()` to `HasArgs::getArg()` to free `get()` for terminal use.
 
 ## [0.1.0] - 2026-02-08
 

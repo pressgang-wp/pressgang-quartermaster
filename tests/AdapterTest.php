@@ -12,10 +12,14 @@ namespace {
         class WP_Query
         {
             public array $query_vars;
+            public array $posts;
 
             public function __construct(array $args = [])
             {
                 $this->query_vars = $args;
+                $this->posts = [
+                    (object) ['ID' => 1, 'post_type' => $args['post_type'] ?? 'post'],
+                ];
             }
         }
     }
@@ -114,6 +118,22 @@ namespace PressGang\Quartermaster\Tests {
             (new TimberTermAdapter())->getTerms($args);
 
             self::assertSame($args, $GLOBALS['__quartermaster_test_timber_get_terms_args']);
+        }
+
+        public function testPostsGetReturnsPostsArray(): void
+        {
+            $result = Quartermaster::posts('event')->get();
+
+            self::assertIsArray($result);
+            self::assertNotEmpty($result);
+            self::assertSame('event', $result[0]->post_type);
+        }
+
+        public function testPostsGetAndWpQueryReturnSamePosts(): void
+        {
+            $builder = Quartermaster::posts('event');
+
+            self::assertEquals($builder->wpQuery()->posts, $builder->get());
         }
 
         public function testTermsBuilderTimberTerminalPassesArgsToTimber(): void

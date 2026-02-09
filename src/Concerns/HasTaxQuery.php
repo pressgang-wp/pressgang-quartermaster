@@ -73,7 +73,7 @@ trait HasTaxQuery
      */
     protected function appendTaxClause(array $clause): array
     {
-        $query = $this->get('tax_query', []);
+        $query = $this->getArg('tax_query', []);
 
         if (!is_array($query)) {
             $query = [];

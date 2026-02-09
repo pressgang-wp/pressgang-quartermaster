@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-02-09T15:49:03Z",
+    "generated_at": "2026-02-09T16:10:52Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -573,6 +573,17 @@
             "reads_globals": false,
             "wp_docs": [],
             "notes": "Return inspectable builder state for debugging."
+        },
+        {
+            "name": "get",
+            "signature": "get(): array",
+            "group": "Terminals",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/"
+            ],
+            "notes": "Execute the query and return the posts array."
         },
         {
             "name": "wpQuery",
