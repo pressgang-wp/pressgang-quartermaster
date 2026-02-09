@@ -33,13 +33,33 @@ namespace Timber {
             }
         }
     }
+
+    if (!class_exists(\Timber\Timber::class)) {
+        class Timber
+        {
+            /**
+             * @param array<string, mixed> $args
+             * @return array<int, object>
+             */
+            public static function get_terms(array $args = []): array
+            {
+                $GLOBALS['__quartermaster_test_timber_get_terms_args'] = $args;
+
+                return [
+                    (object) ['name' => 'stub-term', 'taxonomy' => $args['taxonomy'] ?? 'category'],
+                ];
+            }
+        }
+    }
 }
 
 namespace PressGang\Quartermaster\Tests {
 
     use PHPUnit\Framework\TestCase;
     use PressGang\Quartermaster\Adapters\TimberAdapter;
+    use PressGang\Quartermaster\Adapters\TimberTermAdapter;
     use PressGang\Quartermaster\Adapters\WpAdapter;
+    use PressGang\Quartermaster\Quartermaster;
 
     final class AdapterTest extends TestCase
     {
@@ -77,6 +97,36 @@ namespace PressGang\Quartermaster\Tests {
             $result = (new TimberAdapter())->postQuery($args);
 
             self::assertSame($args, $result->query->query_vars);
+        }
+
+        public function testTimberTermAdapterReturnsIterable(): void
+        {
+            $result = (new TimberTermAdapter())->getTerms(['taxonomy' => 'category']);
+
+            self::assertIsIterable($result);
+        }
+
+        public function testTimberTermAdapterPassesArgsToTimber(): void
+        {
+            unset($GLOBALS['__quartermaster_test_timber_get_terms_args']);
+
+            $args = ['taxonomy' => 'post_tag', 'hide_empty' => false];
+            (new TimberTermAdapter())->getTerms($args);
+
+            self::assertSame($args, $GLOBALS['__quartermaster_test_timber_get_terms_args']);
+        }
+
+        public function testTermsBuilderTimberTerminalPassesArgsToTimber(): void
+        {
+            unset($GLOBALS['__quartermaster_test_timber_get_terms_args']);
+
+            $result = Quartermaster::terms('category')->hideEmpty(false)->timber();
+
+            self::assertIsIterable($result);
+            self::assertSame(
+                ['taxonomy' => 'category', 'hide_empty' => false],
+                $GLOBALS['__quartermaster_test_timber_get_terms_args']
+            );
         }
     }
 }

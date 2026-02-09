@@ -2,6 +2,7 @@
 
 namespace PressGang\Quartermaster\Terms;
 
+use PressGang\Quartermaster\Adapters\TimberTermAdapter;
 use PressGang\Quartermaster\Concerns\HasArgs;
 use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDebugging;
@@ -482,6 +483,23 @@ final class TermsBuilder
     public function get(): array|\WP_Error
     {
         return \get_terms($this->toArgs());
+    }
+
+    /**
+     * Execute `Timber::get_terms()` with current args.
+     *
+     * Timber is optional and guarded at runtime. This method does not mutate args and does
+     * not add implicit defaults.
+     *
+     * Sets: (none)
+     *
+     * See: https://timber.github.io/docs/v2/reference/timber-timber/#get_terms
+     *
+     * @return iterable<int, object> Timber term objects.
+     */
+    public function timber(): iterable
+    {
+        return (new TimberTermAdapter())->getTerms($this->toArgs());
     }
 
     /**

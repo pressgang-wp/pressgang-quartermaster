@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-02-09T15:30:20Z",
+    "generated_at": "2026-02-09T15:49:03Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -909,6 +909,17 @@
                 "https://developer.wordpress.org/reference/functions/get_terms/"
             ],
             "notes": "Execute `get_terms()` with current args."
+        },
+        {
+            "name": "timber",
+            "signature": "timber(): iterable",
+            "group": "Terms terminal",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://timber.github.io/docs/v2/reference/timber-timber/#get_terms"
+            ],
+            "notes": "Execute `Timber::get_terms()` with current args."
         }
     ]
 }

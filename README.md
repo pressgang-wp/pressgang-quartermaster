@@ -39,7 +39,7 @@ Requirements: PHP 8.3+.
 | Terms core | `taxonomy()`, `objectIds()`, `hideEmpty()`, `slug()`, `name()`, `fields()`, `include()`, `exclude()`, `excludeTree()`, `parent()`, `childOf()`, `childless()`, `search()` |
 | Terms pagination / ordering | `limit()`, `offset()`, `page()`, `orderBy()` |
 | Terms meta query | `whereMeta()`, `orWhereMeta()` |
-| Terms terminal | `get()` |
+| Terms terminal | `get()`, `timber()` |
 
 ---
 
@@ -179,6 +179,12 @@ $children = Quartermaster::terms('category')
     ->childOf(5)
     ->excludeTree(12)
     ->get();
+
+// Get Timber term objects (runtime-guarded)
+$timberTerms = Quartermaster::terms('category')
+    ->hideEmpty()
+    ->orderBy('name')
+    ->timber();
 ```
 
 Inspect generated args:

@@ -156,7 +156,7 @@ $termsGroupedMethods = [
     'Terms conditional & hooks' => ['when', 'unless', 'tap'],
     'Terms escape hatch' => ['tapArgs'],
     'Terms introspection' => ['toArgs', 'explain'],
-    'Terms terminal' => ['get'],
+    'Terms terminal' => ['get', 'timber'],
 ];
 
 $ref = new ReflectionClass(Quartermaster::class);
