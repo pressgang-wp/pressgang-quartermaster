@@ -218,9 +218,9 @@ final class Quartermaster
      *
      * See: https://timber.github.io/docs/v2/reference/timber-postquery/
      *
-     * @return object Timber `PostQuery` instance when Timber is installed.
+     * @return \Timber\PostQuery
      */
-    public function timber(): object
+    public function timber(): \Timber\PostQuery
     {
         return (new TimberAdapter())->postQuery($this->toArgs());
     }

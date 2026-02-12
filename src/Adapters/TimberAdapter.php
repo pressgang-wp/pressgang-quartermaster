@@ -21,17 +21,14 @@ final class TimberAdapter
      * Runtime requirement: `\Timber\PostQuery` must exist.
      *
      * @param array<string, mixed> $args
-     * @return object Timber post query object.
+     * @return \Timber\PostQuery
      */
-    public function postQuery(array $args): object
+    public function postQuery(array $args): \Timber\PostQuery
     {
         if (!class_exists(\Timber\PostQuery::class)) {
             throw new RuntimeException('Timber is not installed. Install timber/timber before calling timber().');
         }
 
-        /** @var object $query */
-        $query = new \Timber\PostQuery(new \WP_Query($args));
-
-        return $query;
+        return new \Timber\PostQuery(new \WP_Query($args));
     }
 }

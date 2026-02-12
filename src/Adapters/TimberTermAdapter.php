@@ -20,9 +20,9 @@ final class TimberTermAdapter
      * Runtime requirement: `\Timber\Timber` must exist.
      *
      * @param array<string, mixed> $args
-     * @return iterable<int, object> Timber term objects.
+     * @return array<int, \Timber\Term>
      */
-    public function getTerms(array $args): iterable
+    public function getTerms(array $args): array
     {
         if (!class_exists(\Timber\Timber::class)) {
             throw new RuntimeException('Timber is not installed. Install timber/timber before calling timber().');
