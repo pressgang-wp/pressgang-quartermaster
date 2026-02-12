@@ -9,6 +9,7 @@ use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Concerns\HasMacros;
 use PressGang\Quartermaster\Support\ClauseQuery;
 use PressGang\Quartermaster\Support\Warnings;
+use PressGang\Quartermaster\Support\WpRuntime;
 
 /**
  * Args-first fluent builder for `WP_Term_Query` / `get_terms()` arguments.
@@ -287,30 +288,31 @@ final class TermsBuilder
     }
 
     /**
-     * Set `search` with basic trim sanitization.
+     * Set `search` with `sanitize_text_field()` sanitization.
      *
      * Blank strings are ignored and advisory warning is recorded for explainability.
      *
      * Sets: search
      *
      * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     * See: https://developer.wordpress.org/reference/functions/sanitize_text_field/
      *
      * @param string $search
      * @return self
      */
     public function search(string $search): self
     {
-        $trimmed = trim($search);
+        $value = WpRuntime::sanitizeText($search);
 
-        if ($trimmed === '') {
+        if ($value === '') {
             $this->warn('search() received an empty value and was ignored.');
             $this->record('search', $search);
 
             return $this;
         }
 
-        $this->set('search', $trimmed);
-        $this->record('search', $search);
+        $this->set('search', $value);
+        $this->record('search', $value);
 
         return $this;
     }
