@@ -63,6 +63,14 @@ $args = Quartermaster::prepare('event')
     ->toArgs();
 ```
 
+Meta negation (excludes rows where key equals value **or** key was never saved):
+
+```php
+$args = Quartermaster::prepare('post')
+    ->whereMetaNot('hide_from_listing', '1')
+    ->toArgs();
+```
+
 Meta existence checks:
 
 ```php

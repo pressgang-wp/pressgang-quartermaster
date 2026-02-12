@@ -103,6 +103,35 @@ trait HasMetaQuery
     }
 
     /**
+     * Exclude posts where a meta key equals a given value, or where the key does not exist.
+     *
+     * WordPress `!=` only matches rows where the key exists with a different value — it silently
+     * excludes rows where the key was never saved. This method creates a nested OR sub-group
+     * (`!= value` OR `NOT EXISTS`) so both cases are handled correctly.
+     *
+     * Sets: meta_query
+     *
+     * @param string $key  Meta key to test.
+     * @param mixed  $value Value to exclude.
+     * @return self
+     */
+    public function whereMetaNot(string $key, mixed $value): self
+    {
+        $subGroup = [
+            'relation' => 'OR',
+            ['key' => $key, 'value' => $value, 'compare' => '!='],
+            ['key' => $key, 'compare' => 'NOT EXISTS'],
+        ];
+
+        $query = $this->appendMetaClause($subGroup, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('whereMetaNot', $key, $value);
+
+        return $this;
+    }
+
+    /**
      * Append an `EXISTS` meta clause to `meta_query`.
      *
      * The clause contains only `key` and `compare = EXISTS`. No `value` or `type` is set,

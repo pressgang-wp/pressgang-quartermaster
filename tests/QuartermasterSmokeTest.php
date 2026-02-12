@@ -980,6 +980,56 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('tax_query', $args);
     }
 
+    // --- whereMetaNot (nested != OR NOT EXISTS) ---
+
+    public function testWhereMetaNotIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->whereMetaNot('hide_from_listing', '1');
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testWhereMetaNotCreatesNestedOrSubGroup(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereMetaNot('hide_from_listing', '1')
+            ->toArgs();
+
+        self::assertArrayHasKey('meta_query', $args);
+
+        $subGroup = $args['meta_query'][0];
+
+        self::assertSame('OR', $subGroup['relation']);
+        self::assertSame('hide_from_listing', $subGroup[0]['key']);
+        self::assertSame('1', $subGroup[0]['value']);
+        self::assertSame('!=', $subGroup[0]['compare']);
+        self::assertSame('hide_from_listing', $subGroup[1]['key']);
+        self::assertSame('NOT EXISTS', $subGroup[1]['compare']);
+    }
+
+    public function testWhereMetaNotIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::prepare()
+            ->whereMetaNot('hide_from_listing', '1')
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('whereMetaNot', $names);
+    }
+
+    public function testWhereMetaNotCombinesWithWhereMetaUsingAndRelation(): void
+    {
+        $args = Quartermaster::prepare()
+            ->whereMetaNot('hide_from_listing', '1')
+            ->whereMeta('featured', '1')
+            ->toArgs();
+
+        self::assertSame('AND', $args['meta_query']['relation']);
+        self::assertSame('OR', $args['meta_query'][0]['relation']);
+        self::assertSame('featured', $args['meta_query'][1]['key']);
+    }
+
     // --- whereMetaExists / whereMetaNotExists ---
 
     public function testWhereMetaExistsCreatesExistsClause(): void

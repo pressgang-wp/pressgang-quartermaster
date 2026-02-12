@@ -403,6 +403,19 @@
             "notes": "Append a meta clause and force root relation to `OR`."
         },
         {
+            "name": "whereMetaNot",
+            "signature": "whereMetaNot(string $key, mixed $value): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Exclude posts where a meta key equals a value or was never saved. Creates a nested OR sub-group (`!= value` OR `NOT EXISTS`)."
+        },
+        {
             "name": "whereMetaDate",
             "signature": "whereMetaDate(string $key, string $operator, string|int|null $value = NULL, string $format = 'Ymd'): self",
             "group": "Meta query",

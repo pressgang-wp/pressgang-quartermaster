@@ -28,7 +28,7 @@ Requirements: PHP 8.3+.
 | Pagination / search | `paged()`, `limit()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
 | Query-var binding | `bindQueryVars()` |
 | Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
-| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
+| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
 | Tax query | `whereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |
