@@ -498,9 +498,9 @@ final class TermsBuilder
      *
      * See: https://timber.github.io/docs/v2/reference/timber-timber/#get_terms
      *
-     * @return iterable<int, object> Timber term objects.
+     * @return array<int, \Timber\Term>
      */
-    public function timber(): iterable
+    public function timber(): array
     {
         return (new TimberTermAdapter())->getTerms($this->toArgs());
     }
