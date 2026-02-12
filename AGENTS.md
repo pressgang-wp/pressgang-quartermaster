@@ -71,6 +71,14 @@ $args = Quartermaster::prepare('post')
     ->toArgs();
 ```
 
+Serialised meta field matching (e.g. ACF relationship/checkbox fields):
+
+```php
+$args = Quartermaster::prepare('post')
+    ->whereMetaLikeAny('related_topics', [15, 22])
+    ->toArgs();
+```
+
 Meta existence checks:
 
 ```php

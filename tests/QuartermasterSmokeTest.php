@@ -1055,6 +1055,66 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('tax_query', $args);
     }
 
+    // --- whereMetaLikeAny (serialised field OR LIKE) ---
+
+    public function testWhereMetaLikeAnyIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->whereMetaLikeAny('related_topics', [15, 22]);
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testWhereMetaLikeAnyCreatesNestedOrLikeClauses(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereMetaLikeAny('related_topics', [15, 22])
+            ->toArgs();
+
+        self::assertArrayHasKey('meta_query', $args);
+
+        $subGroup = $args['meta_query'][0];
+
+        self::assertSame('OR', $subGroup['relation']);
+        self::assertCount(3, $subGroup); // relation + 2 clauses
+        self::assertSame('related_topics', $subGroup[0]['key']);
+        self::assertSame('"15"', $subGroup[0]['value']);
+        self::assertSame('LIKE', $subGroup[0]['compare']);
+        self::assertSame('"22"', $subGroup[1]['value']);
+        self::assertSame('LIKE', $subGroup[1]['compare']);
+    }
+
+    public function testWhereMetaLikeAnyIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::prepare()
+            ->whereMetaLikeAny('related_topics', [15])
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('whereMetaLikeAny', $names);
+    }
+
+    public function testWhereMetaLikeAnyNoOpsForEmptyValues(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereMetaLikeAny('related_topics', [])
+            ->toArgs();
+
+        self::assertArrayNotHasKey('meta_query', $args);
+    }
+
+    public function testWhereMetaLikeAnyCombinesWithWhereMetaUsingAndRelation(): void
+    {
+        $args = Quartermaster::prepare()
+            ->whereMetaLikeAny('related_topics', [15])
+            ->whereMeta('featured', '1')
+            ->toArgs();
+
+        self::assertSame('AND', $args['meta_query']['relation']);
+        self::assertSame('OR', $args['meta_query'][0]['relation']);
+        self::assertSame('featured', $args['meta_query'][1]['key']);
+    }
+
     // --- whereMetaNot (nested != OR NOT EXISTS) ---
 
     public function testWhereMetaNotIsFluent(): void

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 - Added `Bind::orderBy()` and `Binder::orderBy()` for binding a query var to `orderBy()` with fallback default and per-field direction overrides.
+- Added `whereMetaLikeAny()` for matching serialised meta fields (e.g. ACF) via nested OR LIKE clauses.
 - Added `whereMetaNot()` to exclude posts where a meta key equals a value or was never saved (nested `!= OR NOT EXISTS` sub-group).
 - Added `whereMetaExists()` and `whereMetaNotExists()` for meta key presence/absence checks.
 - Added macro system (`macro()`, `hasMacro()`, `flushMacros()`) to `Quartermaster` and `TermsBuilder`.

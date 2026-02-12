@@ -180,6 +180,40 @@ trait HasMetaQuery
     }
 
     /**
+     * Match posts where a serialised meta field contains any of the given values.
+     *
+     * Builds a nested OR sub-group of LIKE clauses, one per value. Each value is wrapped
+     * in double-quotes to match ACF's serialised storage format (e.g. `"15"`).
+     *
+     * This is added as a nested AND sub-group so it composes safely with other meta clauses.
+     *
+     * Sets: meta_query
+     *
+     * @param string              $key    Meta key to search.
+     * @param array<int, mixed>   $values Values to match (at least one must be present).
+     * @return self
+     */
+    public function whereMetaLikeAny(string $key, array $values): self
+    {
+        if ($values === []) {
+            return $this;
+        }
+
+        $subGroup = ['relation' => 'OR'];
+
+        foreach ($values as $value) {
+            $subGroup[] = ['key' => $key, 'value' => '"' . $value . '"', 'compare' => 'LIKE'];
+        }
+
+        $query = $this->appendMetaClause($subGroup, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('whereMetaLikeAny', $key, $values);
+
+        return $this;
+    }
+
+    /**
      * Build one meta clause compatible with `WP_Query` `meta_query`.
      *
      * @param string $key

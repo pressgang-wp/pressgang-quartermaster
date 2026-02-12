@@ -416,6 +416,19 @@
             "notes": "Exclude posts where a meta key equals a value or was never saved. Creates a nested OR sub-group (`!= value` OR `NOT EXISTS`)."
         },
         {
+            "name": "whereMetaLikeAny",
+            "signature": "whereMetaLikeAny(string $key, array $values): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Match posts where a serialised meta field contains any of the given values. Builds a nested OR sub-group of LIKE clauses with double-quote wrapping for ACF serialised storage."
+        },
+        {
             "name": "whereMetaDate",
             "signature": "whereMetaDate(string $key, string $operator, string|int|null $value = NULL, string $format = 'Ymd'): self",
             "group": "Meta query",
