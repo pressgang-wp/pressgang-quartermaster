@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Added `whereMetaNot()` to exclude posts where a meta key equals a value or was never saved (nested `!= OR NOT EXISTS` sub-group).
+- Added `whereMetaExists()` and `whereMetaNotExists()` for meta key presence/absence checks.
 - Added macro system (`macro()`, `hasMacro()`, `flushMacros()`) to `Quartermaster` and `TermsBuilder`.
 - Added `when()`, `unless()`, and `tap()` fluent helpers to `Quartermaster` and `TermsBuilder`.
 - Added `objectIds()`, `slug()`, `name()`, `fields()`, `excludeTree()`, `childOf()`, and `childless()` fluent methods to `TermsBuilder`.
