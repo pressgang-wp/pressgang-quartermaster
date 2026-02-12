@@ -58,6 +58,24 @@ final class Binder
     }
 
     /**
+     * Bind a query var to `orderBy()` with conditional sort direction.
+     *
+     * @param string $queryVar  Query-var key to read the orderby value from.
+     * @param string $default  Fallback orderby value when the query var is empty.
+     * @param string $defaultOrder  Default sort direction (`ASC` or `DESC`).
+     * @param array<string, 'ASC'|'DESC'> $overrides  Map of orderby values to their sort direction.
+     * @return self
+     */
+    public function orderBy(
+        string $queryVar = 'orderby',
+        string $default = 'date',
+        string $defaultOrder = 'DESC',
+        array $overrides = [],
+    ): self {
+        return $this->register($queryVar, Bind::orderBy($default, $defaultOrder, $overrides));
+    }
+
+    /**
      * Start configuring a numeric meta binding.
      *
      * @param string $queryVar

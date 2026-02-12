@@ -148,14 +148,20 @@ Map form:
 ```php
 $q = Quartermaster::prepare('route')->bindQueryVars([
     'shape' => Bind::tax('route_shape'),
+    'orderby' => Bind::orderBy('date', 'DESC', ['title' => 'ASC']),
 ]);
 ```
 
 Binder form:
 
 ```php
-$q = Quartermaster::prepare('route')->bindQueryVars(fn (Binder $b) => $b->tax('shape', 'route_shape'));
+$q = Quartermaster::prepare('route')->bindQueryVars(fn (Binder $b) => $b
+    ->tax('shape', 'route_shape')
+    ->orderBy('orderby', 'date', 'DESC', ['title' => 'ASC'])
+);
 ```
+
+`Bind::orderBy()` reads an `orderby` value from the query var, falls back to `$default` when empty, and resolves the sort direction from `$overrides` (keyed by orderby value) or `$defaultOrder`.
 
 - Binding is opt-in only.
 - Quartermaster does not infer WordPress query-var semantics. Bindings still build explicit `tax_query` / `meta_query` / other args.

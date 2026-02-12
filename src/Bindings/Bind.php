@@ -61,6 +61,33 @@ final class Bind
     }
 
     /**
+     * Bind a query var to `orderBy()` with conditional sort direction.
+     *
+     * Reads the `orderby` value from the query var, falling back to `$default`. The sort
+     * direction is resolved from `$overrides` (keyed by orderby value); anything not listed
+     * uses `$defaultOrder`.
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
+     *
+     * @param string $default  Fallback orderby value when the query var is empty.
+     * @param string $defaultOrder  Default sort direction (`ASC` or `DESC`).
+     * @param array<string, 'ASC'|'DESC'> $overrides  Map of orderby values to their sort direction.
+     * @return callable(Quartermaster, mixed, string): Quartermaster
+     */
+    public static function orderBy(
+        string $default = 'date',
+        string $defaultOrder = 'DESC',
+        array $overrides = [],
+    ): callable {
+        return static function (Quartermaster $q, mixed $value, string $key) use ($default, $defaultOrder, $overrides): Quartermaster {
+            $orderby = trim((string) ($value ?: $default)) ?: $default;
+            $order = $overrides[$orderby] ?? $defaultOrder;
+
+            return $q->orderBy($orderby, $order);
+        };
+    }
+
+    /**
      * Bind a query var to one numeric `meta_query` clause.
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters

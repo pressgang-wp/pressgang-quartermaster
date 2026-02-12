@@ -172,6 +172,81 @@ final class QuartermasterSmokeTest extends TestCase
         );
     }
 
+    // --- Bind::orderBy / Binder::orderBy ---
+
+    public function testBindOrderByMapModeUsesDefaultWhenQueryVarEmpty(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'orderby' => '',
+        ]);
+
+        $args = Quartermaster::prepare('post')->bindQueryVars([
+            'orderby' => Bind::orderBy('date', 'DESC'),
+        ], $source)->toArgs();
+
+        self::assertSame('date', $args['orderby']);
+        self::assertSame('DESC', $args['order']);
+    }
+
+    public function testBindOrderByMapModeUsesProvidedValue(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'orderby' => 'title',
+        ]);
+
+        $args = Quartermaster::prepare('post')->bindQueryVars([
+            'orderby' => Bind::orderBy('date', 'DESC'),
+        ], $source)->toArgs();
+
+        self::assertSame('title', $args['orderby']);
+        self::assertSame('DESC', $args['order']);
+    }
+
+    public function testBindOrderByMapModeAppliesOverrideDirection(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'orderby' => 'title',
+        ]);
+
+        $args = Quartermaster::prepare('post')->bindQueryVars([
+            'orderby' => Bind::orderBy('date', 'DESC', ['title' => 'ASC']),
+        ], $source)->toArgs();
+
+        self::assertSame('title', $args['orderby']);
+        self::assertSame('ASC', $args['order']);
+    }
+
+    public function testBindOrderByBinderModeMatchesMapMode(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'orderby' => 'title',
+        ]);
+
+        $mapArgs = Quartermaster::prepare('post')->bindQueryVars([
+            'orderby' => Bind::orderBy('date', 'DESC', ['title' => 'ASC']),
+        ], $source)->toArgs();
+
+        $binderArgs = Quartermaster::prepare('post')->bindQueryVars(function (Binder $b): void {
+            $b->orderBy('orderby', 'date', 'DESC', ['title' => 'ASC']);
+        }, $source)->toArgs();
+
+        self::assertSame($mapArgs, $binderArgs);
+    }
+
+    public function testBindOrderByMapModeUsesDefaultWhenQueryVarNull(): void
+    {
+        $source = new ArrayQueryVarSource([
+            'orderby' => null,
+        ]);
+
+        $args = Quartermaster::prepare('post')->bindQueryVars([
+            'orderby' => Bind::orderBy('date', 'DESC'),
+        ], $source)->toArgs();
+
+        self::assertSame('date', $args['orderby']);
+        self::assertSame('DESC', $args['order']);
+    }
+
     public function testBindQueryVarsSkipLogicDoesNotAddClausesForEmptyValues(): void
     {
         $source = new ArrayQueryVarSource([

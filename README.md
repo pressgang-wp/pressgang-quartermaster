@@ -26,7 +26,7 @@ Requirements: PHP 8.3+.
 | Core post constraints | `postType()`, `status()`, `whereId()`, `whereInIds()`, `excludeIds()`, `whereParent()`, `whereParentIn()` |
 | Author constraints | `whereAuthor()`, `whereAuthorIn()`, `whereAuthorNotIn()` |
 | Pagination / search | `paged()`, `limit()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
-| Query-var binding | `bindQueryVars()` |
+| Query-var binding | `bindQueryVars()`, `Bind::paged()`, `Bind::tax()`, `Bind::orderBy()`, `Bind::metaNum()`, `Bind::search()` |
 | Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
 | Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
 | Tax query | `whereTax()` |
@@ -210,6 +210,7 @@ use PressGang\Quartermaster\Quartermaster;
 
 $q = Quartermaster::posts('route')->bindQueryVars([
     'paged' => Bind::paged(),
+    'orderby' => Bind::orderBy('date', 'DESC', ['title' => 'ASC']),
     'shape' => Bind::tax('route_shape'),
     'difficulty' => Bind::tax('route_difficulty'),
     'min_distance' => Bind::metaNum('distance_miles', '>='),
@@ -226,6 +227,7 @@ use PressGang\Quartermaster\Quartermaster;
 
 $q = Quartermaster::posts('route')->bindQueryVars(function (Binder $b): void {
     $b->paged();
+    $b->orderBy('orderby', 'date', 'DESC', ['title' => 'ASC']);
     $b->tax('district'); // district -> district
     $b->tax('shape', 'route_shape'); // shape -> route_shape
     $b->tax('difficulty', 'route_difficulty');
