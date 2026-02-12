@@ -25,10 +25,10 @@ Requirements: PHP 8.3+.
 | Bootstrap | `posts()`, `terms()`, `prepare()` (compatibility alias) |
 | Core post constraints | `postType()`, `status()`, `whereId()`, `whereInIds()`, `excludeIds()`, `whereParent()`, `whereParentIn()` |
 | Author constraints | `whereAuthor()`, `whereAuthorIn()`, `whereAuthorNotIn()` |
-| Pagination / search | `paged()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
+| Pagination / search | `paged()`, `limit()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
 | Query-var binding | `bindQueryVars()` |
 | Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
-| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaDate()` |
+| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
 | Tax query | `whereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |

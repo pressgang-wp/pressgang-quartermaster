@@ -25,17 +25,19 @@ trait HasTaxQuery
      * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
      *
      * @param string $taxonomy
-     * @param array<int, int|string> $terms Term values matched by `$field`.
+     * @param string|int|array<int, int|string> $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array.
      * @param string $field Tax field key such as `slug`, `term_id`, or `name`.
      * @param string $operator Tax operator such as `IN`, `NOT IN`, or `AND`.
      * @return self
      */
     public function whereTax(
         string $taxonomy,
-        array $terms,
+        string|int|array $terms,
         string $field = 'slug',
         string $operator = 'IN'
     ): self {
+        $terms = is_array($terms) ? $terms : [$terms];
+
         $terms = array_values(
             array_filter(
                 $terms,

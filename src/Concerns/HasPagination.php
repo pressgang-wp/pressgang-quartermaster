@@ -42,6 +42,27 @@ trait HasPagination
     }
 
     /**
+     * Set `posts_per_page` without pagination context.
+     *
+     * Use this when you need a fixed number of results (e.g. "top 3") without implying
+     * paginated navigation. Unlike `paged()`, this does not set the `paged` key.
+     *
+     * Sets: posts_per_page
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters
+     *
+     * @param int $postsPerPage Number of posts to return.
+     * @return self
+     */
+    public function limit(int $postsPerPage): self
+    {
+        $this->set('posts_per_page', $postsPerPage);
+        $this->record('limit', $postsPerPage);
+
+        return $this;
+    }
+
+    /**
      * Configure `WP_Query` to fetch all matching posts.
      *
      * This maps directly to `posts_per_page = -1` with `nopaging = true`. If `paged`

@@ -941,6 +941,162 @@ final class QuartermasterSmokeTest extends TestCase
         Quartermaster::flushMacros();
     }
 
+    // --- whereTax single-value convenience ---
+
+    public function testWhereTaxAcceptsSingleStringTerm(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('category', 'news')
+            ->toArgs();
+
+        self::assertSame(['news'], $args['tax_query'][0]['terms']);
+    }
+
+    public function testWhereTaxAcceptsSingleIntTerm(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('research_theme', 42, 'term_id')
+            ->toArgs();
+
+        self::assertSame([42], $args['tax_query'][0]['terms']);
+        self::assertSame('term_id', $args['tax_query'][0]['field']);
+    }
+
+    public function testWhereTaxStillAcceptsArrayTerms(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('topic', ['news', 'events'])
+            ->toArgs();
+
+        self::assertSame(['news', 'events'], $args['tax_query'][0]['terms']);
+    }
+
+    public function testWhereTaxSingleEmptyStringIsFilteredOut(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('category', '')
+            ->toArgs();
+
+        self::assertArrayNotHasKey('tax_query', $args);
+    }
+
+    // --- whereMetaExists / whereMetaNotExists ---
+
+    public function testWhereMetaExistsCreatesExistsClause(): void
+    {
+        $args = Quartermaster::prepare('person')
+            ->whereMetaExists('_thumbnail_id')
+            ->toArgs();
+
+        self::assertArrayHasKey('meta_query', $args);
+        self::assertSame('_thumbnail_id', $args['meta_query'][0]['key']);
+        self::assertSame('EXISTS', $args['meta_query'][0]['compare']);
+        self::assertArrayNotHasKey('value', $args['meta_query'][0]);
+    }
+
+    public function testWhereMetaNotExistsCreatesNotExistsClause(): void
+    {
+        $args = Quartermaster::prepare('person')
+            ->whereMetaNotExists('exclude_from_people_page')
+            ->toArgs();
+
+        self::assertArrayHasKey('meta_query', $args);
+        self::assertSame('exclude_from_people_page', $args['meta_query'][0]['key']);
+        self::assertSame('NOT EXISTS', $args['meta_query'][0]['compare']);
+        self::assertArrayNotHasKey('value', $args['meta_query'][0]);
+    }
+
+    public function testWhereMetaExistsIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->whereMetaExists('_thumbnail_id');
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testWhereMetaNotExistsIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->whereMetaNotExists('featured');
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testWhereMetaExistsIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::prepare()
+            ->whereMetaExists('_thumbnail_id')
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('whereMetaExists', $names);
+    }
+
+    public function testWhereMetaNotExistsIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::prepare()
+            ->whereMetaNotExists('featured')
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('whereMetaNotExists', $names);
+    }
+
+    public function testWhereMetaExistsCombinesWithWhereMetaUsingAndRelation(): void
+    {
+        $args = Quartermaster::prepare()
+            ->whereMetaExists('_thumbnail_id')
+            ->whereMeta('featured', '1')
+            ->toArgs();
+
+        self::assertSame('AND', $args['meta_query']['relation']);
+        self::assertSame('EXISTS', $args['meta_query'][0]['compare']);
+        self::assertSame('featured', $args['meta_query'][1]['key']);
+    }
+
+    // --- limit() for posts ---
+
+    public function testLimitSetsPostsPerPageOnly(): void
+    {
+        $args = Quartermaster::prepare('event')
+            ->limit(3)
+            ->toArgs();
+
+        self::assertSame(3, $args['posts_per_page']);
+        self::assertArrayNotHasKey('paged', $args);
+        self::assertArrayNotHasKey('nopaging', $args);
+    }
+
+    public function testLimitIsFluent(): void
+    {
+        $builder = Quartermaster::prepare('event')->limit(5);
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testLimitIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::prepare('event')
+            ->limit(3)
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('limit', $names);
+    }
+
+    public function testLimitDoesNotAddPaginationContext(): void
+    {
+        $args = Quartermaster::prepare('event')
+            ->status('publish')
+            ->limit(3)
+            ->orderByDesc('date')
+            ->toArgs();
+
+        self::assertSame(3, $args['posts_per_page']);
+        self::assertArrayNotHasKey('paged', $args);
+    }
+
     public function testWpQueryCanBeSkippedWithoutWordPress(): void
     {
         if (!class_exists('WP_Query')) {

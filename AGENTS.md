@@ -28,6 +28,14 @@ $args = Quartermaster::prepare('post')
     ->toArgs();
 ```
 
+Limit (top N without pagination):
+
+```php
+$args = Quartermaster::prepare('event')
+    ->limit(3)
+    ->toArgs();
+```
+
 Fetch all:
 
 ```php
@@ -55,6 +63,18 @@ $args = Quartermaster::prepare('event')
     ->toArgs();
 ```
 
+Meta existence checks:
+
+```php
+$args = Quartermaster::prepare('person')
+    ->whereMetaExists('_thumbnail_id')
+    ->toArgs();
+
+$args = Quartermaster::prepare('person')
+    ->whereMetaNotExists('exclude_from_people_page')
+    ->toArgs();
+```
+
 Conditional queries and hooks:
 
 ```php
@@ -68,11 +88,20 @@ $q = Quartermaster::prepare('event')
     ->tap(fn ($q) => $debug ? $q->noFoundRows() : null);
 ```
 
-Tax queries:
+Tax queries (single value or array):
 
 ```php
 $args = Quartermaster::prepare('event')
-    ->whereTax('event_type', ['meetup'])
+    ->whereTax('event_type', 'meetup')
+    ->toArgs();
+
+$args = Quartermaster::prepare('event')
+    ->whereTax('event_type', ['meetup', 'conference'])
+    ->toArgs();
+
+// Single term ID
+$args = Quartermaster::prepare('event')
+    ->whereTax('research_theme', $termId, 'term_id')
     ->toArgs();
 ```
 

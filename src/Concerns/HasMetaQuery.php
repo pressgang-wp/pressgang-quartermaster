@@ -103,6 +103,54 @@ trait HasMetaQuery
     }
 
     /**
+     * Append an `EXISTS` meta clause to `meta_query`.
+     *
+     * The clause contains only `key` and `compare = EXISTS`. No `value` or `type` is set,
+     * matching WordPress documentation for existence checks.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
+     * @param string $key Meta key to check for existence.
+     * @return self
+     */
+    public function whereMetaExists(string $key): self
+    {
+        $clause = ['key' => $key, 'compare' => 'EXISTS'];
+        $query = $this->appendMetaClause($clause, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('whereMetaExists', $key);
+
+        return $this;
+    }
+
+    /**
+     * Append a `NOT EXISTS` meta clause to `meta_query`.
+     *
+     * The clause contains only `key` and `compare = NOT EXISTS`. No `value` or `type` is set,
+     * matching WordPress documentation for non-existence checks.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
+     * @param string $key Meta key to check for non-existence.
+     * @return self
+     */
+    public function whereMetaNotExists(string $key): self
+    {
+        $clause = ['key' => $key, 'compare' => 'NOT EXISTS'];
+        $query = $this->appendMetaClause($clause, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('whereMetaNotExists', $key);
+
+        return $this;
+    }
+
+    /**
      * Build one meta clause compatible with `WP_Query` `meta_query`.
      *
      * @param string $key
