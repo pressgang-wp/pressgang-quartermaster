@@ -230,7 +230,7 @@ $payload = [
 
 $docsDir = __DIR__ . '/../docs';
 if (!is_dir($docsDir)) {
-    mkdir($docsDir, 0777, true);
+    mkdir($docsDir, 0755, true);
 }
 
 $target = $docsDir . '/api-index.json';
