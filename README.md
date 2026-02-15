@@ -1,3 +1,5 @@
+<img src="https://github.com/pressgang-wp/pressgang/blob/master/img/quartermaster-banner.png" alt="Quartermaster">
+
 # ⚓ Quartermaster
 
 **Quartermaster** is a fluent, args-first builder for `WP_Query`.
