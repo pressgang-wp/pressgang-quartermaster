@@ -1,4 +1,4 @@
-<img src="https://github.com/pressgang-wp/pressgang-quartermaster/blob/master/assets/img/quartermaster-banner.png" alt="Quartermaster">
+<img src="https://github.com/pressgang-wp/pressgang-quartermaster/blob/main/assets/img/quartermaster-banner.png" alt="Quartermaster">
 
 # ⚓ Quartermaster
 
