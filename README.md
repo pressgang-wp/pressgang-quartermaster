@@ -1,5 +1,4 @@
-<img src="https://github.com/pressgang-wp/pressgang-quartermaster/blob/main/assets/img/quartermaster-banner.png" alt="Quartermaster">
-
+cl
 # ⚓ Quartermaster
 
 **Quartermaster** is a fluent, args-first builder for `WP_Query`.
@@ -338,6 +337,29 @@ $q = Quartermaster::posts('event')
 ```
 
 All three are recorded in `explain()` for debuggability. No magic, no hidden state. ⚓
+
+---
+
+## 🪝 Query Hooks (`pre_get_posts`)
+
+`applyTo()` modifies an existing `WP_Query` in place instead of creating a new one — designed for WordPress `pre_get_posts` hooks:
+
+```php
+add_action('pre_get_posts', function (WP_Query $query): void {
+    if (! $query->is_main_query() || is_admin()) {
+        return;
+    }
+
+    Quartermaster::posts('product')
+        ->whereTax('product_visibility', ['exclude-from-catalog'], 'name', 'NOT IN')
+        ->whereMetaExists('_price')
+        ->applyTo($query);
+});
+```
+
+When multiple hooks call `applyTo()`, clause arrays (`tax_query`, `meta_query`, `date_query`) are **merged** with existing clauses — not overwritten — so hooks compose safely.
+
+`applyTo()` is a **void terminal**: it does not return the builder. If you need to inspect the applied args, hold a reference to the builder and call `explain()` separately.
 
 ---
 
