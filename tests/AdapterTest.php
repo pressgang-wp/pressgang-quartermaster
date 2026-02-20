@@ -21,6 +21,16 @@ namespace {
                     (object) ['ID' => 1, 'post_type' => $args['post_type'] ?? 'post'],
                 ];
             }
+
+            public function set(string $key, mixed $value): void
+            {
+                $this->query_vars[$key] = $value;
+            }
+
+            public function get(string $key, mixed $default = ''): mixed
+            {
+                return $this->query_vars[$key] ?? $default;
+            }
         }
     }
 }

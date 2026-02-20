@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Added `QueryModifierAdapter` and `applyTo()` terminal for modifying existing `WP_Query` instances in `pre_get_posts` hooks.
 - Added `Bind::orderBy()` and `Binder::orderBy()` for binding a query var to `orderBy()` with fallback default and per-field direction overrides.
 - Added `whereMetaLikeAny()` for matching serialised meta fields (e.g. ACF) via nested OR LIKE clauses.
 - Added `whereMetaNot()` to exclude posts where a meta key equals a value or was never saved (nested `!= OR NOT EXISTS` sub-group).

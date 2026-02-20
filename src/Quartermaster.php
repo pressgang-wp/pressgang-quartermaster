@@ -2,6 +2,7 @@
 
 namespace PressGang\Quartermaster;
 
+use PressGang\Quartermaster\Adapters\QueryModifierAdapter;
 use PressGang\Quartermaster\Adapters\TimberAdapter;
 use PressGang\Quartermaster\Adapters\WpAdapter;
 use PressGang\Quartermaster\Bindings\Binder;
@@ -223,6 +224,28 @@ final class Quartermaster
     public function timber(): \Timber\PostQuery
     {
         return (new TimberAdapter())->postQuery($this->toArgs());
+    }
+
+    /**
+     * Apply the builder's args to an existing `WP_Query` instance.
+     *
+     * This terminal is designed for `pre_get_posts` hooks where WordPress provides
+     * an existing query object. Scalar args are set directly via `$query->set()`.
+     * Clause arrays (`tax_query`, `meta_query`, `date_query`) are merged with
+     * existing clauses so that modifications from multiple hooks compose safely.
+     *
+     * Sets: (dynamic)
+     *
+     * See: https://developer.wordpress.org/reference/hooks/pre_get_posts/
+     *
+     * @param \WP_Query $query The existing query to modify in place.
+     * @return void
+     */
+    public function applyTo(\WP_Query $query): void
+    {
+        $this->record('applyTo');
+
+        (new QueryModifierAdapter())->modify($query, $this->toArgs());
     }
 
     /**
