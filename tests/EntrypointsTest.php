@@ -217,5 +217,54 @@ namespace PressGang\Quartermaster\Tests {
             self::assertSame('count', $args['orderby']);
             self::assertSame('DESC', $args['order']);
         }
+
+        public function testForPostTypeSetsObjectIds(): void
+        {
+            $args = Quartermaster::terms('health_condition')
+                ->hideEmpty()
+                ->forPostType('impact_story')
+                ->toArgs();
+
+            self::assertSame('health_condition', $args['taxonomy']);
+            self::assertTrue($args['hide_empty']);
+            self::assertArrayHasKey('object_ids', $args);
+            self::assertIsArray($args['object_ids']);
+        }
+
+        public function testForPostTypeIsRecordedInExplain(): void
+        {
+            $explain = Quartermaster::terms('theme')
+                ->forPostType('event')
+                ->explain();
+
+            $names = array_column($explain['applied'], 'name');
+
+            self::assertContains('forPostType', $names);
+        }
+
+        public function testForPostTypeChainsFluently(): void
+        {
+            $args = Quartermaster::terms('research_goal')
+                ->hideEmpty()
+                ->forPostType('impact_story')
+                ->orderBy('name')
+                ->toArgs();
+
+            self::assertSame('research_goal', $args['taxonomy']);
+            self::assertTrue($args['hide_empty']);
+            self::assertArrayHasKey('object_ids', $args);
+            self::assertSame('name', $args['orderby']);
+        }
+
+        public function testForPostTypePassesIdsFromPostQuery(): void
+        {
+            // The WP_Query stub always returns one post object; forPostType
+            // passes whatever the post query returns as object_ids.
+            $args = Quartermaster::terms('health_condition')
+                ->forPostType('impact_story')
+                ->toArgs();
+
+            self::assertNotEmpty($args['object_ids']);
+        }
     }
 }

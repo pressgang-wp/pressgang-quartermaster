@@ -7,6 +7,7 @@ use PressGang\Quartermaster\Concerns\HasArgs;
 use PressGang\Quartermaster\Concerns\HasConditionals;
 use PressGang\Quartermaster\Concerns\HasDebugging;
 use PressGang\Quartermaster\Concerns\HasMacros;
+use PressGang\Quartermaster\Quartermaster;
 use PressGang\Quartermaster\Support\ClauseQuery;
 use PressGang\Quartermaster\Support\Warnings;
 use PressGang\Quartermaster\Support\WpRuntime;
@@ -100,6 +101,36 @@ final class TermsBuilder
     {
         $this->set('object_ids', $objectIds);
         $this->record('objectIds', $objectIds);
+
+        return $this;
+    }
+
+    /**
+     * Scope terms to a specific post type by fetching published post IDs and
+     * setting `object_ids`.
+     *
+     * WordPress `get_terms()` does not natively support post-type scoping. This method
+     * bridges that gap by querying all published IDs for the given post type and passing
+     * them as `object_ids`, so only terms actually used by that post type are returned.
+     *
+     * Sets: object_ids
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string $postType Post type slug to scope terms to.
+     * @return self
+     */
+    public function forPostType(string $postType): self
+    {
+        $ids = Quartermaster::prepare()
+            ->postType($postType)
+            ->status('publish')
+            ->all()
+            ->idsOnly()
+            ->get();
+
+        $this->objectIds($ids ?: [0]);
+        $this->record('forPostType', $postType);
 
         return $this;
     }
