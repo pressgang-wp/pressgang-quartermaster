@@ -336,6 +336,44 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('abc', $args['s']);
     }
 
+    public function testRelevanssiSetsSearchAndFlag(): void
+    {
+        $args = Quartermaster::prepare()->relevanssi('test query')->toArgs();
+
+        self::assertSame('test query', $args['s']);
+        self::assertTrue($args['relevanssi']);
+    }
+
+    public function testRelevanssiIgnoresEmptySearch(): void
+    {
+        $args = Quartermaster::prepare()->relevanssi('')->toArgs();
+
+        self::assertArrayNotHasKey('s', $args);
+        self::assertArrayNotHasKey('relevanssi', $args);
+    }
+
+    public function testRelevanssiIgnoresNullSearch(): void
+    {
+        $args = Quartermaster::prepare()->relevanssi(null)->toArgs();
+
+        self::assertArrayNotHasKey('s', $args);
+        self::assertArrayNotHasKey('relevanssi', $args);
+    }
+
+    public function testRelevanssiChainsFluently(): void
+    {
+        $args = Quartermaster::posts('post')
+            ->status('publish')
+            ->relevanssi('hello')
+            ->paged(10)
+            ->toArgs();
+
+        self::assertSame('post', $args['post_type']);
+        self::assertSame('hello', $args['s']);
+        self::assertTrue($args['relevanssi']);
+        self::assertSame(10, $args['posts_per_page']);
+    }
+
     public function testWhereMetaCreatesMetaQueryArray(): void
     {
         $args = Quartermaster::prepare()->whereMeta('start', '2026-01-01', '>=', 'DATE')->toArgs();

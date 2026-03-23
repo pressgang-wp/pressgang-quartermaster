@@ -44,4 +44,31 @@ trait HasSearch
 
         return $this;
     }
+
+    /**
+     * Set the search term and enable the Relevanssi integration flag.
+     *
+     * This is opt-in. Delegates to `search()` for sanitization, then sets
+     * `relevanssi = true` so the Relevanssi plugin intercepts the query.
+     * Empty/null values are ignored — neither `s` nor `relevanssi` are set.
+     *
+     * Sets: s, relevanssi
+     *
+     * See: https://www.relevanssi.com/knowledge-base/wp_query-arguments/
+     *
+     * @param string|null $search Raw search string; null/empty leaves args unchanged.
+     * @return self
+     */
+    public function relevanssi(?string $search): self
+    {
+        $this->search($search);
+
+        if ($this->getArg('s') !== null) {
+            $this->set('relevanssi', true);
+        }
+
+        $this->record('relevanssi', $search);
+
+        return $this;
+    }
 }
