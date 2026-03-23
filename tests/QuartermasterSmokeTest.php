@@ -585,6 +585,26 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertFalse($args['update_post_term_cache']);
     }
 
+    public function testIgnoreStickyPostsSetsFlag(): void
+    {
+        $args = Quartermaster::prepare()->ignoreStickyPosts()->toArgs();
+
+        self::assertTrue($args['ignore_sticky_posts']);
+    }
+
+    public function testIgnoreStickyPostsChainsFluently(): void
+    {
+        $args = Quartermaster::posts('post')
+            ->status('publish')
+            ->ignoreStickyPosts()
+            ->paged(5)
+            ->toArgs();
+
+        self::assertTrue($args['ignore_sticky_posts']);
+        self::assertSame('post', $args['post_type']);
+        self::assertSame(5, $args['posts_per_page']);
+    }
+
     public function testOrderByMetaNumericSetsMetaValueNumOrderby(): void
     {
         $args = Quartermaster::prepare()->orderByMetaNumeric('price')->toArgs();

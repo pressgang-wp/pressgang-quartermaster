@@ -47,6 +47,25 @@ trait HasQueryFlags
     }
 
     /**
+     * Set `ignore_sticky_posts = true` to prevent sticky posts from being prepended to results.
+     *
+     * This is opt-in and only mutates the `ignore_sticky_posts` key.
+     *
+     * Sets: ignore_sticky_posts
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters
+     *
+     * @return self
+     */
+    public function ignoreStickyPosts(): self
+    {
+        $this->set('ignore_sticky_posts', true);
+        $this->record('ignoreStickyPosts');
+
+        return $this;
+    }
+
+    /**
      * Toggle `update_post_term_cache` for result posts.
      *
      * This is opt-in and only mutates the `update_post_term_cache` key.
