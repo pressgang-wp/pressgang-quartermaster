@@ -38,6 +38,17 @@ final class Binder
     }
 
     /**
+     * Bind Relevanssi-aware search from one query var.
+     *
+     * @param string $queryVar
+     * @return self
+     */
+    public function relevanssi(string $queryVar = 'search'): self
+    {
+        return $this->register($queryVar, Bind::relevanssi($queryVar));
+    }
+
+    /**
      * Bind a query var to a taxonomy clause.
      *
      * If `$taxonomy` is omitted, the query-var key is used as the taxonomy name.

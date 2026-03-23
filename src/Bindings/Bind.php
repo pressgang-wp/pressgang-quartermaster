@@ -143,4 +143,35 @@ final class Bind
             return $q->search($search);
         };
     }
+
+    /**
+     * Bind a query var to the Relevanssi-aware search term.
+     *
+     * Delegates to `relevanssi()` which sets both `s` and `relevanssi = true`.
+     *
+     * See: https://www.relevanssi.com/knowledge-base/wp_query-arguments/
+     *
+     * @param string $queryVar Informational only; the map key remains authoritative.
+     * @return callable(Quartermaster, mixed, string): Quartermaster
+     */
+    public static function relevanssi(string $queryVar = 'search'): callable
+    {
+        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar): Quartermaster {
+            if ($key !== $queryVar) {
+                return $q;
+            }
+
+            $search = trim((string) $value);
+
+            if ($search === '') {
+                return $q;
+            }
+
+            if (function_exists('sanitize_text_field')) {
+                $search = sanitize_text_field($search);
+            }
+
+            return $q->relevanssi($search);
+        };
+    }
 }

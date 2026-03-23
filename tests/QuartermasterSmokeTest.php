@@ -374,6 +374,47 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame(10, $args['posts_per_page']);
     }
 
+    public function testBindRelevanssiSetsSearchAndFlag(): void
+    {
+        $source = new ArrayQueryVarSource(['search' => 'test query']);
+
+        $args = Quartermaster::prepare('post')
+            ->bindQueryVars(['search' => Bind::relevanssi()], $source)
+            ->toArgs();
+
+        self::assertSame('test query', $args['s']);
+        self::assertTrue($args['relevanssi']);
+    }
+
+    public function testBindRelevanssiSkipsEmptySearch(): void
+    {
+        $source = new ArrayQueryVarSource(['search' => '']);
+
+        $args = Quartermaster::prepare('post')
+            ->bindQueryVars(['search' => Bind::relevanssi()], $source)
+            ->toArgs();
+
+        self::assertArrayNotHasKey('s', $args);
+        self::assertArrayNotHasKey('relevanssi', $args);
+    }
+
+    public function testBinderRelevanssiMatchesMapMode(): void
+    {
+        $source = new ArrayQueryVarSource(['search' => 'hello']);
+
+        $mapArgs = Quartermaster::prepare('post')
+            ->bindQueryVars(['search' => Bind::relevanssi()], $source)
+            ->toArgs();
+
+        $binderArgs = Quartermaster::prepare('post')
+            ->bindQueryVars(function (Binder $b): void {
+                $b->relevanssi();
+            }, $source)
+            ->toArgs();
+
+        self::assertSame($mapArgs, $binderArgs);
+    }
+
     public function testWhereMetaCreatesMetaQueryArray(): void
     {
         $args = Quartermaster::prepare()->whereMeta('start', '2026-01-01', '>=', 'DATE')->toArgs();
