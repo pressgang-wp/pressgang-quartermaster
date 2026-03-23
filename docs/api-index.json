@@ -225,6 +225,20 @@
             "notes": "Set the search term (`s`) for `WP_Query`."
         },
         {
+            "name": "relevanssi",
+            "signature": "relevanssi(string|null $search): self",
+            "group": "Pagination / search",
+            "sets_args": [
+                "s",
+                "relevanssi"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://www.relevanssi.com/knowledge-base/wp_query-arguments/"
+            ],
+            "notes": "Set the search term and enable Relevanssi integration (`s` + `relevanssi = true`). Requires the Relevanssi plugin."
+        },
+        {
             "name": "bindQueryVars",
             "signature": "bindQueryVars(callable|array $bindings, PressGang\\Quartermaster\\Contracts\\QueryVarSource|null $source = NULL): self",
             "group": "Query-var binding",
@@ -547,6 +561,19 @@
             "notes": "Toggle `update_post_term_cache` for result posts."
         },
         {
+            "name": "ignoreStickyPosts",
+            "signature": "ignoreStickyPosts(): self",
+            "group": "Query-shaping flags",
+            "sets_args": [
+                "ignore_sticky_posts"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Set `ignore_sticky_posts = true` to prevent sticky posts from being prepended to results."
+        },
+        {
             "name": "when",
             "signature": "when(bool $condition, callable $then, callable|null $else = NULL): self",
             "group": "Conditional & hooks",
@@ -815,6 +842,19 @@
                 "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
             ],
             "notes": "Set `childless` to limit results to terms with no children."
+        },
+        {
+            "name": "forPostType",
+            "signature": "forPostType(string $postType): self",
+            "group": "Terms core",
+            "sets_args": [
+                "object_ids"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Scope terms to a specific post type by querying published post IDs and setting `object_ids`."
         },
         {
             "name": "search",
