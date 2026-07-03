@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- `whereTax()` / `orWhereTax()` now accept `null` terms as a no-op, so optional filters can be passed directly (`->whereTax('topic', $topic ?: null)`) without `when()` wrappers.
 - Added `orWhereTax()` for `OR` relation `tax_query` clauses, mirroring `orWhereMeta()`.
 - Added `QueryModifierAdapter` and `applyTo()` terminal for modifying existing `WP_Query` instances in `pre_get_posts` hooks.
 - Added `Bind::orderBy()` and `Binder::orderBy()` for binding a query var to `orderBy()` with fallback default and per-field direction overrides.

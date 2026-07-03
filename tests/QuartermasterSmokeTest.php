@@ -1154,6 +1154,15 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('tax_query', $args);
     }
 
+    public function testWhereTaxNullTermsLeavesBuilderUnchanged(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('category', null)
+            ->toArgs();
+
+        self::assertArrayNotHasKey('tax_query', $args);
+    }
+
     // --- orWhereTax (OR relation tax clauses) ---
 
     public function testOrWhereTaxIsFluent(): void

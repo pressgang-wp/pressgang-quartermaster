@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-07-03T16:04:52Z",
+    "generated_at": "2026-07-03T17:17:33Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -418,7 +418,7 @@
         },
         {
             "name": "whereTax",
-            "signature": "whereTax(string $taxonomy, array|string|int $terms, string $field = 'slug', string $operator = 'IN'): self",
+            "signature": "whereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN'): self",
             "group": "Tax query",
             "sets_args": [
                 "tax_query"
@@ -431,7 +431,7 @@
         },
         {
             "name": "orWhereTax",
-            "signature": "orWhereTax(string $taxonomy, array|string|int $terms, string $field = 'slug', string $operator = 'IN'): self",
+            "signature": "orWhereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN'): self",
             "group": "Tax query",
             "sets_args": [
                 "tax_query"

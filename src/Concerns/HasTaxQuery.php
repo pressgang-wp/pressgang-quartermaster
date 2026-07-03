@@ -18,21 +18,23 @@ trait HasTaxQuery
     /**
      * Append an `AND` taxonomy clause to `tax_query`.
      *
-     * Empty terms are filtered out. When no terms remain, the builder is unchanged.
+     * Null and empty terms are filtered out. When no terms remain, the builder
+     * is unchanged — so optional filters can be passed directly
+     * (`->whereTax('topic', $topic ?: null)`) without conditional wrappers.
      *
      * Sets: tax_query
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
      *
      * @param string $taxonomy
-     * @param string|int|array<int, int|string> $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array.
+     * @param string|int|array<int, int|string>|null $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array; null is a no-op.
      * @param string $field Tax field key such as `slug`, `term_id`, or `name`.
      * @param string $operator Tax operator such as `IN`, `NOT IN`, or `AND`.
      * @return self
      */
     public function whereTax(
         string $taxonomy,
-        string|int|array $terms,
+        string|int|array|null $terms,
         string $field = 'slug',
         string $operator = 'IN'
     ): self {
@@ -58,21 +60,22 @@ trait HasTaxQuery
      * The first `orWhereTax()` call switches the root `relation` to `OR`; subsequent clauses are
      * appended under the same relation. Mirrors `orWhereMeta()` for `meta_query`.
      *
-     * Empty terms are filtered out. When no terms remain, the builder is unchanged.
+     * Null and empty terms are filtered out. When no terms remain, the builder
+     * is unchanged.
      *
      * Sets: tax_query
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
      *
      * @param string $taxonomy
-     * @param string|int|array<int, int|string> $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array.
+     * @param string|int|array<int, int|string>|null $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array; null is a no-op.
      * @param string $field Tax field key such as `slug`, `term_id`, or `name`.
      * @param string $operator Tax operator such as `IN`, `NOT IN`, or `AND`.
      * @return self
      */
     public function orWhereTax(
         string $taxonomy,
-        string|int|array $terms,
+        string|int|array|null $terms,
         string $field = 'slug',
         string $operator = 'IN'
     ): self {
@@ -95,11 +98,15 @@ trait HasTaxQuery
     /**
      * Normalize terms to a list, dropping empty string and null values.
      *
-     * @param string|int|array<int, int|string> $terms
+     * @param string|int|array<int, int|string>|null $terms
      * @return array<int, int|string>
      */
-    protected function normalizeTaxTerms(string|int|array $terms): array
+    protected function normalizeTaxTerms(string|int|array|null $terms): array
     {
+        if ($terms === null) {
+            return [];
+        }
+
         $terms = is_array($terms) ? $terms : [$terms];
 
         return array_values(
