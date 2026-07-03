@@ -135,7 +135,7 @@ $groupedMethods = [
         'orderByMetaNumericDesc',
     ],
     'Meta query' => ['whereMeta', 'orWhereMeta', 'whereMetaDate'],
-    'Tax query' => ['whereTax'],
+    'Tax query' => ['whereTax', 'orWhereTax'],
     'Date query' => ['whereDate', 'whereDateAfter', 'whereDateBefore'],
     'Query-shaping flags' => ['idsOnly', 'noFoundRows', 'withMetaCache', 'withTermCache'],
     'Conditional & hooks' => ['when', 'unless', 'tap'],

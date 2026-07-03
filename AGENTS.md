@@ -119,6 +119,12 @@ $args = Quartermaster::prepare('event')
 $args = Quartermaster::prepare('event')
     ->whereTax('research_theme', $termId, 'term_id')
     ->toArgs();
+
+// OR relation between clauses
+$args = Quartermaster::prepare('post')
+    ->whereTax('hit_group', $groupId, 'term_id')
+    ->orWhereTax('category', $categoryId, 'term_id')
+    ->toArgs();
 ```
 
 Terms queries:

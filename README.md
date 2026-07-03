@@ -30,7 +30,7 @@ Requirements: PHP 8.3+.
 | Query-var binding | `bindQueryVars()`, `Bind::paged()`, `Bind::tax()`, `Bind::orderBy()`, `Bind::metaNum()`, `Bind::search()` |
 | Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
 | Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaLikeAny()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
-| Tax query | `whereTax()` |
+| Tax query | `whereTax()`, `orWhereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |
 | Conditional & hooks | `when()`, `unless()`, `tap()` |
@@ -143,6 +143,17 @@ $query = Quartermaster::posts()
 
 $posts = $query->posts;
 $total = $query->found_posts;
+```
+
+Taxonomy clauses combine with `AND` by default; use `orWhereTax()` for `OR`:
+
+```php
+$args = Quartermaster::posts('post')
+    ->whereTax('hit_group', $groupId, 'term_id')
+    ->orWhereTax('category', $categoryId, 'term_id')
+    ->toArgs();
+
+// tax_query => [ relation => OR, [hit_group clause], [category clause] ]
 ```
 
 ## 🌿 Terms Quick Start

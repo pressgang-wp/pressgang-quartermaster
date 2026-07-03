@@ -1154,6 +1154,70 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('tax_query', $args);
     }
 
+    // --- orWhereTax (OR relation tax clauses) ---
+
+    public function testOrWhereTaxIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->orWhereTax('topic', ['news']);
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testOrWhereTaxSingleClauseHasNoRelation(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->orWhereTax('topic', ['news'])
+            ->toArgs();
+
+        self::assertArrayNotHasKey('relation', $args['tax_query']);
+        self::assertSame(['news'], $args['tax_query'][0]['terms']);
+    }
+
+    public function testOrWhereTaxAfterWhereTaxSetsOrRelation(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('hit_group', 12, 'term_id')
+            ->orWhereTax('category', 34, 'term_id')
+            ->toArgs();
+
+        self::assertSame('OR', $args['tax_query']['relation']);
+        self::assertSame([12], $args['tax_query'][0]['terms']);
+        self::assertSame([34], $args['tax_query'][1]['terms']);
+    }
+
+    public function testOrWhereTaxAppendsUnderExistingOrRelation(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->orWhereTax('topic', ['news'])
+            ->orWhereTax('topic', ['events'])
+            ->orWhereTax('category', ['research'])
+            ->toArgs();
+
+        self::assertSame('OR', $args['tax_query']['relation']);
+        self::assertCount(4, $args['tax_query']); // 3 clauses + relation
+    }
+
+    public function testOrWhereTaxEmptyTermsLeavesBuilderUnchanged(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->whereTax('topic', ['news'])
+            ->orWhereTax('category', '')
+            ->toArgs();
+
+        self::assertArrayNotHasKey('relation', $args['tax_query']);
+        self::assertCount(1, $args['tax_query']);
+    }
+
+    public function testOrWhereTaxAcceptsSingleScalarTerm(): void
+    {
+        $args = Quartermaster::prepare('post')
+            ->orWhereTax('research_theme', 42, 'term_id')
+            ->toArgs();
+
+        self::assertSame([42], $args['tax_query'][0]['terms']);
+        self::assertSame('term_id', $args['tax_query'][0]['field']);
+    }
+
     // --- whereMetaLikeAny (serialised field OR LIKE) ---
 
     public function testWhereMetaLikeAnyIsFluent(): void
