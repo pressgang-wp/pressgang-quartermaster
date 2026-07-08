@@ -1,7 +1,21 @@
 {
   "name": "pressgang-wp/quartermaster",
-  "description": "WordPress-first fluent WP_Query args builder",
+  "description": "Fluent WordPress query builder for WP_Query and WP_Term_Query — composable meta_query, tax_query and date_query, WordPress-native with no ORM or lock-in",
   "type": "library",
+  "keywords": [
+    "wordpress",
+    "wp_query",
+    "wp-query",
+    "query-builder",
+    "wordpress-query-builder",
+    "fluent",
+    "meta-query",
+    "tax-query",
+    "wp-term-query",
+    "terms",
+    "timber",
+    "pressgang"
+  ],
   "license": "MIT",
   "require": {
     "php": "^8.3"
