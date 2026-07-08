@@ -1,9 +1,8 @@
-cl
 # ⚓ Quartermaster
 
-**Quartermaster** is a fluent, args-first builder for `WP_Query`.
+**Quartermaster** is a fluent **WordPress query builder** — an args-first, chainable interface for `WP_Query` and `WP_Term_Query`.
 
-It helps you build complex query arrays in readable, composable steps, while staying **100% WordPress-native under the hood**. It ships as a standalone package in the `pressgang-wp` ecosystem, but it does **not** depend on the PressGang theme framework.
+It turns sprawling `meta_query`, `tax_query`, and `date_query` arrays into readable, composable steps, while staying **100% WordPress-native under the hood**. You get Laravel-style fluent chaining with zero ORM: every method maps to a real `WP_Query` arg. It ships as a standalone Composer package (PHP 8.3+) in the `pressgang-wp` ecosystem, but it does **not** depend on the PressGang theme framework.
 
 Think of it as a reliable quartermaster for your query cargo: **you decide what goes aboard, nothing gets smuggled in**. 🧭
 
@@ -45,7 +44,7 @@ Requirements: PHP 8.3+.
 
 ---
 
-## 🤔 Why Fluent?
+## 🤔 Why a Fluent WordPress Query Builder?
 
 `WP_Query` arrays are powerful, but as they grow they become harder to scan, review, and refactor.
 
