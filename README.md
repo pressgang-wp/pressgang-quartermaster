@@ -1,5 +1,10 @@
 # ⚓ Quartermaster
 
+[![Latest Stable Version](https://poser.pugx.org/pressgang-wp/quartermaster/v/stable)](https://packagist.org/packages/pressgang-wp/quartermaster)
+[![Build Status](https://github.com/pressgang-wp/pressgang-quartermaster/actions/workflows/ci.yml/badge.svg)](https://github.com/pressgang-wp/pressgang-quartermaster/actions/workflows/ci.yml)
+[![Total Downloads](https://poser.pugx.org/pressgang-wp/quartermaster/downloads)](https://packagist.org/packages/pressgang-wp/quartermaster)
+[![License](https://poser.pugx.org/pressgang-wp/quartermaster/license)](https://packagist.org/packages/pressgang-wp/quartermaster)
+
 **Quartermaster** is a fluent **WordPress query builder** — an args-first, chainable interface for `WP_Query` and `WP_Term_Query`.
 
 It turns sprawling `meta_query`, `tax_query`, and `date_query` arrays into readable, composable steps, while staying **100% WordPress-native under the hood**. You get Laravel-style fluent chaining with zero ORM: every method maps to a real `WP_Query` arg. It ships as a standalone Composer package (PHP 8.3+) in the `pressgang-wp` ecosystem, but it does **not** depend on the PressGang theme framework.
