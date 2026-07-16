@@ -34,6 +34,6 @@
     }
   },
   "scripts": {
-    "api-index": "php bin/generate-api-index.php"
+    "api-index": "wp capstan make api-index --force"
   }
 }
