@@ -21,6 +21,7 @@ return [
         'Opt-in query-var binding only',
         'Explicit over magic',
     ],
+    'annotate_args' => true,
     'reads_globals' => [
         'paged' => true,
         'bindQueryVars' => true,
