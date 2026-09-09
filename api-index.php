@@ -9,6 +9,7 @@
  */
 
 use PressGang\Quartermaster\Quartermaster;
+use PressGang\Quartermaster\Bindings\Bind;
 use PressGang\Quartermaster\Terms\TermsBuilder;
 
 return [
@@ -30,23 +31,27 @@ return [
         'Bootstrap' => [Quartermaster::class, ['posts', 'terms', 'prepare']],
         'Core post constraints' => [Quartermaster::class, ['postType', 'status', 'whereId', 'whereInIds', 'excludeIds', 'whereParent', 'whereParentIn']],
         'Author constraints' => [Quartermaster::class, ['whereAuthor', 'whereAuthorIn', 'whereAuthorNotIn']],
-        'Pagination / search' => [Quartermaster::class, ['paged', 'all', 'search']],
+        'Pagination / search' => [Quartermaster::class, ['paged', 'all', 'limit', 'search', 'relevanssi']],
         'Query-var binding' => [Quartermaster::class, ['bindQueryVars']],
+        'Query-var binding factories' => [Bind::class, ['paged', 'search', 'relevanssi', 'tax', 'orderBy', 'metaNum']],
         'Ordering' => [Quartermaster::class, [
             'orderBy', 'orderByAsc', 'orderByDesc',
             'orderByMeta', 'orderByMetaAsc', 'orderByMetaDesc',
             'orderByMetaNumeric', 'orderByMetaNumericAsc', 'orderByMetaNumericDesc',
         ]],
-        'Meta query' => [Quartermaster::class, ['whereMeta', 'orWhereMeta', 'whereMetaDate']],
+        'Meta query' => [Quartermaster::class, [
+            'whereMeta', 'orWhereMeta', 'whereMetaNot', 'whereMetaDate',
+            'whereMetaExists', 'whereMetaNotExists', 'whereMetaLikeAny',
+        ]],
         'Tax query' => [Quartermaster::class, ['whereTax', 'orWhereTax']],
         'Date query' => [Quartermaster::class, ['whereDate', 'whereDateAfter', 'whereDateBefore']],
-        'Query-shaping flags' => [Quartermaster::class, ['idsOnly', 'noFoundRows', 'withMetaCache', 'withTermCache']],
+        'Query-shaping flags' => [Quartermaster::class, ['idsOnly', 'noFoundRows', 'ignoreStickyPosts', 'withMetaCache', 'withTermCache']],
         'Conditional & hooks' => [Quartermaster::class, ['when', 'unless', 'tap']],
         'Macros' => [Quartermaster::class, ['macro', 'hasMacro', 'flushMacros']],
         'Escape hatch' => [Quartermaster::class, ['tapArgs']],
         'Introspection' => [Quartermaster::class, ['toArgs', 'explain']],
-        'Terminals' => [Quartermaster::class, ['get', 'wpQuery', 'timber']],
-        'Terms core' => [TermsBuilder::class, ['taxonomy', 'objectIds', 'hideEmpty', 'slug', 'name', 'fields', 'include', 'exclude', 'excludeTree', 'parent', 'childOf', 'childless', 'search']],
+        'Terminals' => [Quartermaster::class, ['get', 'wpQuery', 'timber', 'toArray', 'applyTo']],
+        'Terms core' => [TermsBuilder::class, ['prepare', 'taxonomy', 'forPostType', 'objectIds', 'hideEmpty', 'slug', 'name', 'fields', 'include', 'exclude', 'excludeTree', 'parent', 'childOf', 'childless', 'search']],
         'Terms pagination / ordering' => [TermsBuilder::class, ['limit', 'offset', 'page', 'orderBy']],
         'Terms meta query' => [TermsBuilder::class, ['whereMeta', 'orWhereMeta']],
         'Terms conditional & hooks' => [TermsBuilder::class, ['when', 'unless', 'tap']],

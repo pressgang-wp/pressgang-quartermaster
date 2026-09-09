@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-07-03T17:17:33Z",
+    "generated_at": "2026-09-09T09:58:03Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -211,6 +211,19 @@
             "notes": "Configure `WP_Query` to fetch all matching posts."
         },
         {
+            "name": "limit",
+            "signature": "limit(int $postsPerPage): self",
+            "group": "Pagination / search",
+            "sets_args": [
+                "posts_per_page"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters"
+            ],
+            "notes": "Set `posts_per_page` without pagination context."
+        },
+        {
             "name": "search",
             "signature": "search(string|null $search): self",
             "group": "Pagination / search",
@@ -225,6 +238,18 @@
             "notes": "Set the search term (`s`) for `WP_Query`."
         },
         {
+            "name": "relevanssi",
+            "signature": "relevanssi(string|null $search): self",
+            "group": "Pagination / search",
+            "sets_args": [
+                "s",
+                "relevanssi"
+            ],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Set the search term and enable the Relevanssi integration flag."
+        },
+        {
             "name": "bindQueryVars",
             "signature": "bindQueryVars(callable|array $bindings, PressGang\\Quartermaster\\Contracts\\QueryVarSource|null $source = NULL): self",
             "group": "Query-var binding",
@@ -234,6 +259,71 @@
                 "https://developer.wordpress.org/reference/functions/get_query_var/"
             ],
             "notes": "Bind query vars into fluent calls using either a map or fluent binder callback."
+        },
+        {
+            "name": "paged",
+            "signature": "paged(string $queryVar = 'paged'): callable",
+            "group": "Query-var binding factories",
+            "sets_args": [],
+            "reads_globals": true,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters"
+            ],
+            "notes": "Bind a query var to pagination. (args mapping not annotated yet)"
+        },
+        {
+            "name": "search",
+            "signature": "search(string $queryVar = 'search'): callable",
+            "group": "Query-var binding factories",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#search-parameters",
+                "https://developer.wordpress.org/reference/functions/sanitize_text_field/"
+            ],
+            "notes": "Bind a query var to the search term. (args mapping not annotated yet)"
+        },
+        {
+            "name": "relevanssi",
+            "signature": "relevanssi(string $queryVar = 'search'): callable",
+            "group": "Query-var binding factories",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Bind a query var to the Relevanssi-aware search term. (args mapping not annotated yet)"
+        },
+        {
+            "name": "tax",
+            "signature": "tax(string $taxonomy, string $field = 'slug', string $operator = 'IN'): callable",
+            "group": "Query-var binding factories",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters"
+            ],
+            "notes": "Bind a query var to one `tax_query` clause. (args mapping not annotated yet)"
+        },
+        {
+            "name": "orderBy",
+            "signature": "orderBy(string $default = 'date', string $defaultOrder = 'DESC', array $overrides = array ()): callable",
+            "group": "Query-var binding factories",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Bind a query var to `orderBy()` with conditional sort direction. (args mapping not annotated yet)"
+        },
+        {
+            "name": "metaNum",
+            "signature": "metaNum(string $metaKey, string $compare, string|null $queryVar = NULL): callable",
+            "group": "Query-var binding factories",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Bind a query var to one numeric `meta_query` clause. (args mapping not annotated yet)"
         },
         {
             "name": "orderBy",
@@ -403,6 +493,17 @@
             "notes": "Append a meta clause and force root relation to `OR`."
         },
         {
+            "name": "whereMetaNot",
+            "signature": "whereMetaNot(string $key, mixed $value): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Exclude posts where a meta key equals a given value, or where the key does not exist."
+        },
+        {
             "name": "whereMetaDate",
             "signature": "whereMetaDate(string $key, string $operator, string|int|null $value = NULL, string $format = 'Ymd'): self",
             "group": "Meta query",
@@ -415,6 +516,43 @@
                 "https://developer.wordpress.org/reference/functions/wp_date/"
             ],
             "notes": "Append a date-based meta clause (`type = DATE`) to `meta_query`."
+        },
+        {
+            "name": "whereMetaExists",
+            "signature": "whereMetaExists(string $key): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Append an `EXISTS` meta clause to `meta_query`."
+        },
+        {
+            "name": "whereMetaNotExists",
+            "signature": "whereMetaNotExists(string $key): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Append a `NOT EXISTS` meta clause to `meta_query`."
+        },
+        {
+            "name": "whereMetaLikeAny",
+            "signature": "whereMetaLikeAny(string $key, array $values): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [],
+            "notes": "Match posts where a serialised meta field contains any of the given values."
         },
         {
             "name": "whereTax",
@@ -506,6 +644,19 @@
                 "https://developer.wordpress.org/reference/classes/wp_query/#pagination-parameters"
             ],
             "notes": "Set `no_found_rows = true` to skip SQL row counting."
+        },
+        {
+            "name": "ignoreStickyPosts",
+            "signature": "ignoreStickyPosts(): self",
+            "group": "Query-shaping flags",
+            "sets_args": [
+                "ignore_sticky_posts"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters"
+            ],
+            "notes": "Set `ignore_sticky_posts = true` to prevent sticky posts from being prepended to results."
         },
         {
             "name": "withMetaCache",
@@ -648,6 +799,42 @@
             "notes": "Build and return a Timber `PostQuery` object from the current args."
         },
         {
+            "name": "toArray",
+            "signature": "toArray(): array",
+            "group": "Terminals",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/",
+                "https://timber.github.io/docs/v2/reference/timber-postquery/"
+            ],
+            "notes": "Execute the query and return a plain PHP array of posts."
+        },
+        {
+            "name": "applyTo",
+            "signature": "applyTo(WP_Query $query): void",
+            "group": "Terminals",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/hooks/pre_get_posts/"
+            ],
+            "notes": "Apply the builder's args to an existing `WP_Query` instance."
+        },
+        {
+            "name": "prepare",
+            "signature": "prepare(array|string|null $taxonomy = NULL): self",
+            "group": "Terms core",
+            "sets_args": [
+                "taxonomy"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/"
+            ],
+            "notes": "Start a terms builder with optional seed taxonomy or seed args."
+        },
+        {
             "name": "taxonomy",
             "signature": "taxonomy(array|string $taxonomy): self",
             "group": "Terms core",
@@ -659,6 +846,19 @@
                 "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
             ],
             "notes": "Set explicit `taxonomy` constraints."
+        },
+        {
+            "name": "forPostType",
+            "signature": "forPostType(string $postType): self",
+            "group": "Terms core",
+            "sets_args": [
+                "object_ids"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Scope terms to a specific post type by fetching published post IDs and"
         },
         {
             "name": "objectIds",
