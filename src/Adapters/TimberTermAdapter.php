@@ -3,31 +3,44 @@
 namespace PressGang\Quartermaster\Adapters;
 
 use RuntimeException;
+use Timber\Timber;
+use WP_Error;
+use WP_Term;
 
 /**
- * Optional Timber terminal adapter for term queries.
- *
- * This adapter does not mutate args; it only guards for Timber availability and returns
- * the result of `Timber::get_terms()` built from the provided args.
- *
- * See: https://timber.github.io/docs/v2/reference/timber-timber/#get_terms
+ * Converts WordPress term results without bypassing get_terms filters.
  */
 final class TimberTermAdapter
 {
     /**
-     * Create Timber term objects from the provided args.
+     * Fetch terms through WordPress and apply Timber's term class mapping.
      *
-     * Runtime requirement: `\Timber\Timber` must exist.
+     * Empty results remain empty. Scalar projections such as IDs and names keep
+     * their values and keys. Query arguments are passed through unchanged.
      *
      * @param array<string, mixed> $args
-     * @return array<int, \Timber\Term>
+     * @return array<int|string, mixed>
+     * @throws RuntimeException When Timber is unavailable or WordPress cannot return a term list.
      */
     public function getTerms(array $args): array
     {
-        if (!class_exists(\Timber\Timber::class)) {
+        if (!class_exists(Timber::class)) {
             throw new RuntimeException('Timber is not installed. Install timber/timber before calling timber().');
         }
 
-        return \Timber\Timber::get_terms($args);
+        $terms = \get_terms($args);
+
+        if ($terms instanceof WP_Error) {
+            throw new RuntimeException($terms->get_error_message());
+        }
+
+        if (!is_array($terms)) {
+            throw new RuntimeException('The timber() term terminal requires a term list; count queries are not supported.');
+        }
+
+        return array_map(
+            static fn (mixed $term): mixed => $term instanceof WP_Term ? Timber::get_term($term) : $term,
+            $terms
+        );
     }
 }

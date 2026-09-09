@@ -520,16 +520,16 @@ final class TermsBuilder
     }
 
     /**
-     * Execute `Timber::get_terms()` with current args.
+     * Fetch through WordPress get_terms() and convert term objects with Timber.
      *
-     * Timber is optional and guarded at runtime. This method does not mutate args and does
-     * not add implicit defaults.
+     * Preserves WordPress result filters, empty lists and scalar field projections.
+     * Timber is optional and guarded at runtime. No args or defaults are changed.
      *
      * Sets: (none)
      *
      * See: https://timber.github.io/docs/v2/reference/timber-timber/#get_terms
      *
-     * @return array<int, \Timber\Term>
+     * @return array<int|string, mixed>
      */
     public function timber(): array
     {

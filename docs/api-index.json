@@ -1198,7 +1198,7 @@
             "wp_docs": [
                 "https://timber.github.io/docs/v2/reference/timber-timber/#get_terms"
             ],
-            "notes": "Execute `Timber::get_terms()` with current args."
+            "notes": "Fetch through WordPress get_terms() and convert term objects with Timber."
         }
     ]
 }

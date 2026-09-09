@@ -4,6 +4,10 @@ namespace {
     if (!class_exists('WP_Error')) {
         class WP_Error
         {
+            public function get_error_message(): string
+            {
+                return 'Invalid taxonomy.';
+            }
         }
     }
 
@@ -12,11 +16,11 @@ namespace {
          * @param array<string, mixed> $args
          * @return array<int, mixed>
          */
-        function get_terms(array $args = []): array
+        function get_terms(array $args = []): array|WP_Error|string
         {
             $GLOBALS['__quartermaster_test_get_terms_args'] = $args;
 
-            return [['stub' => true, 'args' => $args]];
+            return $GLOBALS['__quartermaster_test_term_results'] ?? [['stub' => true, 'args' => $args]];
         }
     }
 }
