@@ -1212,6 +1212,37 @@
                 "https://timber.github.io/docs/v2/reference/timber-timber/#get_terms"
             ],
             "notes": "Fetch through WordPress get_terms() and convert term objects with Timber."
+        },
+        {
+            "name": "orderByMeta",
+            "signature": "orderByMeta(string $metaKey, string $order = 'ASC', string $metaType = 'CHAR'): self",
+            "group": "Terms pagination / ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order",
+                "meta_type"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Order terms by metadata; WordPress excludes terms missing the selected meta key."
+        },
+        {
+            "name": "orderByMetaNumeric",
+            "signature": "orderByMetaNumeric(string $metaKey, string $order = 'ASC'): self",
+            "group": "Terms pagination / ordering",
+            "sets_args": [
+                "meta_key",
+                "orderby",
+                "order"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Order terms by metadata; WordPress excludes terms missing the selected meta key."
         }
     ]
 }

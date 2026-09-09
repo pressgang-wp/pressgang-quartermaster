@@ -52,7 +52,7 @@ return [
         'Introspection' => [Quartermaster::class, ['toArgs', 'explain']],
         'Terminals' => [Quartermaster::class, ['get', 'wpQuery', 'timber', 'toArray', 'applyTo']],
         'Terms core' => [TermsBuilder::class, ['prepare', 'taxonomy', 'forPostType', 'objectIds', 'hideEmpty', 'slug', 'name', 'fields', 'include', 'exclude', 'excludeTree', 'parent', 'childOf', 'childless', 'search']],
-        'Terms pagination / ordering' => [TermsBuilder::class, ['limit', 'offset', 'page', 'orderBy']],
+        'Terms pagination / ordering' => [TermsBuilder::class, ['limit', 'offset', 'page', 'orderBy', 'orderByMeta', 'orderByMetaNumeric']],
         'Terms meta query' => [TermsBuilder::class, ['whereMeta', 'orWhereMeta']],
         'Terms conditional & hooks' => [TermsBuilder::class, ['when', 'unless', 'tap']],
         'Terms macros' => [TermsBuilder::class, ['macro', 'hasMacro', 'flushMacros']],
