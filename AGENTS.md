@@ -53,6 +53,10 @@ $args = Quartermaster::prepare('event')
     ->toArgs();
 ```
 
+`all()` also sets `nopaging = true` and removes `paged`; it is not an exact
+argument-level synonym for `limit(-1)`. Use it for deliberately unpaginated post
+queries, not term queries.
+
 Meta queries:
 
 ```php
@@ -78,6 +82,11 @@ $args = Quartermaster::prepare('post')
     ->whereMetaLikeAny('related_topics', [15, 22])
     ->toArgs();
 ```
+
+For a single relationship ID, use `whereMetaLikeAny('projects', [$post->ID])`.
+Pass raw values, not strings already wrapped in quotes. This matches serialized
+string values, not arbitrary serialized data. An empty array is a no-op; retain
+an explicit empty-selection guard when no selection should mean no results.
 
 Meta existence checks:
 
@@ -155,6 +164,17 @@ $query = Quartermaster::prepare('post')->wpQuery();            // full WP_Query 
 $timber = Quartermaster::prepare('post')->timber();            // Timber PostQuery (runtime-guarded)
 $timberTerms = Quartermaster::terms('category')->timber();     // Timber terms (runtime-guarded)
 ```
+
+The term `timber()` adapter must fetch through WordPress `get_terms()` and
+convert individual `WP_Term` objects. Preserve result filters, ordering, keys,
+empty arrays and Timber class mapping. Keep scalar field projections unchanged;
+never use `Timber::get_terms([])` to convert an empty result. Verify those
+contracts with `tests/integration/timber-terms.php` in a WordPress/Timber runtime.
+
+Prefer fluent helpers where their semantics match. Explicit seed arguments or
+`tapArgs()` remain appropriate when a helper would discard an empty constraint
+or change query behaviour. Keep queries separate from mapping and cache
+assignment when nesting makes a getter hard to read.
 
 ## 🧷 Query Var Binding Guidance
 Map form:
