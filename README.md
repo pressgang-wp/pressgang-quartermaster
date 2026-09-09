@@ -160,6 +160,31 @@ $args = Quartermaster::posts('post')
 // tax_query => [ relation => OR, [hit_group clause], [category clause] ]
 ```
 
+## Fetching all posts and matching ACF relationships
+
+Use `all()` when the query should return every matching post:
+
+```php
+$projects = Quartermaster::posts('research-project')->all()->toArray();
+```
+
+`all()` sets `posts_per_page` to `-1`, sets `nopaging` to `true`, and removes
+`paged`. `limit(-1)` only sets the limit. Check pagination requirements before
+replacing an existing chain. This helper belongs to the posts builder, not the
+terms builder.
+
+Use `whereMetaLikeAny()` for ACF relationships stored as serialized string IDs:
+
+```php
+$query = Quartermaster::posts('publication')
+    ->whereMetaLikeAny('projects', [$post->ID]);
+```
+
+Pass unquoted values. The helper adds the quotes and an OR group for multiple
+values. It is not a general substring search or a matcher for serialized integer
+values. An empty input array adds no constraint; guard an empty required
+selection rather than accidentally returning every post.
+
 ## 🌿 Terms Quick Start
 
 ```php
@@ -204,6 +229,17 @@ $timberTerms = Quartermaster::terms('category')
     ->orderBy('name')
     ->timber();
 ```
+
+The term `timber()` terminal fetches through WordPress `get_terms()` before
+converting each term with Timber. This preserves result filters, plugin ordering
+and empty results while applying Timber's term class mapping. Explicit scalar
+field projections retain their values and keys. Invalid taxonomies and count
+results raise `RuntimeException`; this terminal returns lists.
+
+This behaviour requires the term-filter fix in commit `49d5787` or a descendant.
+On older installations, verify plugin ordering before replacing a WordPress
+fetch followed by individual term conversion. Do not pass an empty list to
+`Timber::get_terms()` as a conversion shortcut; Timber 2.5.1 treats it as a query.
 
 Inspect generated args:
 
