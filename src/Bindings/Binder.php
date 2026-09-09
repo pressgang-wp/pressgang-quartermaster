@@ -41,11 +41,12 @@ final class Binder
      * Bind Relevanssi-aware search from one query var.
      *
      * @param string $queryVar
+     * @param bool $allowEmpty Apply an explicitly empty query-var value.
      * @return self
      */
-    public function relevanssi(string $queryVar = 'search'): self
+    public function relevanssi(string $queryVar = 'search', bool $allowEmpty = false): self
     {
-        return $this->register($queryVar, Bind::relevanssi($queryVar));
+        return $this->register($queryVar, Bind::relevanssi($queryVar, $allowEmpty));
     }
 
     /**

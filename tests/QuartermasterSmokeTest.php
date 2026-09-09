@@ -1522,4 +1522,67 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('"0"', $or['meta_query'][0][0]['value']);
     }
 
+    public function testRelevanssiCanExplicitlyEnableEmptySearch(): void
+    {
+        foreach (['', '   '] as $value) {
+            $args = Quartermaster::posts('publication')->relevanssi($value, allowEmpty: true)->toArgs();
+            self::assertSame('', $args['s']);
+            self::assertTrue($args['relevanssi']);
+        }
+        $args = Quartermaster::prepare()->search('previous')->relevanssi('', allowEmpty: true)->toArgs();
+        self::assertSame('', $args['s']);
+        self::assertSame([], Quartermaster::prepare()->relevanssi(null, allowEmpty: true)->toArgs());
+    }
+
+    public function testRelevanssiOptInPreservesNonemptyAndSeededBehaviour(): void
+    {
+        self::assertSame(
+            Quartermaster::prepare()->relevanssi(' hello ')->toArgs(),
+            Quartermaster::prepare()->relevanssi(' hello ', allowEmpty: true)->toArgs()
+        );
+        $args = Quartermaster::prepare(['s' => 'existing'])->relevanssi('')->toArgs();
+        self::assertSame('existing', $args['s']);
+        self::assertTrue($args['relevanssi']);
+        self::assertSame('0', Quartermaster::prepare()->relevanssi('0', allowEmpty: true)->toArgs()['s']);
+    }
+
+    public function testRelevanssiBindingsDistinguishMissingAndEmptyValues(): void
+    {
+        foreach ([['impact-search' => ''], []] as $values) {
+            $source = new ArrayQueryVarSource($values);
+            $map = Quartermaster::prepare()->bindQueryVars([
+                'impact-search' => Bind::relevanssi('impact-search', allowEmpty: true),
+            ], $source)->toArgs();
+            $fluent = Quartermaster::prepare()->bindQueryVars(
+                static fn (Binder $b) => $b->relevanssi('impact-search', allowEmpty: true),
+                $source
+            )->toArgs();
+            self::assertSame($map, $fluent);
+            self::assertSame($values === [] ? [] : ['s' => '', 'relevanssi' => true], $map);
+        }
+    }
+
+    public function testRequiredTaxonomyCanRetainAnEmptyInClause(): void
+    {
+        $args = Quartermaster::posts('staff-member')
+            ->whereTax('research-team', [], 'term_id', allowEmpty: true)->toArgs();
+        self::assertSame([], $args['tax_query'][0]['terms']);
+        self::assertSame('IN', $args['tax_query'][0]['operator']);
+        self::assertSame('term_id', $args['tax_query'][0]['field']);
+        self::assertSame([], Quartermaster::prepare()->whereTax('research-team', [null, ''])->toArgs());
+    }
+
+    public function testRequiredTaxonomyPreservesOperatorAndGrouping(): void
+    {
+        $args = Quartermaster::prepare()->whereTax('topic', 'news')
+            ->orWhereTax('team', [], operator: 'NOT IN', allowEmpty: true)->toArgs();
+        self::assertSame('OR', $args['tax_query']['relation']);
+        self::assertSame('NOT IN', $args['tax_query'][1]['operator']);
+        self::assertSame([], $args['tax_query'][1]['terms']);
+        self::assertSame(
+            Quartermaster::prepare()->whereTax('team', [15])->toArgs(),
+            Quartermaster::prepare()->whereTax('team', [15], allowEmpty: true)->toArgs()
+        );
+    }
+
 }

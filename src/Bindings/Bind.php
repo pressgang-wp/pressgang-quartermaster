@@ -152,18 +152,19 @@ final class Bind
      * See: https://www.relevanssi.com/knowledge-base/wp_query-arguments/
      *
      * @param string $queryVar Informational only; the map key remains authoritative.
+     * @param bool $allowEmpty Apply an explicitly empty value; missing/null values are skipped.
      * @return callable(Quartermaster, mixed, string): Quartermaster
      */
-    public static function relevanssi(string $queryVar = 'search'): callable
+    public static function relevanssi(string $queryVar = 'search', bool $allowEmpty = false): callable
     {
-        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar): Quartermaster {
-            if ($key !== $queryVar) {
+        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar, $allowEmpty): Quartermaster {
+            if ($key !== $queryVar || $value === null) {
                 return $q;
             }
 
             $search = trim((string) $value);
 
-            if ($search === '') {
+            if ($search === '' && !$allowEmpty) {
                 return $q;
             }
 
@@ -171,7 +172,7 @@ final class Bind
                 $search = sanitize_text_field($search);
             }
 
-            return $q->relevanssi($search);
+            return $q->relevanssi($search, $allowEmpty);
         };
     }
 }

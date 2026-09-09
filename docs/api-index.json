@@ -239,7 +239,7 @@
         },
         {
             "name": "relevanssi",
-            "signature": "relevanssi(string|null $search): self",
+            "signature": "relevanssi(string|null $search, bool $allowEmpty = false): self",
             "group": "Pagination / search",
             "sets_args": [
                 "s",
@@ -247,7 +247,7 @@
             ],
             "reads_globals": false,
             "wp_docs": [],
-            "notes": "Set the search term and enable the Relevanssi integration flag."
+            "notes": "Set the search term and enable the Relevanssi integration flag. Optional allowEmpty retains explicit empty search or taxonomy input; native query semantics apply."
         },
         {
             "name": "bindQueryVars",
@@ -285,12 +285,12 @@
         },
         {
             "name": "relevanssi",
-            "signature": "relevanssi(string $queryVar = 'search'): callable",
+            "signature": "relevanssi(string $queryVar = 'search', bool $allowEmpty = false): callable",
             "group": "Query-var binding factories",
             "sets_args": [],
             "reads_globals": false,
             "wp_docs": [],
-            "notes": "Bind a query var to the Relevanssi-aware search term. (args mapping not annotated yet)"
+            "notes": "Bind a query var to the Relevanssi-aware search term. (args mapping not annotated yet) Optional allowEmpty retains explicit empty search or taxonomy input; native query semantics apply."
         },
         {
             "name": "tax",
@@ -569,7 +569,7 @@
         },
         {
             "name": "whereTax",
-            "signature": "whereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN'): self",
+            "signature": "whereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN', bool $allowEmpty = false): self",
             "group": "Tax query",
             "sets_args": [
                 "tax_query"
@@ -578,11 +578,11 @@
             "wp_docs": [
                 "https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters"
             ],
-            "notes": "Append an `AND` taxonomy clause to `tax_query`."
+            "notes": "Append an `AND` taxonomy clause to `tax_query`. Optional allowEmpty retains explicit empty search or taxonomy input; native query semantics apply."
         },
         {
             "name": "orWhereTax",
-            "signature": "orWhereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN'): self",
+            "signature": "orWhereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN', bool $allowEmpty = false): self",
             "group": "Tax query",
             "sets_args": [
                 "tax_query"
@@ -591,7 +591,7 @@
             "wp_docs": [
                 "https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters"
             ],
-            "notes": "Append an `OR` taxonomy clause to `tax_query`."
+            "notes": "Append an `OR` taxonomy clause to `tax_query`. Optional allowEmpty retains explicit empty search or taxonomy input; native query semantics apply."
         },
         {
             "name": "whereDate",
