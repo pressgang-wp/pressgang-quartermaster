@@ -8,6 +8,14 @@
  */
 
 namespace {
+    if (!class_exists('WP_Term')) {
+        class WP_Term
+        {
+            public function __construct(public int $term_id, public string $taxonomy = 'category')
+            {
+            }
+        }
+    }
     if (!class_exists('WP_Query')) {
         class WP_Query
         {
@@ -56,18 +64,15 @@ namespace Timber {
     if (!class_exists(\Timber\Timber::class)) {
         class Timber
         {
-            /**
-             * @param array<string, mixed> $args
-             * @return array<int, object>
-             */
-            public static function get_terms(array $args = []): array
+            public static function get_term(\WP_Term $term): object
             {
-                $GLOBALS['__quartermaster_test_timber_get_terms_args'] = $args;
-
-                return [
-                    (object) ['name' => 'stub-term', 'taxonomy' => $args['taxonomy'] ?? 'category'],
-                ];
+                $GLOBALS['__quartermaster_test_mapped_terms'][] = $term;
+                $class = $GLOBALS['__quartermaster_test_term_class'] ?? \stdClass::class;
+                $mapped = new $class();
+                $mapped->term_id = $term->term_id;
+                return $mapped;
             }
+
         }
     }
 }
@@ -82,6 +87,15 @@ namespace PressGang\Quartermaster\Tests {
 
     final class AdapterTest extends TestCase
     {
+        protected function tearDown(): void
+        {
+            unset(
+                $GLOBALS['__quartermaster_test_term_results'],
+                $GLOBALS['__quartermaster_test_mapped_terms'],
+                $GLOBALS['__quartermaster_test_term_class']
+            );
+        }
+
         public function testWpAdapterReturnsWpQueryInstance(): void
         {
             $result = (new WpAdapter())->wpQuery(['post_type' => 'post']);
@@ -125,14 +139,14 @@ namespace PressGang\Quartermaster\Tests {
             self::assertIsIterable($result);
         }
 
-        public function testTimberTermAdapterPassesArgsToTimber(): void
+        public function testTimberTermAdapterPassesArgsToWordPress(): void
         {
-            unset($GLOBALS['__quartermaster_test_timber_get_terms_args']);
+            unset($GLOBALS['__quartermaster_test_get_terms_args']);
 
             $args = ['taxonomy' => 'post_tag', 'hide_empty' => false];
             (new TimberTermAdapter())->getTerms($args);
 
-            self::assertSame($args, $GLOBALS['__quartermaster_test_timber_get_terms_args']);
+            self::assertSame($args, $GLOBALS['__quartermaster_test_get_terms_args']);
         }
 
         public function testPostsGetReturnsPostsArray(): void
@@ -171,17 +185,80 @@ namespace PressGang\Quartermaster\Tests {
             self::assertSame(['timber'], $terminal['params']);
         }
 
-        public function testTermsBuilderTimberTerminalPassesArgsToTimber(): void
+        public function testTermsBuilderTimberTerminalPassesArgsToWordPress(): void
         {
-            unset($GLOBALS['__quartermaster_test_timber_get_terms_args']);
+            unset($GLOBALS['__quartermaster_test_get_terms_args']);
 
             $result = Quartermaster::terms('category')->hideEmpty(false)->timber();
 
             self::assertIsIterable($result);
             self::assertSame(
                 ['taxonomy' => 'category', 'hide_empty' => false],
-                $GLOBALS['__quartermaster_test_timber_get_terms_args']
+                $GLOBALS['__quartermaster_test_get_terms_args']
             );
         }
+        public function testTermResultsKeepTheirFilteredOrderAndKeys(): void
+        {
+            $terms = [8 => new \WP_Term(30), 2 => new \WP_Term(10)];
+            $GLOBALS['__quartermaster_test_term_results'] = $terms;
+
+            $result = Quartermaster::terms('category')->timber();
+
+            self::assertSame([8, 2], array_keys($result));
+            self::assertSame([30, 10], array_column($result, 'term_id'));
+            self::assertSame(array_values($terms), $GLOBALS['__quartermaster_test_mapped_terms']);
+        }
+
+        public function testEmptyTermsDoNotInvokeTimber(): void
+        {
+            $GLOBALS['__quartermaster_test_term_results'] = [];
+
+            self::assertSame([], Quartermaster::terms('category')->timber());
+            self::assertArrayNotHasKey('__quartermaster_test_mapped_terms', $GLOBALS);
+        }
+
+        public function testTermConversionUsesTimberClassMapping(): void
+        {
+            $GLOBALS['__quartermaster_test_term_results'] = [new \WP_Term(10)];
+            $GLOBALS['__quartermaster_test_term_class'] = MappedTerm::class;
+
+            $result = Quartermaster::terms('category')->timber();
+
+            self::assertInstanceOf(MappedTerm::class, $result[0]);
+        }
+
+        public function testScalarProjectionsAreNotConvertedOrReindexed(): void
+        {
+            foreach (['ids' => [30, 10], 'id=>name' => [30 => 'First', 10 => 'Second']] as $fields => $terms) {
+                $GLOBALS['__quartermaster_test_term_results'] = $terms;
+
+                self::assertSame($terms, Quartermaster::terms('category')->fields($fields)->timber());
+                self::assertArrayNotHasKey('__quartermaster_test_mapped_terms', $GLOBALS);
+            }
+        }
+
+        public function testWordPressErrorsAreReported(): void
+        {
+            $GLOBALS['__quartermaster_test_term_results'] = new \WP_Error();
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage('Invalid taxonomy.');
+
+            Quartermaster::terms('missing')->timber();
+        }
+
+        public function testCountResultsAreRejectedExplicitly(): void
+        {
+            $GLOBALS['__quartermaster_test_term_results'] = '3';
+            $this->expectException(\RuntimeException::class);
+            $this->expectExceptionMessage('count queries are not supported');
+
+            Quartermaster::terms('category')->fields('count')->timber();
+        }
+
     }
+    class MappedTerm
+    {
+        public int $term_id;
+    }
+
 }
