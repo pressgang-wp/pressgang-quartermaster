@@ -496,3 +496,23 @@ empty `IN` matches no posts, while empty `NOT IN` excludes nothing. This is a
 required relationship constraint, not a blanket “no results” switch. Existing
 optional filters continue to ignore empty inputs. Root relation behaviour is
 unchanged. Preserve form state separately and check query parity during adoption.
+
+
+### Term metadata ordering
+
+Use the same metadata-ordering vocabulary on post and term queries:
+
+```php
+$terms = Quartermaster::terms('research-theme')
+    ->hideEmpty(false)
+    ->orderByMetaNumeric('sort_order')
+    ->timber();
+```
+
+`TermsBuilder::orderByMeta($key, $order = 'ASC', $metaType = 'CHAR')` sets
+`meta_key`, `meta_type`, `orderby=meta_value` and direction.
+`orderByMetaNumeric($key, $order = 'ASC')` uses `meta_value_num`. These follow
+WordPress's metadata joins: terms without that key are excluded. They preserve
+other query constraints and continue through the normal WordPress-backed term
+terminal, including final ordering filters. Invalid directions use the existing
+orderBy warning and ASC fallback. Prefer these helpers over raw meta_key seeds.

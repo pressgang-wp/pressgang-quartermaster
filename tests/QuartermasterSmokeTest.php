@@ -1585,4 +1585,27 @@ final class QuartermasterSmokeTest extends TestCase
         );
     }
 
+    public function testTermNumericMetaOrderingMatchesTheNativeSeed(): void
+    {
+        $query = Quartermaster::terms('research-theme')->hideEmpty(false)
+            ->orderByMetaNumeric('sort_order', 'desc')->whereMeta('hidden', 1, '!=');
+        $expected = Quartermaster::terms(['taxonomy'=>'research-theme','meta_key'=>'sort_order'])
+            ->hideEmpty(false)->orderBy('meta_value_num', 'DESC')->whereMeta('hidden', 1, '!=');
+        self::assertEquals($expected->toArgs(), $query->toArgs());
+        self::assertContains('orderByMetaNumeric', array_column($query->explain()['applied'], 'name'));
+    }
+
+    public function testTermMetaOrderingSupportsTypesAndDirectionFallback(): void
+    {
+        $query = Quartermaster::terms('topic')->orderByMeta('label', 'desc', 'char');
+        self::assertSame('meta_value', $query->toArgs()['orderby']);
+        self::assertSame('CHAR', $query->toArgs()['meta_type']);
+        self::assertSame('DESC', $query->toArgs()['order']);
+        $query->orderByMetaNumeric('priority', 'invalid');
+        self::assertSame('ASC', $query->toArgs()['order']);
+        self::assertSame('priority', $query->toArgs()['meta_key']);
+        self::assertSame('meta_value_num', $query->toArgs()['orderby']);
+        self::assertNotEmpty($query->explain()['warnings']);
+    }
+
 }

@@ -441,6 +441,51 @@ final class TermsBuilder
     }
 
     /**
+     * Order terms by a metadata value, using WordPress meta casting.
+     *
+     * Terms without the selected meta key are excluded by WordPress.
+     *
+     * Sets: meta_key, meta_type, orderby, order
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string $metaKey Metadata key to order by.
+     * @param string $order ASC or DESC; invalid values fall back to ASC.
+     * @param string $metaType WordPress metadata cast type.
+     * @return self
+     */
+    public function orderByMeta(string $metaKey, string $order = 'ASC', string $metaType = 'CHAR'): self
+    {
+        $this->orderBy('meta_value', $order);
+        $this->merge(['meta_key' => $metaKey, 'meta_type' => strtoupper($metaType)]);
+        $this->record('orderByMeta', $metaKey, $order, $metaType);
+
+        return $this;
+    }
+
+    /**
+     * Order terms numerically by a metadata value.
+     *
+     * Terms without the selected meta key are excluded by WordPress.
+     *
+     * Sets: meta_key, orderby, order
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string $metaKey Metadata key to order by.
+     * @param string $order ASC or DESC; invalid values fall back to ASC.
+     * @return self
+     */
+    public function orderByMetaNumeric(string $metaKey, string $order = 'ASC'): self
+    {
+        $this->orderBy('meta_value_num', $order);
+        $this->set('meta_key', $metaKey);
+        $this->record('orderByMetaNumeric', $metaKey, $order);
+
+        return $this;
+    }
+
+    /**
      * Append an `AND` termmeta clause to `meta_query`.
      *
      * Sets: meta_query
