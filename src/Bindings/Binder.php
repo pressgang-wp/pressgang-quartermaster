@@ -30,11 +30,12 @@ final class Binder
      * Bind search from one query var.
      *
      * @param string $queryVar
+     * @param string|null $default Fallback for missing/null input; null skips it.
      * @return self
      */
-    public function search(string $queryVar = 'search'): self
+    public function search(string $queryVar = 'search', ?string $default = null): self
     {
-        return $this->register($queryVar, Bind::search($queryVar));
+        return $this->register($queryVar, Bind::search($queryVar, $default));
     }
 
     /**
@@ -42,11 +43,12 @@ final class Binder
      *
      * @param string $queryVar
      * @param bool $allowEmpty Apply an explicitly empty query-var value.
+     * @param string|null $default Fallback for missing/null input; null skips it.
      * @return self
      */
-    public function relevanssi(string $queryVar = 'search', bool $allowEmpty = false): self
+    public function relevanssi(string $queryVar = 'search', bool $allowEmpty = false, ?string $default = null): self
     {
-        return $this->register($queryVar, Bind::relevanssi($queryVar, $allowEmpty));
+        return $this->register($queryVar, Bind::relevanssi($queryVar, $allowEmpty, $default));
     }
 
     /**

@@ -117,59 +117,60 @@ final class Bind
     /**
      * Bind a query var to the search term.
      *
+     * Scalar values are sanitized by the builder; non-scalars are skipped.
+     * Values are never URL-decoded.
+     *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#search-parameters
      * See: https://developer.wordpress.org/reference/functions/sanitize_text_field/
      *
      * @param string $queryVar Informational only; the map key remains authoritative.
+     * @param string|null $default Fallback for missing/null input; null skips it.
      * @return callable(Quartermaster, mixed, string): Quartermaster
      */
-    public static function search(string $queryVar = 'search'): callable
+    public static function search(string $queryVar = 'search', ?string $default = null): callable
     {
-        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar): Quartermaster {
+        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar, $default): Quartermaster {
             if ($key !== $queryVar) {
                 return $q;
             }
 
-            $search = trim((string) $value);
-
-            if ($search === '') {
+            $value ??= $default;
+            if (!is_scalar($value)) {
                 return $q;
             }
 
-            if (function_exists('sanitize_text_field')) {
-                $search = sanitize_text_field($search);
-            }
-
-            return $q->search($search);
+            return $q->search((string) $value);
         };
     }
 
     /**
      * Bind a query var to the Relevanssi-aware search term.
      *
-     * Delegates to `relevanssi()` which sets both `s` and `relevanssi = true`.
+     * Delegates sanitization to `relevanssi()`, setting `s` and `relevanssi = true`.
+     * Non-scalar values are skipped. Values are never URL-decoded.
      *
      * See: https://www.relevanssi.com/knowledge-base/wp_query-arguments/
      *
      * @param string $queryVar Informational only; the map key remains authoritative.
-     * @param bool $allowEmpty Apply an explicitly empty value; missing/null values are skipped.
+     * @param bool $allowEmpty Apply an empty value, including an explicitly empty default.
+     * @param string|null $default Fallback for missing/null input; null skips it.
      * @return callable(Quartermaster, mixed, string): Quartermaster
      */
-    public static function relevanssi(string $queryVar = 'search', bool $allowEmpty = false): callable
+    public static function relevanssi(string $queryVar = 'search', bool $allowEmpty = false, ?string $default = null): callable
     {
-        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar, $allowEmpty): Quartermaster {
-            if ($key !== $queryVar || $value === null) {
+        return static function (Quartermaster $q, mixed $value, string $key) use ($queryVar, $allowEmpty, $default): Quartermaster {
+            if ($key !== $queryVar) {
+                return $q;
+            }
+
+            $value ??= $default;
+            if (!is_scalar($value)) {
                 return $q;
             }
 
             $search = trim((string) $value);
-
             if ($search === '' && !$allowEmpty) {
                 return $q;
-            }
-
-            if (function_exists('sanitize_text_field')) {
-                $search = sanitize_text_field($search);
             }
 
             return $q->relevanssi($search, $allowEmpty);

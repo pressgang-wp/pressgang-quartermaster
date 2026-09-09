@@ -66,7 +66,7 @@ including replacing an earlier search, and enables Relevanssi. Null leaves the
 search unchanged. This sets query arguments; it does not install the plugin or
 manage its index. The flag is enabled whenever an `s` argument is present.
 `Binder::relevanssi()` and `Bind::relevanssi()` accept the same option; missing or
-null binding values remain skipped, while an explicitly empty value is applied.
+null binding values remain skipped unless a default is supplied, while an explicitly empty value is applied.
 
 `whereTax()` and `orWhereTax()` accept `allowEmpty: true` to retain a normalized
 empty clause, including null input. WordPress operator semantics still apply:
@@ -94,3 +94,33 @@ WordPress's metadata joins: terms without that key are excluded. They preserve
 other query constraints and continue through the normal WordPress-backed term
 terminal, including final ordering filters. Invalid directions use the existing
 orderBy warning and ASC fallback. Prefer these helpers over raw meta_key seeds.
+
+
+### Search binding defaults and input handling
+
+```php
+$query = Quartermaster::posts('research-project')
+    ->bindQueryVars(function (Binder $bindings): void {
+        $bindings->relevanssi('project-search', allowEmpty: true, default: '');
+    });
+```
+
+`Bind::search()` / `Binder::search()` accept `?string $default = null`;
+`Bind::relevanssi()` / `Binder::relevanssi()` accept it after `allowEmpty`.
+A default applies only to missing/null values. An explicit empty string never
+uses the default. Without a default, missing/null values leave the query unchanged.
+Use `allowEmpty: true, default: ''` to enable Relevanssi even without a search term.
+This deliberately opts into an empty search; it does not install or index Relevanssi.
+
+Scalar inputs are converted to strings; arrays, objects and resources are skipped
+without applying the default or replacing an existing search. Sanitization belongs
+to the search builder: `sanitize_text_field()` in WordPress, trimming otherwise.
+Do not duplicate it around bindings. Bindings do not execute queries or escape
+HTML output; keep contextual escaping in templates.
+
+Never automatically URL-decode query variables. PHP already decodes GET values;
+decoding again corrupts literal plus signs such as `C++`. WordPress sanitization
+strips percent-encoded characters; Quartermaster retains that established behaviour.
+See [PHP's urldecode guidance](https://www.php.net/manual/en/function.urldecode.php)
+and [WordPress sanitization](https://developer.wordpress.org/reference/functions/sanitize_text_field/).
+Use custom preparation only for a documented source encoding, before sanitization.
