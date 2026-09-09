@@ -1,7 +1,7 @@
 {
     "package": "pressgang/quartermaster",
     "version": "0.1.0",
-    "generated_at": "2026-09-09T09:58:03Z",
+    "generated_at": "2026-09-09T20:29:54Z",
     "entrypoint": "PressGang\\Quartermaster\\Quartermaster",
     "principles": [
         "Args-first; outputs plain WP_Query arrays",
@@ -273,7 +273,7 @@
         },
         {
             "name": "search",
-            "signature": "search(string $queryVar = 'search'): callable",
+            "signature": "search(string $queryVar = 'search', string|null $default = NULL): callable",
             "group": "Query-var binding factories",
             "sets_args": [],
             "reads_globals": false,
@@ -281,16 +281,16 @@
                 "https://developer.wordpress.org/reference/classes/wp_query/#search-parameters",
                 "https://developer.wordpress.org/reference/functions/sanitize_text_field/"
             ],
-            "notes": "Bind a query var to the search term. (args mapping not annotated yet)"
+            "notes": "Bind a search query variable. Explicit defaults apply to missing/null values only; non-scalars are skipped. Builder-owned sanitization; no URL decoding."
         },
         {
             "name": "relevanssi",
-            "signature": "relevanssi(string $queryVar = 'search', bool $allowEmpty = false): callable",
+            "signature": "relevanssi(string $queryVar = 'search', bool $allowEmpty = false, string|null $default = NULL): callable",
             "group": "Query-var binding factories",
             "sets_args": [],
             "reads_globals": false,
             "wp_docs": [],
-            "notes": "Bind a query var to the Relevanssi-aware search term. (args mapping not annotated yet) Optional allowEmpty retains explicit empty search or taxonomy input; native query semantics apply."
+            "notes": "Bind a search query variable. Explicit defaults apply to missing/null values only; non-scalars are skipped. Builder-owned sanitization; no URL decoding."
         },
         {
             "name": "tax",
