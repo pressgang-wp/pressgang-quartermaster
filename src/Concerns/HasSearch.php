@@ -50,24 +50,31 @@ trait HasSearch
      *
      * This is opt-in. Delegates to `search()` for sanitization, then sets
      * `relevanssi = true` so the Relevanssi plugin intercepts the query.
-     * Empty/null values are ignored — neither `s` nor `relevanssi` are set.
+     * Empty values normally leave s unchanged. allowEmpty explicitly sets s even
+     * when sanitization produces an empty string. Null keeps the existing search.
+     * The integration flag is enabled whenever s is present, including seeded s.
      *
      * Sets: s, relevanssi
      *
      * See: https://www.relevanssi.com/knowledge-base/wp_query-arguments/
      *
-     * @param string|null $search Raw search string; null/empty leaves args unchanged.
+     * @param string|null $search Raw search string; null leaves the search unchanged.
+     * @param bool $allowEmpty Set an explicit empty search and enable Relevanssi.
      * @return self
      */
-    public function relevanssi(?string $search): self
+    public function relevanssi(?string $search, bool $allowEmpty = false): self
     {
-        $this->search($search);
+        if ($allowEmpty && $search !== null) {
+            $this->set('s', WpRuntime::sanitizeText($search));
+        } else {
+            $this->search($search);
+        }
 
         if ($this->getArg('s') !== null) {
             $this->set('relevanssi', true);
         }
 
-        $this->record('relevanssi', $search);
+        $this->record('relevanssi', $search, $allowEmpty);
 
         return $this;
     }

@@ -19,29 +19,32 @@ trait HasTaxQuery
      * Append an `AND` taxonomy clause to `tax_query`.
      *
      * Null and empty terms are filtered out. When no terms remain, the builder
-     * is unchanged — so optional filters can be passed directly
+     * is unchanged by default — so optional filters can be passed directly
      * (`->whereTax('topic', $topic ?: null)`) without conditional wrappers.
+     * Set allowEmpty to retain the native clause even when no terms remain.
      *
      * Sets: tax_query
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
      *
      * @param string $taxonomy
-     * @param string|int|array<int, int|string>|null $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array; null is a no-op.
+     * @param string|int|array<int, int|string>|null $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array; null is a no-op unless allowEmpty is enabled.
      * @param string $field Tax field key such as `slug`, `term_id`, or `name`.
      * @param string $operator Tax operator such as `IN`, `NOT IN`, or `AND`.
+     * @param bool $allowEmpty Retain an empty clause using native operator semantics: IN matches nothing; NOT IN adds no exclusion.
      * @return self
      */
     public function whereTax(
         string $taxonomy,
         string|int|array|null $terms,
         string $field = 'slug',
-        string $operator = 'IN'
+        string $operator = 'IN',
+        bool $allowEmpty = false
     ): self {
         $terms = $this->normalizeTaxTerms($terms);
 
-        if ($terms === []) {
-            $this->record('whereTax', $taxonomy, $terms, $field, $operator);
+        if ($terms === [] && !$allowEmpty) {
+            $this->record('whereTax', $taxonomy, $terms, $field, $operator, $allowEmpty);
 
             return $this;
         }
@@ -49,7 +52,7 @@ trait HasTaxQuery
         $query = $this->appendTaxClause($this->buildTaxClause($taxonomy, $terms, $field, $operator));
 
         $this->set('tax_query', $query);
-        $this->record('whereTax', $taxonomy, $terms, $field, $operator);
+        $this->record('whereTax', $taxonomy, $terms, $field, $operator, $allowEmpty);
 
         return $this;
     }
@@ -61,28 +64,30 @@ trait HasTaxQuery
      * appended under the same relation. Mirrors `orWhereMeta()` for `meta_query`.
      *
      * Null and empty terms are filtered out. When no terms remain, the builder
-     * is unchanged.
+     * is unchanged unless allowEmpty is enabled.
      *
      * Sets: tax_query
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
      *
      * @param string $taxonomy
-     * @param string|int|array<int, int|string>|null $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array; null is a no-op.
+     * @param string|int|array<int, int|string>|null $terms Term value(s) matched by `$field`. Scalars are normalized to a single-element array; null is a no-op unless allowEmpty is enabled.
      * @param string $field Tax field key such as `slug`, `term_id`, or `name`.
      * @param string $operator Tax operator such as `IN`, `NOT IN`, or `AND`.
+     * @param bool $allowEmpty Retain an empty clause using native operator semantics: IN matches nothing; NOT IN adds no exclusion.
      * @return self
      */
     public function orWhereTax(
         string $taxonomy,
         string|int|array|null $terms,
         string $field = 'slug',
-        string $operator = 'IN'
+        string $operator = 'IN',
+        bool $allowEmpty = false
     ): self {
         $terms = $this->normalizeTaxTerms($terms);
 
-        if ($terms === []) {
-            $this->record('orWhereTax', $taxonomy, $terms, $field, $operator);
+        if ($terms === [] && !$allowEmpty) {
+            $this->record('orWhereTax', $taxonomy, $terms, $field, $operator, $allowEmpty);
 
             return $this;
         }
@@ -90,7 +95,7 @@ trait HasTaxQuery
         $query = $this->appendTaxClause($this->buildTaxClause($taxonomy, $terms, $field, $operator), 'OR', 'OR');
 
         $this->set('tax_query', $query);
-        $this->record('orWhereTax', $taxonomy, $terms, $field, $operator);
+        $this->record('orWhereTax', $taxonomy, $terms, $field, $operator, $allowEmpty);
 
         return $this;
     }

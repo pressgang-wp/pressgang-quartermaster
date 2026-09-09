@@ -267,3 +267,30 @@ existing meta clauses; subsequent `whereMeta()` calls retain that OR. For
 `meta_query` seed instead. Post type, pagination and taxonomy constraints are
 unaffected. Fixed argument clauses belong in seed arrays; reserve `tapArgs()`
 for transformations of existing query arguments.
+
+
+### Explicit empty searches and required taxonomy constraints
+
+```php
+$query = Quartermaster::posts('publication')
+    ->relevanssi($search, allowEmpty: true)
+    ->paged(paged: $page);
+
+$staff = Quartermaster::posts('staff-member')
+    ->whereTax('research-team', $teamIds, 'term_id', allowEmpty: true);
+```
+
+These options are explicit: existing calls retain their behaviour.
+`relevanssi(..., allowEmpty: true)` sets the sanitized search even when empty,
+including replacing an earlier search, and enables Relevanssi. Null leaves the
+search unchanged. This sets query arguments; it does not install the plugin or
+manage its index. The flag is enabled whenever an `s` argument is present.
+`Binder::relevanssi()` and `Bind::relevanssi()` accept the same option; missing or
+null binding values remain skipped, while an explicitly empty value is applied.
+
+`whereTax()` and `orWhereTax()` accept `allowEmpty: true` to retain a normalized
+empty clause, including null input. WordPress operator semantics still apply:
+empty `IN` matches no posts, while empty `NOT IN` excludes nothing. This is a
+required relationship constraint, not a blanket “no results” switch. Existing
+optional filters continue to ignore empty inputs. Root relation behaviour is
+unchanged. Preserve form state separately and check query parity during adoption.
