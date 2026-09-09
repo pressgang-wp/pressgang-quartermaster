@@ -33,7 +33,7 @@ Requirements: PHP 8.3+.
 | Pagination / search | `paged()`, `limit()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
 | Query-var binding | `bindQueryVars()`, `Bind::paged()`, `Bind::tax()`, `Bind::orderBy()`, `Bind::metaNum()`, `Bind::search()` |
 | Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
-| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaLikeAny()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
+| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaLikeAny()`, `orWhereMetaLikeAny()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
 | Tax query | `whereTax()`, `orWhereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |
@@ -451,3 +451,21 @@ Perfect for reviews, debugging, and keeping junior crew out of trouble. 🧭
 
 Smooth seas and predictable queries.  
 Happy sailing. ⚓🚢
+
+
+### Match either ACF relationship field
+
+```php
+$query = Quartermaster::posts('research-project')
+    ->whereMetaLikeAny('other_arc_staff', [$post->ID])
+    ->orWhereMetaLikeAny('arc_lead', [$post->ID]);
+```
+
+Pass raw IDs; the helpers add the serialized-string quotes. Empty arrays add no
+constraint and leave the relation unchanged. `orWhereMetaLikeAny()` follows
+`orWhereMeta()`: it forces the **root** meta relation to OR, including other
+existing meta clauses; subsequent `whereMeta()` calls retain that OR. For
+`required AND (relationship A OR relationship B)`, use an explicitly nested
+`meta_query` seed instead. Post type, pagination and taxonomy constraints are
+unaffected. Fixed argument clauses belong in seed arrays; reserve `tapArgs()`
+for transformations of existing query arguments.

@@ -1475,4 +1475,51 @@ final class QuartermasterSmokeTest extends TestCase
 
         self::assertIsObject($result);
     }
+    public function testOrRelationshipMatchesEitherFieldAndRecordsCall(): void
+    {
+        $query = Quartermaster::posts('research-project')
+            ->whereMetaLikeAny('other_arc_staff', [15])
+            ->orWhereMetaLikeAny('arc_lead', [15, '22']);
+        $meta = $query->toArgs()['meta_query'];
+        self::assertSame('OR', $meta['relation']);
+        self::assertSame('"15"', $meta[0][0]['value']);
+        self::assertSame('arc_lead', $meta[1][0]['key']);
+        self::assertSame('"22"', $meta[1][1]['value']);
+        self::assertSame('LIKE', $meta[1][1]['compare']);
+        self::assertContains('orWhereMetaLikeAny', array_column($query->explain()['applied'], 'name'));
+    }
+
+    public function testOrRelationshipEmptyValuesLeaveExistingRelationUntouched(): void
+    {
+        $query = Quartermaster::posts('post')->whereMeta('a', 1)->whereMeta('b', 2);
+        $before = $query->toArgs();
+        self::assertSame($query, $query->orWhereMetaLikeAny('related', []));
+        self::assertSame($before, $query->toArgs());
+        self::assertSame([], Quartermaster::prepare()->orWhereMetaLikeAny('related', [])->toArgs());
+    }
+
+    public function testOrRelationshipUsesTheExistingRootOrConvention(): void
+    {
+        $args = Quartermaster::posts('post')
+            ->whereMeta('featured', 1)
+            ->orWhereMetaLikeAny('related', [15])
+            ->whereMeta('visible', 1)
+            ->whereTax('category', 'news')
+            ->toArgs();
+        self::assertSame('OR', $args['meta_query']['relation']);
+        self::assertSame('featured', $args['meta_query'][0]['key']);
+        self::assertSame('visible', $args['meta_query'][2]['key']);
+        self::assertSame('category', $args['tax_query'][0]['taxonomy']);
+        self::assertSame('post', $args['post_type']);
+    }
+
+    public function testOrRelationshipReusesQuotedValuesAndSingleGroupShape(): void
+    {
+        $values = [0, '015', 'a"b'];
+        $and = Quartermaster::prepare()->whereMetaLikeAny('related', $values)->toArgs();
+        $or = Quartermaster::prepare()->orWhereMetaLikeAny('related', $values)->toArgs();
+        self::assertSame($and, $or);
+        self::assertSame('"0"', $or['meta_query'][0][0]['value']);
+    }
+
 }
