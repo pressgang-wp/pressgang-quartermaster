@@ -555,6 +555,19 @@
             "notes": "Match posts where a serialised meta field contains any of the given values."
         },
         {
+            "name": "orWhereMetaLikeAny",
+            "signature": "orWhereMetaLikeAny(string $key, array $values): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Match another serialized relationship field and force the root meta relation to OR. Empty arrays leave the query unchanged."
+        },
+        {
             "name": "whereTax",
             "signature": "whereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN'): self",
             "group": "Tax query",

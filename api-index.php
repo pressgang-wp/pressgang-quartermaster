@@ -41,7 +41,7 @@ return [
         ]],
         'Meta query' => [Quartermaster::class, [
             'whereMeta', 'orWhereMeta', 'whereMetaNot', 'whereMetaDate',
-            'whereMetaExists', 'whereMetaNotExists', 'whereMetaLikeAny',
+            'whereMetaExists', 'whereMetaNotExists', 'whereMetaLikeAny', 'orWhereMetaLikeAny',
         ]],
         'Tax query' => [Quartermaster::class, ['whereTax', 'orWhereTax']],
         'Date query' => [Quartermaster::class, ['whereDate', 'whereDateAfter', 'whereDateBefore']],

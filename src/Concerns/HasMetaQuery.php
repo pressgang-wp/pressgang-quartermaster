@@ -199,11 +199,7 @@ trait HasMetaQuery
             return $this;
         }
 
-        $subGroup = ['relation' => 'OR'];
-
-        foreach ($values as $value) {
-            $subGroup[] = ['key' => $key, 'value' => '"' . $value . '"', 'compare' => 'LIKE'];
-        }
+        $subGroup = $this->buildMetaLikeAnyGroup($key, $values);
 
         $query = $this->appendMetaClause($subGroup, 'AND');
 
@@ -211,6 +207,56 @@ trait HasMetaQuery
         $this->record('whereMetaLikeAny', $key, $values);
 
         return $this;
+    }
+
+    /**
+     * Match another serialised relationship field using the root OR relation.
+     *
+     * Like orWhereMeta(), this forces the entire root meta_query relation to OR.
+     * Later AND calls retain that relation; use an explicit nested seed query for
+     * expressions such as required AND (first relationship OR second relationship).
+     * Values are raw serialized string IDs, quoted exactly as whereMetaLikeAny().
+     * Empty values leave the query and its relation unchanged.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
+     * @param string $key Meta key to search.
+     * @param array<int, mixed> $values Raw values to match.
+     * @return self
+     */
+    public function orWhereMetaLikeAny(string $key, array $values): self
+    {
+        if ($values === []) {
+            return $this;
+        }
+
+        $subGroup = $this->buildMetaLikeAnyGroup($key, $values);
+        $query = $this->appendMetaClause($subGroup, 'OR', 'OR');
+
+        $this->set('meta_query', $query);
+        $this->record('orWhereMetaLikeAny', $key, $values);
+
+        return $this;
+    }
+
+    /**
+     * Build the shared serialized-value LIKE group.
+     *
+     * @param string $key Meta key to search.
+     * @param array<int, mixed> $values Raw values to quote.
+     * @return array<int|string, mixed>
+     */
+    protected function buildMetaLikeAnyGroup(string $key, array $values): array
+    {
+        $group = ['relation' => 'OR'];
+
+        foreach ($values as $value) {
+            $group[] = ['key' => $key, 'value' => '"' . $value . '"', 'compare' => 'LIKE'];
+        }
+
+        return $group;
     }
 
     /**
