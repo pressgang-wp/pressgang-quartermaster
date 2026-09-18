@@ -278,6 +278,10 @@ $query = Quartermaster::posts('publication')
 
 $staff = Quartermaster::posts('staff-member')
     ->whereTax('research-team', $teamIds, 'term_id', allowEmpty: true);
+
+$picked = Quartermaster::posts('post')
+    ->whereInIds($featuredIds, allowEmpty: true)
+    ->orderBy('post__in', 'ASC');
 ```
 
 These options are explicit: existing calls retain their behaviour.
@@ -295,6 +299,10 @@ required relationship constraint, not a blanket “no results” switch. Existin
 optional filters continue to ignore empty inputs. Root relation behaviour is
 unchanged. Preserve form state separately and check query parity during adoption.
 
+`whereInIds()` accepts `allowEmpty: true` for required inclusion lists such as
+editor-picked posts. WordPress ignores an empty `post__in`, so an empty list
+would otherwise return every post; with the flag, `post__in` becomes `[0]` and
+the query matches nothing. Without it, empty input still leaves args unchanged.
 
 ### Term metadata ordering
 
