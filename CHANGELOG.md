@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- `whereInIds()` accepts `allowEmpty: true`; an empty (or all-invalid) ID list then sets `post__in` to `[0]` so the query matches nothing instead of every post.
 - `whereTax()` / `orWhereTax()` now accept `null` terms as a no-op, so optional filters can be passed directly (`->whereTax('topic', $topic ?: null)`) without `when()` wrappers.
 - Added `orWhereTax()` for `OR` relation `tax_query` clauses, mirroring `orWhereMeta()`.
 - Added `QueryModifierAdapter` and `applyTo()` terminal for modifying existing `WP_Query` instances in `pre_get_posts` hooks.

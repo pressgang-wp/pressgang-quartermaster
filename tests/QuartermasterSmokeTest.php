@@ -566,6 +566,34 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertArrayNotHasKey('post__in', $args);
     }
 
+    public function testWhereInIdsAllowEmptyMatchesNothingForEmptyInput(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds([], allowEmpty: true)->toArgs();
+
+        self::assertSame([0], $args['post__in']);
+    }
+
+    public function testWhereInIdsAllowEmptyMatchesNothingWhenAllValuesInvalid(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds(['a', null], allowEmpty: true)->toArgs();
+
+        self::assertSame([0], $args['post__in']);
+    }
+
+    public function testWhereInIdsAllowEmptyKeepsValidIds(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds([5, 3], allowEmpty: true)->toArgs();
+
+        self::assertSame([5, 3], $args['post__in']);
+    }
+
+    public function testWhereInIdsAllowEmptyReplacesEarlierInclusion(): void
+    {
+        $args = Quartermaster::prepare()->whereInIds([1, 2])->whereInIds([], allowEmpty: true)->toArgs();
+
+        self::assertSame([0], $args['post__in']);
+    }
+
     public function testExcludeIdsSetsPostNotInArg(): void
     {
         $args = Quartermaster::prepare()->excludeIds([3, 4])->toArgs();

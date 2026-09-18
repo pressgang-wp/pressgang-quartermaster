@@ -70,27 +70,33 @@ trait HasPostConstraints
     /**
      * Set post inclusion list (`post__in`) for `WP_Query`.
      *
-     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args.
+     * This is opt-in. Non-integer values are filtered out; empty results do not mutate args
+     * unless allowEmpty is enabled.
+     *
+     * WordPress ignores an empty `post__in`, so allowEmpty sets `post__in` to `[0]`, which
+     * matches no posts. Use it when the list is a required constraint (e.g. editor-picked
+     * posts) rather than an optional filter.
      *
      * Sets: post__in
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/#post-page-parameters
      *
      * @param array<int, mixed> $ids Candidate post IDs.
+     * @param bool $allowEmpty Match no posts when no valid IDs remain, instead of leaving args unchanged.
      * @return self
      */
-    public function whereInIds(array $ids): self
+    public function whereInIds(array $ids, bool $allowEmpty = false): self
     {
         $normalizedIds = $this->normalizeIntList($ids);
 
-        if ($normalizedIds === []) {
-            $this->record('whereInIds', $normalizedIds);
+        if ($normalizedIds === [] && !$allowEmpty) {
+            $this->record('whereInIds', $normalizedIds, $allowEmpty);
 
             return $this;
         }
 
-        $this->set('post__in', $normalizedIds);
-        $this->record('whereInIds', $normalizedIds);
+        $this->set('post__in', $normalizedIds === [] ? [0] : $normalizedIds);
+        $this->record('whereInIds', $normalizedIds, $allowEmpty);
 
         return $this;
     }
