@@ -91,7 +91,7 @@
         },
         {
             "name": "whereInIds",
-            "signature": "whereInIds(array $ids): self",
+            "signature": "whereInIds(array $ids, bool $allowEmpty = false): self",
             "group": "Core post constraints",
             "sets_args": [
                 "post__in"
