@@ -50,7 +50,7 @@ return [
         'Macros' => [Quartermaster::class, ['macro', 'hasMacro', 'flushMacros']],
         'Escape hatch' => [Quartermaster::class, ['tapArgs']],
         'Introspection' => [Quartermaster::class, ['toArgs', 'explain']],
-        'Terminals' => [Quartermaster::class, ['get', 'wpQuery', 'timber', 'toArray', 'applyTo']],
+        'Terminals' => [Quartermaster::class, ['get', 'wpQuery', 'timber', 'toArray', 'first', 'applyTo']],
         'Terms core' => [TermsBuilder::class, ['prepare', 'taxonomy', 'forPostType', 'objectIds', 'hideEmpty', 'slug', 'name', 'fields', 'include', 'exclude', 'excludeTree', 'parent', 'childOf', 'childless', 'search']],
         'Terms pagination / ordering' => [TermsBuilder::class, ['limit', 'offset', 'page', 'orderBy', 'orderByMeta', 'orderByMetaNumeric']],
         'Terms meta query' => [TermsBuilder::class, ['whereMeta', 'orWhereMeta']],

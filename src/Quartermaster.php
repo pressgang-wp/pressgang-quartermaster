@@ -277,6 +277,31 @@ final class Quartermaster
     }
 
     /**
+     * Execute the query and return the first matching post, or null when nothing matches.
+     *
+     * Runs on a copy of the builder with `posts_per_page = 1` and `no_found_rows = true`, and any
+     * `paged` / `nopaging` state removed, so it always returns the first match rather than a
+     * later page. The builder itself is not modified. Like `toArray()`, it prefers Timber when
+     * available (a `Timber\Post`) and falls back to `WP_Post` otherwise.
+     *
+     * Sets: (none)
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @return \Timber\Post|\WP_Post|null First post, or null when the query has no results.
+     */
+    public function first(): ?object
+    {
+        $query = clone $this;
+        unset($query->args['paged'], $query->args['nopaging']);
+        $query->limit(1)->noFoundRows();
+
+        $this->record('first');
+
+        return $query->toArray()[0] ?? null;
+    }
+
+    /**
      * Normalize map/callback bindings into an array map.
      *
      * @param array<string, callable>|callable(Binder): void $bindings
