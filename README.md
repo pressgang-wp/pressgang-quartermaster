@@ -33,7 +33,7 @@ Requirements: PHP 8.3+.
 | Pagination / search | `paged()`, `limit()`, `all()` (fetch all: `posts_per_page=-1`, `nopaging=true`), `search()` |
 | Query-var binding | `bindQueryVars()`, `Bind::paged()`, `Bind::tax()`, `Bind::orderBy()`, `Bind::metaNum()`, `Bind::search()` |
 | Ordering | `orderBy()`, `orderByAsc()`, `orderByDesc()`, `orderByMeta()`, `orderByMetaAsc()`, `orderByMetaDesc()`, `orderByMetaNumeric()`, `orderByMetaNumericAsc()`, `orderByMetaNumericDesc()` |
-| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaLikeAny()`, `orWhereMetaLikeAny()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()` |
+| Meta query | `whereMeta()`, `orWhereMeta()`, `whereMetaNot()`, `whereMetaLikeAny()`, `orWhereMetaLikeAny()`, `whereMetaDate()`, `whereMetaExists()`, `whereMetaNotExists()`, `wherePageTemplate()` |
 | Tax query | `whereTax()`, `orWhereTax()` |
 | Date query | `whereDate()`, `whereDateAfter()`, `whereDateBefore()` |
 | Query-shaping flags | `idsOnly()`, `noFoundRows()`, `withMetaCache()`, `withTermCache()` |

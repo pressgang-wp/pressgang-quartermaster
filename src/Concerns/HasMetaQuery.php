@@ -180,6 +180,32 @@ trait HasMetaQuery
     }
 
     /**
+     * Match pages assigned to a given page template.
+     *
+     * WordPress stores the selected template in the `_wp_page_template` meta key, so this appends
+     * an `=` meta clause on it. Pass the stored value: the template file path relative to the
+     * theme (for example `page-templates/landing.php`), or a bare slug for file-less templates.
+     * Pages with no template selected store `default`.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
+     * @param string $template Stored page template value.
+     * @return self
+     */
+    public function wherePageTemplate(string $template): self
+    {
+        $clause = $this->buildMetaClause('_wp_page_template', $template, '=', null);
+        $query = $this->appendMetaClause($clause, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('wherePageTemplate', $template);
+
+        return $this;
+    }
+
+    /**
      * Match posts where a serialised meta field contains any of the given values.
      *
      * Builds a nested OR sub-group of LIKE clauses, one per value. Each value is wrapped

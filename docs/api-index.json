@@ -568,6 +568,19 @@
             "notes": "Match another serialized relationship field and force the root meta relation to OR. Empty arrays leave the query unchanged."
         },
         {
+            "name": "wherePageTemplate",
+            "signature": "wherePageTemplate(string $template): self",
+            "group": "Meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters"
+            ],
+            "notes": "Match pages assigned to a given page template."
+        },
+        {
             "name": "whereTax",
             "signature": "whereTax(string $taxonomy, array|string|int|null $terms, string $field = 'slug', string $operator = 'IN', bool $allowEmpty = false): self",
             "group": "Tax query",
