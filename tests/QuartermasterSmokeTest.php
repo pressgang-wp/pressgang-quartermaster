@@ -1365,6 +1365,49 @@ final class QuartermasterSmokeTest extends TestCase
         self::assertSame('featured', $args['meta_query'][1]['key']);
     }
 
+    // --- wherePageTemplate ---
+
+    public function testWherePageTemplateCreatesPageTemplateClause(): void
+    {
+        $args = Quartermaster::prepare('page')
+            ->wherePageTemplate('page-templates/landing.php')
+            ->toArgs();
+
+        self::assertSame('_wp_page_template', $args['meta_query'][0]['key']);
+        self::assertSame('page-templates/landing.php', $args['meta_query'][0]['value']);
+        self::assertSame('=', $args['meta_query'][0]['compare']);
+    }
+
+    public function testWherePageTemplateComposesWithOtherMetaClauses(): void
+    {
+        $args = Quartermaster::prepare('page')
+            ->wherePageTemplate('page-templates/landing.php')
+            ->whereMeta('featured', 1)
+            ->toArgs();
+
+        self::assertSame('AND', $args['meta_query']['relation']);
+        self::assertSame('_wp_page_template', $args['meta_query'][0]['key']);
+        self::assertSame('featured', $args['meta_query'][1]['key']);
+    }
+
+    public function testWherePageTemplateIsFluent(): void
+    {
+        $builder = Quartermaster::prepare()->wherePageTemplate('page-templates/landing.php');
+
+        self::assertInstanceOf(Quartermaster::class, $builder);
+    }
+
+    public function testWherePageTemplateIsRecordedInExplain(): void
+    {
+        $explain = Quartermaster::prepare()
+            ->wherePageTemplate('page-templates/landing.php')
+            ->explain();
+
+        $names = array_column($explain['applied'], 'name');
+
+        self::assertContains('wherePageTemplate', $names);
+    }
+
     // --- whereMetaExists / whereMetaNotExists ---
 
     public function testWhereMetaExistsCreatesExistsClause(): void
