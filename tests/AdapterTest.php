@@ -24,6 +24,7 @@ namespace {
 
             public function __construct(array $args = [])
             {
+                $GLOBALS['__quartermaster_test_last_wp_query_args'] = $args;
                 $this->query_vars = $args;
                 $this->posts = [
                     (object) ['ID' => 1, 'post_type' => $args['post_type'] ?? 'post'],
@@ -92,7 +93,8 @@ namespace PressGang\Quartermaster\Tests {
             unset(
                 $GLOBALS['__quartermaster_test_term_results'],
                 $GLOBALS['__quartermaster_test_mapped_terms'],
-                $GLOBALS['__quartermaster_test_term_class']
+                $GLOBALS['__quartermaster_test_term_class'],
+                $GLOBALS['__quartermaster_test_last_wp_query_args']
             );
         }
 
@@ -183,6 +185,46 @@ namespace PressGang\Quartermaster\Tests {
             $terminal = end($explain['applied']);
             self::assertSame('toArray', $terminal['name']);
             self::assertSame(['timber'], $terminal['params']);
+        }
+
+        public function testFirstReturnsFirstPost(): void
+        {
+            $result = Quartermaster::posts('event')->first();
+
+            self::assertIsObject($result);
+            self::assertSame('event', $result->post_type);
+        }
+
+        public function testFirstQueriesOnePostWithoutPagination(): void
+        {
+            Quartermaster::posts('event')->paged(12, 3)->first();
+
+            $args = $GLOBALS['__quartermaster_test_last_wp_query_args'];
+
+            self::assertSame(1, $args['posts_per_page']);
+            self::assertTrue($args['no_found_rows']);
+            self::assertArrayNotHasKey('paged', $args);
+            self::assertArrayNotHasKey('nopaging', $args);
+        }
+
+        public function testFirstDoesNotModifyTheBuilder(): void
+        {
+            $builder = Quartermaster::posts('event')->paged(12, 3);
+            $before = $builder->toArgs();
+
+            $builder->first();
+
+            self::assertSame($before, $builder->toArgs());
+        }
+
+        public function testFirstIsRecordedInExplain(): void
+        {
+            $builder = Quartermaster::posts('event');
+            $builder->first();
+
+            $names = array_column($builder->explain()['applied'], 'name');
+
+            self::assertContains('first', $names);
         }
 
         public function testTermsBuilderTimberTerminalPassesArgsToWordPress(): void

@@ -837,6 +837,17 @@
             "notes": "Execute the query and return a plain PHP array of posts."
         },
         {
+            "name": "first",
+            "signature": "first(): ?object",
+            "group": "Terminals",
+            "sets_args": [],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_query/"
+            ],
+            "notes": "Execute the query and return the first matching post, or null when nothing matches."
+        },
+        {
             "name": "applyTo",
             "signature": "applyTo(WP_Query $query): void",
             "group": "Terminals",
