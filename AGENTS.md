@@ -227,6 +227,13 @@ Both `Quartermaster` and `TermsBuilder` support macros independently. Use `flush
   - precedence/interaction behaviour
   - warning fallback behaviour for invalid inputs (if relevant)
 - Update README method index.
+- Add the method to the `api-index.php` manifest and add its entry to `docs/api-index.json`
+  (`tests/ApiIndexManifestTest.php` fails otherwise). Prefer `composer api-index`, but run it
+  from a checkout that loads this repo's source: a theme's vendored copy of Quartermaster
+  produces unrelated drift. If it does, add just the new entry by hand in the same format.
+- Add a `CHANGELOG.md` entry under `[Unreleased]`.
+- Update the gitbook docs in `~/Projects/pressgang-wp` (`docs/QUARTERMASTER.md`): add a usage
+  example to the relevant section and a row to the method table, then commit and push there.
 - Run:
   - `find src tests -name '*.php' -print0 | xargs -0 -n1 php -l`
   - `vendor/bin/phpunit -c phpunit.xml.dist --testdox`
