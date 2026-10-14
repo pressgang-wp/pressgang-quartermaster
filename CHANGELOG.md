@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Correct the `get()` return PHPDoc to include IDs and ID/parent objects alongside posts.
+
 - Add term `whereMetaExists()` and `whereMetaNotExists()` helpers that omit value and type, matching post existence checks.
 
 

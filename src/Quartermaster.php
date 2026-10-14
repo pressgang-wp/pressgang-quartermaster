@@ -184,7 +184,7 @@ final class Quartermaster
      *
      * See: https://developer.wordpress.org/reference/classes/wp_query/
      *
-     * @return array<int, \WP_Post> Posts returned by the query.
+     * @return array<int, \WP_Post|int|\stdClass> Posts, IDs (idsOnly), or ID/parent objects, depending on fields.
      */
     public function get(): array
     {
