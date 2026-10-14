@@ -534,6 +534,54 @@ final class TermsBuilder
     }
 
     /**
+     * Append an `EXISTS` meta clause to `meta_query`.
+     *
+     * The clause contains only `key` and `compare = EXISTS`. No `value` or `type` is set,
+     * matching WordPress documentation for existence checks.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string $key Meta key to check for existence.
+     * @return self
+     */
+    public function whereMetaExists(string $key): self
+    {
+        $clause = ['key' => $key, 'compare' => 'EXISTS'];
+        $query = $this->appendMetaClause($clause, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('whereMetaExists', $key);
+
+        return $this;
+    }
+
+    /**
+     * Append a `NOT EXISTS` meta clause to `meta_query`.
+     *
+     * The clause contains only `key` and `compare = NOT EXISTS`. No `value` or `type` is set,
+     * matching WordPress documentation for non-existence checks.
+     *
+     * Sets: meta_query
+     *
+     * See: https://developer.wordpress.org/reference/classes/wp_term_query/#parameters
+     *
+     * @param string $key Meta key to check for non-existence.
+     * @return self
+     */
+    public function whereMetaNotExists(string $key): self
+    {
+        $clause = ['key' => $key, 'compare' => 'NOT EXISTS'];
+        $query = $this->appendMetaClause($clause, 'AND');
+
+        $this->set('meta_query', $query);
+        $this->record('whereMetaNotExists', $key);
+
+        return $this;
+    }
+
+    /**
      * Apply an explicit argument transform callback.
      *
      * Sets: (dynamic)
@@ -632,7 +680,7 @@ final class TermsBuilder
     }
 
     /**
-     * @param array{key: string, value: mixed, compare: string, type: string} $clause
+     * @param array{key: string, value?: mixed, compare: string, type?: string} $clause
      * @param 'AND'|'OR' $defaultRelation
      * @param 'AND'|'OR'|null $forcedRelation
      * @return array<int|string, mixed>

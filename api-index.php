@@ -53,7 +53,7 @@ return [
         'Terminals' => [Quartermaster::class, ['get', 'wpQuery', 'timber', 'toArray', 'first', 'applyTo']],
         'Terms core' => [TermsBuilder::class, ['prepare', 'taxonomy', 'forPostType', 'objectIds', 'hideEmpty', 'slug', 'name', 'fields', 'include', 'exclude', 'excludeTree', 'parent', 'childOf', 'childless', 'search']],
         'Terms pagination / ordering' => [TermsBuilder::class, ['limit', 'offset', 'page', 'orderBy', 'orderByMeta', 'orderByMetaNumeric']],
-        'Terms meta query' => [TermsBuilder::class, ['whereMeta', 'orWhereMeta']],
+        'Terms meta query' => [TermsBuilder::class, ['whereMeta', 'orWhereMeta', 'whereMetaExists', 'whereMetaNotExists']],
         'Terms conditional & hooks' => [TermsBuilder::class, ['when', 'unless', 'tap']],
         'Terms macros' => [TermsBuilder::class, ['macro', 'hasMacro', 'flushMacros']],
         'Terms escape hatch' => [TermsBuilder::class, ['tapArgs']],

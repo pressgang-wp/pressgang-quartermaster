@@ -555,3 +555,22 @@ strips percent-encoded characters; Quartermaster retains that established behavi
 See [PHP's urldecode guidance](https://www.php.net/manual/en/function.urldecode.php)
 and [WordPress sanitization](https://developer.wordpress.org/reference/functions/sanitize_text_field/).
 Use custom preparation only for a documented source encoding, before sanitization.
+
+### Term metadata existence
+
+| Method | Purpose |
+| --- | --- |
+| `whereMetaExists($key)` | Require a metadata key without comparing its value |
+| `whereMetaNotExists($key)` | Require a metadata key to be absent |
+
+The term builder supports `whereMetaExists('image')` and
+`whereMetaNotExists('hidden')`, matching the post builder. These emit only
+`key` and `compare`, preserving WordPress existence semantics. Passing a value
+(including null) to generic `whereMeta(..., 'EXISTS')` is not equivalent.
+
+```php
+$terms = Quartermaster::terms('category')
+    ->whereMetaExists('image')
+    ->whereMeta('image', '', '!=')
+    ->get();
+```

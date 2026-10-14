@@ -1135,6 +1135,32 @@
             "notes": "Append a termmeta clause and force root relation to `OR`."
         },
         {
+            "name": "whereMetaExists",
+            "signature": "whereMetaExists(string $key): self",
+            "group": "Terms meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Append an `EXISTS` meta clause to `meta_query`."
+        },
+        {
+            "name": "whereMetaNotExists",
+            "signature": "whereMetaNotExists(string $key): self",
+            "group": "Terms meta query",
+            "sets_args": [
+                "meta_query"
+            ],
+            "reads_globals": false,
+            "wp_docs": [
+                "https://developer.wordpress.org/reference/classes/wp_term_query/#parameters"
+            ],
+            "notes": "Append a `NOT EXISTS` meta clause to `meta_query`."
+        },
+        {
             "name": "when",
             "signature": "when(bool $condition, callable $then, callable|null $else = NULL): self",
             "group": "Terms conditional & hooks",

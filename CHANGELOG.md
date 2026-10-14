@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Add term `whereMetaExists()` and `whereMetaNotExists()` helpers that omit value and type, matching post existence checks.
+
+
 - Added `first()` terminal returning the first matching post (or `null`) without modifying the builder.
 - Added `wherePageTemplate()` for matching pages by their `_wp_page_template` value.
 - `whereInIds()` accepts `allowEmpty: true`; an empty (or all-invalid) ID list then sets `post__in` to `[0]` so the query matches nothing instead of every post.
